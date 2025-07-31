@@ -1,0 +1,73 @@
+{
+  "name": "pd",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint ./src && npx steiger ./src",
+    "format": "prettier --write ./src",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@bufbuild/buf": "^1.49.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/inter": "^5.2.5",
+    "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.4.0",
+    "@mui/material": "^6.4.0",
+    "@react-keycloak/web": "3.4.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@types/axios": "^0.9.36",
+    "axios": "^1.7.9",
+    "eslint-plugin-jsdoc": "^50.6.9",
+    "keycloak-js": "^26.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.2",
+    "react-quill": "^2.0.0",
+    "react-redux": "^9.2.0",
+    "react-router": "^7.1.1",
+    "react-router-dom": "^7.1.1",
+    "react-toastify": "^11.0.5",
+    "styled-components": "^6.1.17",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.27.0",
+    "@eslint/js": "^9.17.0",
+    "@feature-sliced/steiger-plugin": "^0.5.5",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^22.14.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/parser": "^8.29.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-typescript": "^4.3.1",
+    "eslint-plugin-boundaries": "^5.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "3.5.3",
+    "steiger": "^0.5.6",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "yarn@1.22.19+sha512.ff4579ab459bb25aa7c0ff75b62acebe576f6084b36aa842971cf250a5d8c6cd3bc9420b22ce63c7f93a0857bc6ef29291db39c3e7a23aab5adfd5a4dd6c5d71"
+}

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+    - host: "{{ .Values.INGRESS_HOST }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ .Values.APP_NAME }}"
+                port:
+                  number: {{ .Values.app.listen.port}}

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  labels:
+    app: "{{ .Values.APP_NAME }}"
+data:
+  VITE_BASE_URL: "{{ .Values.VITE_BASE_URL }}"
+  VITE_TOKEN_URL: "{{ .Values.VITE_TOKEN_URL }}"

@@ -1,0 +1,8 @@
+apiVersion: v1
+description: "Helm chart for fe-react-platform"
+name: "fe-react-platform"
+version: "0.0.1"
+appVersion: "0.0.1"
+maintainers:
+  - name: y.tabachuk  
+    email: it26str@yandex.ru

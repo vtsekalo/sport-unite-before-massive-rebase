@@ -1,0 +1,16 @@
+build
+coverage
+.prettierrc
+node_modules
+.gitlab-ci.yml
+default.conf
+Dockerfile
+index.html
+README.md
+tsconfig.json
+values.yaml
+vite.config.ts
+yarn.lock
+jenkins
+.vscode
+.husky

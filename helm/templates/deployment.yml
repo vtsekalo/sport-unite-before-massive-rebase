@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  labels:
+    app: "{{ .Values.APP_NAME }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.APP_NAME }}"
+  template:
+    metadata:
+      name: "{{ .Values.APP_NAME }}"
+      labels:
+        app: "{{ .Values.APP_NAME }}"
+    spec:
+      containers:
+        - name: "{{ .Values.APP_NAME }}"
+          image: "{{ .Values.APP_IMAGE_NAME }}:{{ .Values.APP_IMAGE_TAG }}"
+          ports:
+            - containerPort: {{ .Values.app.listen.port }}
+          envFrom:
+            - configMapRef:
+                name: "{{ .Values.APP_NAME }}"
+          env:
+            - name: VITE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.APP_NAME }}"
+                  key: vite_client_secret
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health/liveness
+          #     port: "{{ .Values.app.listen.port}}"
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/health/readiness
+          #     port: "{{ .Values.app.listen.port}}"
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10

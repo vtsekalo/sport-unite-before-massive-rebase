@@ -1,0 +1,118 @@
+stages:
+  - dockerize
+  - lint-helm
+  - deploy
+
+.before_script_common:
+  before_script:
+    - echo $KUBCFG | base64 -d > /kubeconfig
+    - export KUBECONFIG="${KUBECONFIG}:/kubeconfig"
+    - kubectl get nodes
+
+docker-build:
+  variables:
+    # DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: “”
+    NODE_VERSION: 22.8.0
+    HARBOR_HOST: "harbor.itm-space.net"
+    IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  image: docker:stable
+  services:
+    - docker:20.10.17-dind
+  tags:
+    - DIND
+  stage: dockerize
+  before_script:
+    - docker login  -u $HARBOR_USER -p $HARBOR_PASSWORD $HARBOR_HOST
+  script:
+    - echo " New tag $IMAGE_TAG"
+    - docker pull $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:latest || true
+    - |
+      docker build \
+        --build-arg NODE_VERSION=18-alpine \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --cache-from $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:latest \
+        --tag $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:$IMAGE_TAG .
+    - docker image ls
+    - docker push $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:$IMAGE_TAG
+    - |
+      docker tag $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:$IMAGE_TAG \
+                 $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:latest
+    - docker push $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:latest
+    - docker image prune -a --filter "until=24h" -f
+  when: always 
+  rules:
+      - if: '$CI_COMMIT_BRANCH == "develop"'
+      - if: '$CI_COMMIT_BRANCH == "master"'
+
+lint-helm:
+  image: alpine/k8s:1.29.11
+  services:
+    - docker:27.4.0-dind
+  tags:
+    - DIND
+  stage: lint-helm
+  script:
+    - ls -lha
+    - echo "Lint develop chart"
+    - helm template -f ./helm/values.develop.yaml ./helm
+    - echo "Lint develop chart"
+    - helm template -f ./helm/values.prod.yaml ./helm
+  when: always
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+deploy-to-k8-prod:
+  variables:
+    NAMESPACE: "itm-platform-prod"
+    IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  image: alpine/k8s:1.29.11
+  services:
+    - docker:27.4.0-dind
+  tags:
+    - DIND
+  stage: deploy
+  extends: .before_script_common
+  # todo
+  # need work readness probe
+  # --atomic
+  # --timeout 120s
+  script:
+    - |
+      helm upgrade \
+        -f ./helm/values.prod.yaml \
+        --install \
+        --set APP_IMAGE_TAG=${IMAGE_TAG} \
+        front-itm-platform ./helm -n ${NAMESPACE}
+    - helm list -n ${NAMESPACE}
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+deploy-to-k8-develop:
+  variables:
+    NAMESPACE: "itm-platform-dev"
+    IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  image: alpine/k8s:1.29.11
+  services:
+    - docker:27.4.0-dind
+  tags:
+    - DIND
+  stage: deploy
+  extends: .before_script_common
+  # todo
+  # need work readness probe
+  # --atomic
+  # --timeout 120s
+  script:
+    - |
+      helm upgrade \
+        -f ./helm/values.develop.yaml \
+        --install \
+        --set APP_IMAGE_TAG=${IMAGE_TAG} \
+        front-itm-platform ./helm -n ${NAMESPACE}
+    - helm list -n ${NAMESPACE}
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'

@@ -1,0 +1,91 @@
+commitSha: ""
+
+image:
+  # image repository
+  repository: 183734604103.dkr.ecr.eu-north-1.amazonaws.com/fe-react-platform
+  tag: 0.0.1-SNAPSHOT
+  imagePullPolicy: IfNotPresent
+
+replicas: 1
+
+deployment:
+  enabled: true
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 100%
+
+extraEnv: []
+
+affinity: {}
+podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+# Node taints to tolerate
+tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: apps
+
+# Pod resource requests and limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 50m
+    memory: 512Mi
+
+securityContext:
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+
+
+service:
+  type: ClusterIP
+  httpPort: 3000
+  extraPorts: []
+
+networkPolicy:
+  enabled: "true"
+
+ingress:
+  # If `true`, an Ingress is created
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  # The name of the Ingress Class associated with this ingress
+  ingressClassName: "nginx-external"
+  rules: 
+    -
+      host: platform-dev.it-mentor.space
+      # Paths for the host
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              port:
+                number: 3000
+  tls: []
+
+autoscaling:
+  enabled: false
+  # Additional HorizontalPodAutoscaler labels
+  labels: {}
+  # The minimum and maximum number of replicas for the Keycloak StatefulSet
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+  behavior: {}
+    # scaleDown:
+    #   stabilizationWindowSeconds: 300
+    #   policies:
+    #     - type: Pods
+    #       value: 1
+    #       periodSeconds: 300

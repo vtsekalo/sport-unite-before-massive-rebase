@@ -1,0 +1,29 @@
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo "🔧 Running Prettier (format)..."
+if yarn format; then
+  echo -e "${GREEN}✅ Format passed${NC}"
+else
+  echo -e "${RED}❌ Format failed! Commit aborted.${NC}"
+  exit 1
+fi
+
+echo "🏗️ Running Build (tsc & vite)..."
+if yarn build; then
+  echo -e "${GREEN}✅ Build passed${NC}"
+else
+  echo -e "${RED}❌ Build failed! Commit aborted.${NC}"
+  exit 1
+fi
+
+echo "🔍 Running ESLint & Steiger..."
+if yarn lint; then
+  echo -e "${GREEN}✅ Lint passed${NC}"
+else
+  echo -e "${RED}❌ Lint failed! Commit aborted.${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}🎉 All checks passed, commit will proceed!${NC}"
