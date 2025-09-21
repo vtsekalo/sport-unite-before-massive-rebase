@@ -65,7 +65,7 @@ lint-helm:
 
 deploy-to-k8-prod:
   variables:
-    NAMESPACE: "itm-platform-prod"
+    NAMESPACE: "sport-unite-prod"
     IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
   image: alpine/k8s:1.29.11
   services:
@@ -92,7 +92,7 @@ deploy-to-k8-prod:
 
 deploy-to-k8-develop:
   variables:
-    NAMESPACE: "itm-platform-dev"
+    NAMESPACE: "sport-unite-dev"
     IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
   image: alpine/k8s:1.29.11
   services:
