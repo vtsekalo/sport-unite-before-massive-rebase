@@ -86,7 +86,7 @@ deploy-to-k8-prod:
         --set APP_IMAGE_TAG=${IMAGE_TAG} \
         front-itm-platform ./helm -n ${NAMESPACE}
     - helm list -n ${NAMESPACE}
-  when: manual
+  when: always
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
@@ -113,6 +113,6 @@ deploy-to-k8-develop:
         --set APP_IMAGE_TAG=${IMAGE_TAG} \
         front-itm-platform ./helm -n ${NAMESPACE}
     - helm list -n ${NAMESPACE}
-  when: manual
+  when: always
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
