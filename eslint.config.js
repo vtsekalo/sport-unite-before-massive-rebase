@@ -26,6 +26,7 @@ export default tseslint.config(
         'error',
         { allowConstantExport: true },
       ],
+      '@typescript-eslint/no-explicit-any': 'off',
       'jsdoc/require-description': 'error',
       'jsdoc/check-values': 'error',
       'react-hooks/exhaustive-deps': [
