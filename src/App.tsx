@@ -1,18 +1,34 @@
 import { StrictMode } from 'react';
-import { BrowserRouter } from 'react-router';
+import { Provider } from 'react-redux';
 
-import { ReactKeycloakProvider } from '@react-keycloak/web';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
-import keycloak from './Keycloak';
+import { store } from '@app/lib/store';
+import { Routers } from '@app/ui/Roters';
+
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1976d2',
+    },
+    background: {
+      default: '#f5f5f5',
+    },
+  },
+});
 
 export const App = () => {
   return (
-    <ReactKeycloakProvider authClient={keycloak}>
-      <StrictMode>
-        <BrowserRouter>
-        <></>
-        </BrowserRouter>
-      </StrictMode>
-    </ReactKeycloakProvider>
+    <StrictMode>
+      <ThemeProvider theme={theme}>
+        {/* <Provider store={store}> */}
+        <CssBaseline />
+        <Routers />
+        {/* </Provider> */}
+      </ThemeProvider>
+    </StrictMode>
   );
 };
+
+export default App;
