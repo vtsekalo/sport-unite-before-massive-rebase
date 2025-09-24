@@ -1,18 +1,15 @@
+// eslint-disable @typescript-eslint/no-explicit-any
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 
-import {
-  Button,
-  Container,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+
+
+import { Button, Container, List, ListItem, ListItemText, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Client, type IMessage } from '@stomp/stompjs';
+
+
+
+
 
 type ChatMessageDto = {
   id: string;
@@ -117,7 +114,6 @@ export function TestPage() {
           }
         });
       },
-
       onStompError: (frame: any) => {
         setConnecting(false);
         setIsConnected(false);
