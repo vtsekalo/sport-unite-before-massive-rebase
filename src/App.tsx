@@ -1,19 +1,11 @@
 import { StrictMode } from 'react';
 
-
-
 // import { Provider } from 'react-redux';
 
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
-
-
 // import { store } from '@app/lib/store';
 import { Routers } from '@app/ui/Roters';
-
-
-
-
 
 const theme = createTheme({
   palette: {
