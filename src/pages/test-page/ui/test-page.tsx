@@ -2,18 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 
-import {
-  Button,
-  Container,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+
+
+import { Button, Container, List, ListItem, ListItemText, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Client, type IMessage } from '@stomp/stompjs';
+
+
+
+
 
 type ChatMessageDto = {
   id: string;
@@ -38,7 +34,7 @@ export function TestPage() {
   const loadHistory = async () => {
     try {
       const resp = await fetch(
-        `http://api-gateway.dev.sport-unite.it-mentor.space/chat-service/chat-rooms/${roomId}/messages`,
+        `http://api-gateway.dev.sport-unite.it-mentor.space/chat-service/api/v1/chat-rooms/${roomId}/messages`,
         {
           method: 'GET',
           credentials: 'include', // <-- берём сессию/куку от гейтвея
