@@ -3,7 +3,6 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-
 import js from '@eslint/js';
 
 export default tseslint.config(
@@ -26,7 +25,7 @@ export default tseslint.config(
         'error',
         { allowConstantExport: true },
       ],
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'error',
       'jsdoc/require-description': 'error',
       'jsdoc/check-values': 'error',
       'react-hooks/exhaustive-deps': [
