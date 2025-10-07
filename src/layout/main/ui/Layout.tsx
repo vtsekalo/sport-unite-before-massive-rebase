@@ -21,5 +21,3 @@ export const Layout = () => {
     </Box>
   );
 };
-
-export default Layout;

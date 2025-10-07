@@ -8,8 +8,8 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     rules: {
       'fsd/public-api': 'error',
-      'fsd/insignificant-slice': 'error',
-      'fsd/no-ui-in-app': 'off',
+      'fsd/insignificant-slice': 'off',
+      'fsd/no-ui-in-app': 'error',
       'fsd/no-public-api-sidestep': 'error',
     },
   },
