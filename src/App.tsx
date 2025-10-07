@@ -2,22 +2,11 @@ import { StrictMode } from 'react';
 
 // import { Provider } from 'react-redux';
 
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 // import { store } from '@app/lib/store';
-import { Routers } from '@app/ui/Roters';
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#1976d2',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
-  },
-});
+import { Routers } from '@app/routes/Routers';
+import { theme } from '@shared/config/theme';
 
 export const App = () => {
   return (
@@ -31,5 +20,3 @@ export const App = () => {
     </StrictMode>
   );
 };
-
-export default App;

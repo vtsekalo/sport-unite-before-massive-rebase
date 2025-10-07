@@ -1,3 +1,5 @@
+import { NavBar } from '@widgets/navbar';
+
 import { StyledFooterMobile } from './Layout.styled';
 
 export const FooterMobile = () => {
@@ -18,7 +20,7 @@ export const FooterMobile = () => {
               0px 1px 18px 0px #0000001F;`}
       bottom='24px'
     >
-      Footer
+      <NavBar />
     </StyledFooterMobile>
   );
 };

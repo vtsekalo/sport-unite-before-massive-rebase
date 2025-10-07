@@ -1,17 +1,16 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 
-export const StyledHeaderWrapper = styled(Box)`
-  transform: translateX(-50%);
-  @media (max-width: 600px) {
-    height: 56px;
-    top: 16px;
-  }
-`;
+export const StyledHeaderWrapper = styled(Box)(({ theme }) => ({
+  transform: 'translateX(-50%)',
+  [theme.breakpoints.down('sm')]: {
+    height: 56,
+    top: 16,
+  },
+}));
 
-export const StyledFooterMobile = styled(Box)`
-  @media (max-width: 600px) {
-    transform: translateX(-50%);
-    display: flex;
-  }
-`;
+export const StyledFooterMobile = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    transform: 'translateX(-50%)',
+    display: 'flex',
+  },
+}));
