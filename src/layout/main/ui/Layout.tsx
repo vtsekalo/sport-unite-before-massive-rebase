@@ -1,11 +1,16 @@
 import { Outlet } from 'react-router-dom';
 
-import { Box } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 
-import { FooterMobile } from './FooterMobile';
-import { Header } from './Header';
+import { HeaderMobile } from '@widgets/header';
+import { HeaderDesktop } from '@widgets/header/';
+import { NavBar } from '@widgets/navbar/';
 
 export const Layout = () => {
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Box
       padding='0 16px'
@@ -15,9 +20,11 @@ export const Layout = () => {
       height='100dvh'
       flexDirection='column'
     >
-      <Header />
+      {isMobile ? <HeaderMobile /> : <HeaderDesktop />}
+
       <Outlet />
-      <FooterMobile />
+
+      <NavBar />
     </Box>
   );
 };
