@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
     base: './',
     resolve: {
@@ -22,4 +21,14 @@ export default defineConfig({
     'process.env': {},
   },
   plugins: [react()],
+  server: {
+    host: 'front.dev.sport-unite.it-mentor.space',
+    port: 5173,
+    strictPort: true,
+    cors: true,
+    hmr: {
+      host: 'front.dev.sport-unite.it-mentor.space',
+      port: 5173
+    }
+  }
 })
