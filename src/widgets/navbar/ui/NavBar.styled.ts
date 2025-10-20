@@ -11,8 +11,11 @@ export const StyledIconButton = styled('span')<{ size?: number }>(
 );
 
 export const StyledNavBar = styled(Box)(({ theme }) => ({
+  transform: 'translateX(-50%)',
+  display: 'none',
+  backgroundColor: theme.palette.background.paper,
   [theme.breakpoints.down('md')]: {
-    transform: 'translateX(-50%)',
     display: 'flex',
   },
+  zIndex: 6,
 }));
