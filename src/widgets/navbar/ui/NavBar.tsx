@@ -1,56 +1,150 @@
-import { useNavigate } from 'react-router-dom';
-
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EmailIcon from '@mui/icons-material/Email';
-import MenuIcon from '@mui/icons-material/Menu';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { IconButton, Stack } from '@mui/material';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import { Badge, Box, IconButton, Stack, useTheme } from '@mui/material';
 
-import { StyledIconButton, StyledNavBar } from './NavBar.styled';
+import { useActiveButton } from '../lib/useActiveButton';
+import { useSwitchState } from '../lib/useSwitchState';
+import { StyledNavBar, StyledSwitch, StyledSwitchThumb } from './NavBar.styled';
 
 export const NavBar = () => {
-  const navigate = useNavigate();
+  const { activeButton, setActiveButton, handleNavigate } = useActiveButton();
+  const { checked, handleSwitchChange } = useSwitchState(setActiveButton);
+
+  const theme = useTheme();
 
   return (
     <StyledNavBar
-      borderRadius={'10px'}
-      alignItems={'center'}
       display='none'
+      alignItems='center'
       justifyContent='center'
-      minWidth={250}
-      width='100%'
-      maxWidth={300}
-      left={'50%'}
-      height={56}
       position='absolute'
+      width={'360px'}
+      height={'56px'}
+      borderRadius={'10px'}
+      padding={'0 16px'}
       boxShadow={`0px 3px 5px -1px #00000033;
-              0px 6px 10px 0px #00000024;
-              0px 1px 18px 0px #0000001F;`}
-      bottom='24px'
+                  0px 6px 10px 0px #00000024;
+                  0px 1px 18px 0px #0000001F;`}
+      bottom={'24px'}
+      bgcolor={theme.palette.background.paper}
+      zIndex={20}
     >
       <Stack
-        direction='row'
-        spacing={0}
-        p={2}
         width={'100%'}
+        direction='row'
         justifyContent={'space-between'}
+        alignItems='center'
       >
-        <IconButton color='primary' onClick={() => navigate('/map')}>
-          <MenuIcon fontSize='medium' />
-        </IconButton>
-        <IconButton color='primary' onClick={() => navigate('/notifications')}>
-          <NotificationsIcon fontSize='medium' />
-        </IconButton>
-        <StyledIconButton size={80} onClick={() => navigate('/addevent')}>
-          <AddCircleIcon fontSize='inherit' />
-        </StyledIconButton>
-        <IconButton color='primary' onClick={() => navigate('/messages')}>
-          <EmailIcon fontSize='medium' />
-        </IconButton>
-        <IconButton color='primary' onClick={() => navigate('/profile')}>
-          <AccountBoxIcon fontSize='medium' />
-        </IconButton>
+        <Box
+          width={40}
+          height={40}
+          borderRadius={2}
+          bgcolor={
+            activeButton === '/messages'
+              ? `${theme.palette.primary.light}`
+              : undefined
+          }
+        >
+          <IconButton
+            color='primary'
+            onClick={() => handleNavigate('/messages')}
+          >
+            <Badge color='error' variant='dot'>
+              {activeButton === '/messages' ? (
+                <EmailIcon />
+              ) : (
+                <EmailOutlinedIcon />
+              )}
+            </Badge>
+          </IconButton>
+        </Box>
+
+        <Box
+          width={40}
+          height={40}
+          borderRadius={2}
+          bgcolor={
+            activeButton === '/profile'
+              ? `${theme.palette.primary.light}`
+              : undefined
+          }
+        >
+          <IconButton
+            color='primary'
+            onClick={() => handleNavigate('/profile')}
+          >
+            {activeButton === '/profile' ? (
+              <AccountCircleIcon />
+            ) : (
+              <AccountCircleOutlinedIcon />
+            )}
+          </IconButton>
+        </Box>
+
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          width={64}
+          height={64}
+          bgcolor={theme.palette.primary.main}
+          color={theme.palette.common.white}
+          borderRadius={3}
+        >
+          <IconButton
+            color='inherit'
+            size='large'
+            onClick={() => handleNavigate('/addevent')}
+          >
+            <AddOutlinedIcon fontSize='large' />
+          </IconButton>
+        </Box>
+
+        <StyledSwitch
+          icon={
+            <StyledSwitchThumb>
+              <MapOutlinedIcon />
+            </StyledSwitchThumb>
+          }
+          checkedIcon={
+            <StyledSwitchThumb>
+              <FormatListBulletedOutlinedIcon />
+            </StyledSwitchThumb>
+          }
+          checked={checked}
+          onChange={handleSwitchChange}
+        />
+
+        <Box
+          width={40}
+          height={40}
+          borderRadius={2}
+          bgcolor={
+            activeButton === '/notifications'
+              ? `${theme.palette.primary.light}`
+              : undefined
+          }
+        >
+          <IconButton
+            color='primary'
+            onClick={() => handleNavigate('/notifications')}
+          >
+            <Badge color='error' variant='dot'>
+              {activeButton === '/notifications' ? (
+                <NotificationsIcon />
+              ) : (
+                <NotificationsNoneOutlinedIcon />
+              )}
+            </Badge>
+          </IconButton>
+        </Box>
       </Stack>
     </StyledNavBar>
   );
