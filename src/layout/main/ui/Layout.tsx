@@ -19,6 +19,7 @@ export const Layout = () => {
       maxWidth='100%'
       height='100dvh'
       flexDirection='column'
+      zIndex={1}
     >
       {isMobile ? <HeaderMobile /> : <HeaderDesktop />}
 
