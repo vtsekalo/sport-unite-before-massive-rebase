@@ -17,23 +17,7 @@ import { StyledHeaderWrapper } from './Header.styled';
 export const HeaderDesktop = () => {
   const navigate = useNavigate();
   return (
-    <StyledHeaderWrapper
-      position='absolute'
-      alignItems='center'
-      display='flex'
-      justifyContent='center'
-      top='24px'
-      left='50%'
-      borderRadius='10px'
-      minWidth='300px'
-      maxWidth='95%'
-      width='95%'
-      height='88px'
-      padding='0 64px'
-      boxShadow={`0px 3px 5px -1px #00000033;
-              0px 6px 10px 0px #00000024;
-              0px 1px 18px 0px #0000001F;`}
-    >
+    <StyledHeaderWrapper width='95%' height='88px' padding='0 64px'>
       <Stack
         direction='row'
         justifyContent='space-between'
@@ -60,14 +44,14 @@ export const HeaderDesktop = () => {
             <FilterAltIcon fontSize='medium' />
           </IconButton>
           <IconButton color='primary'>
-            <MenuIcon fontSize='medium' onClick={() => navigate('/map')} />
+            <MenuIcon fontSize='medium' onClick={() => navigate('/')} />
           </IconButton>
         </Stack>
         <Stack direction='row' spacing={2}>
           <Box
             display='flex'
             alignItems='center'
-            onClick={() => navigate('/map')}
+            onClick={() => navigate('/')}
           >
             <IconButton color='primary'>
               <LocationOnIcon fontSize='medium' />

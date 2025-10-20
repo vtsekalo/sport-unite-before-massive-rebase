@@ -5,9 +5,7 @@ export const theme = createTheme({
     mode: 'light',
     primary: {
       main: '#1976d2',
-    },
-    background: {
-      default: '#f5f5f5',
+      light: '#3677FF4D',
     },
   },
   breakpoints: {
