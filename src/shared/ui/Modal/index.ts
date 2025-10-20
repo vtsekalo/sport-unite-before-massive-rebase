@@ -1,0 +1,1 @@
+export { PageModal } from './PageModal';
