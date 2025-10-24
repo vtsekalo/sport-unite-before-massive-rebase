@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
@@ -12,11 +12,17 @@ import { NavBar } from '@widgets/navbar/';
 export const Layout = () => {
   const location = useLocation();
 
+  const navigate = useNavigate();
+
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const memoizedMap = React.useMemo(() => <AppMap />, []);
+
+  const handleCloseModal = () => {
+    navigate('/');
+  };
 
   return (
     <Box
@@ -33,7 +39,7 @@ export const Layout = () => {
 
       {isMobile ? <HeaderMobile /> : <HeaderDesktop />}
 
-      <PageModal open={location.pathname !== '/'}>
+      <PageModal open={location.pathname !== '/'} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>
 
