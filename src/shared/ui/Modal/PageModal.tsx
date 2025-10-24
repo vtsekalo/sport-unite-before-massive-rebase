@@ -5,15 +5,21 @@ import { Box, alpha, useTheme } from '@mui/material';
 interface PageModalProps {
   open: boolean;
   children: React.ReactNode;
-  maxWidth?: number | { xs?: number; md?: number };
+  onClose?: () => void;
 }
 
 export const PageModal: React.FC<PageModalProps> = ({
   open,
   children,
-  maxWidth = { xs: 361, md: 1351 },
+  onClose,
 }) => {
   const theme = useTheme();
+
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget && onClose) {
+      onClose();
+    }
+  };
 
   if (!open) return null;
 
@@ -29,19 +35,33 @@ export const PageModal: React.FC<PageModalProps> = ({
       alignItems='center'
       justifyContent='center'
       bgcolor={alpha(theme.palette.primary.main, 0.6)}
+      pt={{
+        xs: '88px',
+        md: '136px',
+      }}
+      pb={{
+        xs: '88px',
+        md: '32px',
+      }}
+      px='10px'
+      onClick={handleBackdropClick}
     >
       <Box
         width='100%'
-        maxWidth={maxWidth}
-        height={{ xs: 'calc(100dvh - 120px)', md: 'calc(100dvh - 80px)' }}
-        maxHeight={{ xs: 'calc(100dvh - 200px)', md: 'calc(90dvh - 150px)' }}
+        maxWidth={{ xs: 361, md: 1351 }}
+        height='100dvh'
+        maxHeight={{
+          xs: 'calc(100dvh - 176px)',
+          sm: 'calc(100dvh - 280px)',
+          md: 'calc(100dvh - 184px)',
+        }}
         bgcolor='background.paper'
         borderRadius='10px'
         boxShadow={8}
         display='flex'
         flexDirection='column'
+        flex='1'
         overflow='auto'
-        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </Box>
