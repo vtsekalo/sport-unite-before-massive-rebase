@@ -7,7 +7,7 @@ import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBullet
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import { Badge, Box, IconButton, Stack, useTheme } from '@mui/material';
+import { Badge, Box, IconButton, Stack, alpha, useTheme } from '@mui/material';
 
 import { useActiveButton } from '../lib/useActiveButton';
 import { useSwitchState } from '../lib/useSwitchState';
@@ -48,7 +48,7 @@ export const NavBar = () => {
           borderRadius={2}
           bgcolor={
             activeButton === '/messages'
-              ? `${theme.palette.primary.light}`
+              ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
@@ -71,16 +71,13 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === '/profile'
-              ? `${theme.palette.primary.light}`
+            activeButton === '/auth'
+              ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
-          <IconButton
-            color='primary'
-            onClick={() => handleNavigate('/profile')}
-          >
-            {activeButton === '/profile' ? (
+          <IconButton color='primary' onClick={() => handleNavigate('/auth')}>
+            {activeButton === '/auth' ? (
               <AccountCircleIcon />
             ) : (
               <AccountCircleOutlinedIcon />
@@ -128,7 +125,7 @@ export const NavBar = () => {
           borderRadius={2}
           bgcolor={
             activeButton === '/notifications'
-              ? `${theme.palette.primary.light}`
+              ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
