@@ -48,11 +48,7 @@ export const HeaderDesktop = () => {
           </IconButton>
         </Stack>
         <Stack direction='row' spacing={2}>
-          <Box
-            display='flex'
-            alignItems='center'
-            onClick={() => navigate('/')}
-          >
+          <Box display='flex' alignItems='center' onClick={() => navigate('/')}>
             <IconButton color='primary'>
               <LocationOnIcon fontSize='medium' />
             </IconButton>
