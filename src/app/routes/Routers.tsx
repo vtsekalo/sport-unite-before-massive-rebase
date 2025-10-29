@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from '@layout/main';
 
 import { AuthPage } from '@pages/auth';
+import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
 import { TestPage } from '@pages/test-page';
 
@@ -14,7 +15,7 @@ export const Routers: React.FC = () => {
         <Route path='messages' element={<>Сообщения</>} />
         <Route path='addevent' element={<>Добавить ивент</>} />
         <Route path='notifications' element={<>Уведомления</>} />
-        <Route path='profile' element={<>Профиль</>} />
+        <Route path='profile' element={<ProfilePage />} />
         <Route path='list' element={<>Список событий</>} />
         <Route path='auth' element={<AuthPage />} />
         <Route path='registration' element={<RegistrationPage />} />
