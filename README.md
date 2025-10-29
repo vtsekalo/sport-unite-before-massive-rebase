@@ -9,3 +9,45 @@
 
 
 2) Запустить проект на http://front.dev.sport-unite.it-mentor.space:5173/
+
+
+__________
+
+В проект интегрирован Mock Service Worker (v2) — инструмент для перехвата и эмуляции HTTP-запросов на уровне браузера.  
+MSW позволяет разрабатывать и тестировать фронтенд без доступа к реальному backend-серверу.
+
+Он полностью работает в браузере, не требует Node.js-сервера и не вмешивается в production-сборку.
+
+1. Как это работает
+
+При запуске фронтенда в dev-режиме через
+
+yarn dev:mock
+
+MSW регистрирует service worker (`public/mockServiceWorker.js`),  
+который перехватывает все `fetch`/`XHR` запросы и отвечает за них моковыми данными из `src/mocks/handlers.ts`.
+
+При необходимости можно отключить моки и использовать реальные API-запросы без изменения кода через стандартный вызов
+
+yarn dev
+
+2. В случае если в моках есть ошибки, можно поменять внутри .env.development  
+false на true 
+VITE_MSW_DEBUG=false
+
+3. Установка HTTPS-сертификатов
+
+MSW требует безопасного контекста (HTTPS) для корректной регистрации Service Worker,  
+если проект работает на кастомном хосте (например как у нас `https://front.dev.sport-unite.it-mentor.space:5173`).
+
+В данном случае необходимо установить сертификаты безопасности для локальной разработки используя mkcert  
+
+в vite.config.ts для них указаны следующие наименования и расположение
+
+    https: {
+
+      key: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2-key.pem'),
+
+      cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
+
+}
