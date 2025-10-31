@@ -24,9 +24,7 @@ const ProfileViewModal: React.FC = () => {
     null,
   );
 
-  const { profile, isLoading } = useProfile(
-    '72f9124c-12f4-434e-a2e7-77ac3780adf9',
-  );
+  const { profile, isLoading } = useProfile();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
