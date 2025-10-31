@@ -19,7 +19,11 @@ export const baseApi = createApi({
       query: (userId) => `/users/${userId}`,
       providesTags: ['Profile'],
     }),
+    getMyProfile: builder.query<IUserProfile, void>({
+      query: () => '/users/me',
+      providesTags: ['Profile'],
+    }),
   }),
 });
 
-export const { useGetProfileQuery } = baseApi;
+export const { useGetProfileQuery, useGetMyProfileQuery } = baseApi;
