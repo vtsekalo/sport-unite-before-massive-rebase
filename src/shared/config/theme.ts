@@ -1,5 +1,11 @@
 import { createTheme } from '@mui/material';
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsSizeOverrides {
+    mediumFixed: true;
+  }
+}
+
 export const theme = (isMobile: boolean) =>
   createTheme({
     palette: {
@@ -32,6 +38,18 @@ export const theme = (isMobile: boolean) =>
             props: { size: 'medium' },
             style: {
               minHeight: isMobile ? 40 : 56,
+            },
+          },
+          {
+            props: { size: 'mediumFixed' },
+            style: {
+              minHeight: 40,
+            },
+          },
+          {
+            props: { size: 'large' },
+            style: {
+              minHeight: 56,
             },
           },
         ],
