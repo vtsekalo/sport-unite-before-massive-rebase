@@ -28,7 +28,7 @@ export const StyledGridContainer = styled(Box)`
     grid-template-rows: 1fr auto auto;
     overflow-y: hidden;
     max-width: 1191px;
-    max-height: 692px;
+    max-height: 690px;
     gap: 8px;
     padding: 0px 80px 40px 80px;
   }

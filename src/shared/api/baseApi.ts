@@ -5,10 +5,12 @@ import type { IUserProfile } from '@shared/lib';
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v1',
+    baseUrl:
+      import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === 'true'
+        ? '/api/v1'
+        : '/user-service/api/v1',
     credentials: 'include',
     prepareHeaders: (headers) => {
-      headers.set('Content-Type', 'application/json');
       headers.set('Accept', 'application/json');
       return headers;
     },

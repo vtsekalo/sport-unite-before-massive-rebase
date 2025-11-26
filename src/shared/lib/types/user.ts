@@ -19,6 +19,7 @@ export interface IUserProfile {
   id: string;
   nickname: string;
   email: string;
+  emailVerified: boolean;
   dateOfBirth: string;
   userStatus: UserStatusVariant;
   firstName: string;
@@ -29,4 +30,5 @@ export interface IUserProfile {
   profilePicture: string | null;
   averageRating: number;
   interests: string[];
+  interestIds?: number[];
 }

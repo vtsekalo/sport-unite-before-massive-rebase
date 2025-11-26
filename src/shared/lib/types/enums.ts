@@ -5,5 +5,7 @@ export enum GenderVariant {
 
 export enum UserStatusVariant {
   ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  NOT_ACTIVE = 'NOT_ACTIVE',
+  BLOCKED = 'BLOCKED',
+  DELETED = 'DELETED',
 }
