@@ -6,6 +6,12 @@ declare module '@mui/material/Button' {
   }
 }
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsSizeOverrides {
+    mediumFixed: true;
+  }
+}
+
 export const theme = (isMobile: boolean) =>
   createTheme({
     palette: {

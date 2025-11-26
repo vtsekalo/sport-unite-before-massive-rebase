@@ -6,7 +6,7 @@ import fs from 'fs';
 export default defineConfig(({ mode }) => {
   const isDevWithMocks = mode === 'development';
 
-  return {
+    return {
     base: './',
     resolve: {
     alias: {
@@ -35,13 +35,13 @@ export default defineConfig(({ mode }) => {
       host: 'front.dev.sport-unite.it-mentor.space',
       port: 5173
     },
-      https: isDevWithMocks ? {
-        key: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2-key.pem'),
-        cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
-      } : undefined,
-    proxy: {
-      '/api/v1': {
-        target: 'http://api-gateway.dev.sport-unite.it-mentor.space/user-service',
+    https: isDevWithMocks ? {
+      key: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2-key.pem'),
+      cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
+    } : undefined, 
+    proxy: isDevWithMocks ? undefined : {
+      '/user-service/api/v1': {
+        target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
         changeOrigin: true,
       },
       '/oauth2': {
@@ -51,9 +51,10 @@ export default defineConfig(({ mode }) => {
       '/chat-service': {
         target: 'http://api-gateway.dev.sport-unite.it-mentor.space',
         changeOrigin: true,
-        ws: true,
-        },
+        ws: true, 
+        rewrite: (path) => path.replace(/^\/chat-service/, '/chat-service')
       },
+    },
     },
   }
 })
