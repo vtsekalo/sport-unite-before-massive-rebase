@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Box, Typography } from '@mui/material';
 
-import { ProfileViewModal } from '@widgets/profile';
+import { LogoutConfirmationModal } from '@widgets/logout';
+import { ProfileViewModal } from '@widgets/profile-view';
+
+import { useLogout } from '../lib/useLogout';
 
 type ProfilePageProps = Record<string, never>;
 
 export const ProfilePage: React.FC<ProfilePageProps> = () => {
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const { logout } = useLogout();
+
+  const handleOpenLogoutModal = () => setOpenLogoutModal(true);
+  const handleCloseLogoutModal = () => setOpenLogoutModal(false);
+  const handleLogout = () => {
+    logout();
+    handleCloseLogoutModal();
+  };
+
   return (
     <Box>
       <Box
@@ -31,8 +44,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
         flex={1}
         width='100%'
       >
-        <ProfileViewModal />
+        <ProfileViewModal onLogoutClick={handleOpenLogoutModal} />
       </Box>
+
+      <LogoutConfirmationModal
+        open={openLogoutModal}
+        onClose={handleCloseLogoutModal}
+        onConfirm={handleLogout}
+      />
     </Box>
   );
 };

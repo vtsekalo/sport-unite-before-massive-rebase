@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import CreateIcon from '@mui/icons-material/Create';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -13,16 +13,20 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { UserStatusVariant } from '@shared/lib';
+import { ProfileInfo } from '@entities/profile-info';
+import { UserStatusVariant, useProfile } from '@shared/lib';
 
-import { ProfileInfo } from '../../../../entities/profile-info';
-import { useProfile } from '../../lib/useProfile';
 import { Styled, StyledMenu } from './styled';
 
-const ProfileViewModal: React.FC = () => {
-  const [contactsAnchorEl, setContactsAnchorEl] = useState<null | HTMLElement>(
-    null,
-  );
+interface ProfileViewModalProps {
+  onLogoutClick: () => void;
+}
+
+const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
+  onLogoutClick,
+}) => {
+  const [contactsAnchorEl, setContactsAnchorEl] =
+    React.useState<null | HTMLElement>(null);
 
   const { profile, isLoading } = useProfile();
   const theme = useTheme();
@@ -80,7 +84,7 @@ const ProfileViewModal: React.FC = () => {
       variant='contained'
       size='medium'
       color='primary'
-      onClick={() => console.log('logout')}
+      onClick={onLogoutClick}
     >
       Выйти из профиля
     </Button>
@@ -174,16 +178,20 @@ const ProfileViewModal: React.FC = () => {
   const content = renderContent();
 
   return (
-    <ProfileInfo
-      avatarNode={content.avatarNode}
-      mobileNicknameNode={content.mobileNicknameNode}
-      personalNode={content.personalNode}
-      nicknameNode={content.nicknameNode}
-      buttonsNode={buttonsNode}
-      ratingNode={content.ratingNode}
-      logoutNode={logoutNode}
-      contactsMenuNode={content.contactsMenuNode}
-    />
+    <>
+      <ProfileInfo
+        avatarNode={content.avatarNode}
+        mobileNicknameNode={content.mobileNicknameNode}
+        personalNode={content.personalNode}
+        nicknameNode={content.nicknameNode}
+        buttonsNode={buttonsNode}
+        ratingNode={content.ratingNode}
+        logoutNode={logoutNode}
+        contactsMenuNode={content.contactsMenuNode}
+      />
+
+      {content.contactsMenuNode}
+    </>
   );
 };
 

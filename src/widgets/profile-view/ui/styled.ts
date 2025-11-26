@@ -4,7 +4,6 @@ import { Menu } from '@mui/material';
 
 export const StyledPhotoCameraFrontIcon = styled(PhotoCameraFrontIcon)`
   font-size: 64px;
-  /*   color: 'primary.light'; */
 
   @media (min-width: 900px) {
     font-size: 160px;
