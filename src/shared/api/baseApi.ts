@@ -2,13 +2,22 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import type { IUserProfile } from '@shared/lib';
 
+const getBaseUrl = () => {
+  if (import.meta.env.PROD) {
+    return import.meta.env.VITE_API_BASE_URL + '/user-service/api/v1';
+  }
+
+  if (import.meta.env.VITE_USE_MOCKS === 'true') {
+    return '/api/v1';
+  }
+
+  return '/user-service/api/v1';
+};
+
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fetchBaseQuery({
-    baseUrl:
-      import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === 'true'
-        ? '/api/v1'
-        : '/user-service/api/v1',
+    baseUrl: getBaseUrl(),
     credentials: 'include',
     prepareHeaders: (headers) => {
       headers.set('Accept', 'application/json');
