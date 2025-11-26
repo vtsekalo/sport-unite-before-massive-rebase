@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import CreateIcon from '@mui/icons-material/Create';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StarIcon from '@mui/icons-material/Star';
 import {
+  Box,
   Button,
   MenuItem,
   Skeleton,
@@ -13,31 +14,33 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { ProfileInfo } from '@entities/profile-info';
+import { QueryInfo } from '@entities/query-info';
 import { UserStatusVariant, useProfile } from '@shared/lib';
 
-import { Styled, StyledMenu } from './styled';
+import { ProfileInfo } from '../../../entities/profile-info';
+import { BUTTONS_LABELS } from '../lib/constants';
+import {
+  StyledAvatarImage,
+  StyledMenu,
+  StyledPhotoCameraFrontIcon,
+} from './styled';
 
-interface ProfileViewModalProps {
+type ProfileViewModalProps = {
+  onEdit?: () => void;
   onLogoutClick: () => void;
-}
+};
 
 const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
+  onEdit,
   onLogoutClick,
 }) => {
-  const [contactsAnchorEl, setContactsAnchorEl] =
-    React.useState<null | HTMLElement>(null);
+  const [contactsAnchorEl, setContactsAnchorEl] = useState<null | HTMLElement>(
+    null,
+  );
 
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, isError } = useProfile();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  const buttonsLabels = [
-    'Мои события',
-    'Мои подписки/подписчики',
-    'Мои отзывы',
-    'Мои контакты',
-  ];
 
   const renderMenuItem = (text: string, divider = false) => (
     <MenuItem dense disableGutters divider={divider}>
@@ -45,9 +48,13 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
     </MenuItem>
   );
 
+  if (isError) {
+    return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
+  }
+
   const buttonsNode = (
     <>
-      {buttonsLabels.map((label) => (
+      {BUTTONS_LABELS.map((label) => (
         <Button
           key={label}
           fullWidth
@@ -71,7 +78,7 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
         variant='outlined'
         color='primary'
         startIcon={<CreateIcon fontSize='small' />}
-        onClick={() => console.log('Edit profile')}
+        onClick={onEdit}
       >
         Редактировать профиль
       </Button>
@@ -91,7 +98,7 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   );
 
   const renderContent = () => {
-    if (isLoading || !profile) {
+    if (isLoading) {
       return {
         avatarNode: <Skeleton variant='circular' width={160} height={160} />,
         mobileNicknameNode: <Skeleton width={133} height={48} />,
@@ -110,8 +117,16 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
       };
     }
 
+    if (!profile) {
+      return null;
+    }
+
     return {
-      avatarNode: <Styled.PhotoCameraFrontIcon color='primary' />,
+      avatarNode: profile.profilePicture ? (
+        <StyledAvatarImage src={profile.profilePicture} alt='Avatar' />
+      ) : (
+        <StyledPhotoCameraFrontIcon color='primary' />
+      ),
       mobileNicknameNode: (
         <Typography fontWeight={700} fontSize='18px'>
           {profile.nickname}
@@ -131,10 +146,10 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
               : 'Не в сети'}
           </Typography>
           <Typography fontSize='14px'>{profile.biography}</Typography>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Box display='flex' alignItems='center'>
             <LocationOnIcon fontSize='small' color='primary' />
             <Typography fontSize='12px'>{profile.city}</Typography>
-          </div>
+          </Box>
         </>
       ),
       nicknameNode: (
@@ -176,6 +191,10 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   };
 
   const content = renderContent();
+
+  if (!content) {
+    return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
+  }
 
   return (
     <>

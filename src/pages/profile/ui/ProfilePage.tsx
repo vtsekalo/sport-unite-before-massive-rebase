@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 
 import { LogoutConfirmationModal } from '@widgets/logout';
+import { ProfileEditModal } from '@widgets/profile-edit';
 import { ProfileViewModal } from '@widgets/profile-view';
 
 import { useLogout } from '../lib/useLogout';
@@ -10,8 +11,12 @@ import { useLogout } from '../lib/useLogout';
 type ProfilePageProps = Record<string, never>;
 
 export const ProfilePage: React.FC<ProfilePageProps> = () => {
+  const [isEdit, setIsEdit] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const { logout } = useLogout();
+
+  const handleOpenEdit = () => setIsEdit(true);
+  const handleCloseEdit = () => setIsEdit(false);
 
   const handleOpenLogoutModal = () => setOpenLogoutModal(true);
   const handleCloseLogoutModal = () => setOpenLogoutModal(false);
@@ -44,7 +49,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
         flex={1}
         width='100%'
       >
-        <ProfileViewModal onLogoutClick={handleOpenLogoutModal} />
+        {!isEdit ? (
+          <ProfileViewModal
+            onEdit={handleOpenEdit}
+            onLogoutClick={handleOpenLogoutModal}
+          />
+        ) : (
+          <ProfileEditModal
+            onCancel={handleCloseEdit}
+            onSaved={handleCloseEdit}
+          />
+        )}
       </Box>
 
       <LogoutConfirmationModal
@@ -56,5 +71,4 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
   );
 };
 
-ProfilePage.displayName = 'ProfilePage';
 export default ProfilePage;

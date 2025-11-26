@@ -52,7 +52,6 @@ export const PageModal: React.FC<PageModalProps> = ({
         height='100dvh'
         maxHeight={{
           xs: 'calc(100dvh - 176px)',
-          sm: 'calc(100dvh - 280px)',
           md: 'calc(100dvh - 184px)',
         }}
         bgcolor='background.paper'

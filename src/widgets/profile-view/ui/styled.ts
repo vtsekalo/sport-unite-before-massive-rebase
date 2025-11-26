@@ -18,7 +18,15 @@ export const StyledMenu = styled(Menu)`
     text-align: center;
 `;
 
+export const StyledAvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 300px;
+`;
+
 export const Styled = {
-  PhotoCameraFrontIcon: StyledPhotoCameraFrontIcon,
+  StyledPhotoCameraFrontIcon,
   StyledMenu,
+  StyledAvatarImage,
 };
