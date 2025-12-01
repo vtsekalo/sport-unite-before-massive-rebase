@@ -1,4 +1,4 @@
-import { useGetMyProfileQuery } from '@shared/api/baseApi';
+import { useGetMyProfileQuery } from '@shared/api';
 
 export const useProfile = () => {
   const { data: profile, isLoading, error } = useGetMyProfileQuery();

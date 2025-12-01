@@ -1,17 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import type { IUserProfile } from '@shared/lib';
-
 const getBaseUrl = () => {
-  if (import.meta.env.PROD) {
-    return import.meta.env.VITE_API_BASE_URL + '/user-service/api/v1';
-  }
-
   if (import.meta.env.VITE_USE_MOCKS === 'true') {
-    return '/api/v1';
+    return '';
   }
 
-  return '/user-service/api/v1';
+  return import.meta.env.VITE_BASE_URL || '';
 };
 
 export const baseApi = createApi({
@@ -25,16 +19,5 @@ export const baseApi = createApi({
     },
   }),
   tagTypes: ['Profile'],
-  endpoints: (builder) => ({
-    getProfile: builder.query<IUserProfile, string>({
-      query: (userId) => `/users/${userId}`,
-      providesTags: ['Profile'],
-    }),
-    getMyProfile: builder.query<IUserProfile, void>({
-      query: () => '/users/me',
-      providesTags: ['Profile'],
-    }),
-  }),
+  endpoints: () => ({}),
 });
-
-export const { useGetProfileQuery, useGetMyProfileQuery } = baseApi;
