@@ -14,10 +14,10 @@ import {
   useTheme,
 } from '@mui/material';
 
+import { ProfileInfo } from '@entities/profile-info';
 import { QueryInfo } from '@entities/query-info';
 import { UserStatusVariant, useProfile } from '@shared/lib';
 
-import { ProfileInfo } from '../../../entities/profile-info';
 import { BUTTONS_LABELS } from '../lib/constants';
 import {
   StyledAvatarImage,
