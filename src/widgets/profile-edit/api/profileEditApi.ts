@@ -1,5 +1,5 @@
 import { baseApi } from '@shared/api';
-import type { IUserProfile } from '@shared/lib';
+import { API_PATHS, type IUserProfile } from '@shared/lib';
 
 export type UserUpdateDto = {
   nickname?: string;
@@ -17,7 +17,7 @@ export const profileEditApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     updateMyProfile: builder.mutation<IUserProfile, UserUpdateDto>({
       query: (body) => ({
-        url: '/users/updateMyProfile',
+        url: `${API_PATHS.USER_SERVICE}/users/updateMyProfile`,
         method: 'PATCH',
         body,
         headers: {

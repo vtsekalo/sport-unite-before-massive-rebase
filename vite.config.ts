@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
       cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
     } : undefined, 
     proxy: isDevWithMocks ? undefined : {
-      '/user-service/api/v1': {
+      '/api/v1': {
         target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
         changeOrigin: true,
       },
