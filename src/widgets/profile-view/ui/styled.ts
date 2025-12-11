@@ -16,6 +16,7 @@ export const StyledMenu = styled(Menu)`
     justify-content: center;
     align-items: center;
     text-align: center;
+  }
 `;
 
 export const StyledAvatarImage = styled.img`

@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const NICKNAME_REGEX = /^[A-Za-zА-Яа-яЁё0-9_]+$/;
+const NICKNAME_REGEX = /^[A-Za-z0-9_]+$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d\S]{8,32}$/;
 const CITY_REGEX = /^[A-Za-zА-Яа-яЁё\s-]*$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
@@ -17,12 +17,12 @@ export const registrationSchema = yup.object({
   email: yup
     .string()
     .trim()
-    .required('Введите email')
+    .required('Обязательное поле!')
     .email('Некорректный email'),
 
   password: yup
     .string()
-    .required('Введите пароль')
+    .required('Обязательное поле!')
     .matches(
       PASSWORD_REGEX,
       'Пароль должен содержать минимум 8 символов, включая заглавную букву и цифру.',
@@ -30,12 +30,12 @@ export const registrationSchema = yup.object({
 
   confirmPassword: yup
     .string()
-    .required('Подтвердите пароль')
+    .required('Обязательное поле')
     .oneOf([yup.ref('password')], 'Пароли не совпадают'),
 
   dateOfBirth: yup
     .string()
-    .required('Укажите дату рождения')
+    .required('Обязательное поле')
     .matches(DATE_REGEX, 'Дата рождения указана неверно')
     .test('age', 'Возраст должен быть от 14 до 80 лет', (value) => {
       if (!value) return false;
@@ -58,7 +58,7 @@ export const registrationSchema = yup.object({
     .optional()
     .matches(CITY_REGEX, 'Название города содержит недопустимые символы'),
 
-  agree: yup.boolean().oneOf([true], 'Необходимо согласиться с условиями'),
+  agree: yup.boolean().oneOf([true], 'Обязательное поле!'),
 });
 
 export type RegistrationFormData = yup.InferType<typeof registrationSchema>;

@@ -40,7 +40,7 @@ export const StyledRenderMenuItem = styled(MenuItem)`
   align-items: center;
   text-align: center;
   min-height: 40px;
-  padding: 8px};
+  padding: 8px;
 
   @media (min-width: 900px) {
     min-height: 48px;
