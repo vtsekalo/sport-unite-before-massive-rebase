@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
       cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
     } : undefined, 
     proxy: isDevWithMocks ? undefined : {
-      '/api/v1': {
+      '/user-service': {
         target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
         changeOrigin: true,
       },
@@ -53,6 +53,10 @@ export default defineConfig(({ mode }) => {
         changeOrigin: true,
         ws: true, 
         rewrite: (path) => path.replace(/^\/chat-service/, '/chat-service')
+      },
+      '/event-service': {
+        target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
+        changeOrigin: true,
       },
     },
     },

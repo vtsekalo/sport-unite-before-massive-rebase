@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
+import { FilterEventsModal } from '@features/filter-events/ui/FilterEventsModal';
 import { PageModal } from '@shared/ui/Modal';
 import { HeaderMobile } from '@widgets/header';
 import { HeaderDesktop } from '@widgets/header/';
@@ -24,6 +25,8 @@ export const Layout = () => {
     navigate('/');
   };
 
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
   return (
     <Box
       padding='16px'
@@ -37,8 +40,12 @@ export const Layout = () => {
     >
       {memoizedMap}
 
-      {isMobile ? <HeaderMobile /> : <HeaderDesktop />}
-
+      {isMobile ? (
+        <HeaderMobile buttonRef={buttonRef} />
+      ) : (
+        <HeaderDesktop buttonRef={buttonRef} />
+      )}
+      <FilterEventsModal buttonRef={buttonRef} />
       <PageModal open={location.pathname !== '/'} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>
