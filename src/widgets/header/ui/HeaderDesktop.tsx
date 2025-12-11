@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -14,8 +15,13 @@ import { HeaderEventsSearch } from '@shared/ui/input';
 
 import { StyledHeaderWrapper } from './Header.styled';
 
-export const HeaderDesktop = () => {
+interface HeaderDesktopProps {
+  buttonRef: RefObject<HTMLButtonElement | null>;
+}
+
+export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
   const navigate = useNavigate();
+
   return (
     <StyledHeaderWrapper width='95%' height='88px' padding='0 64px'>
       <Stack
@@ -40,7 +46,7 @@ export const HeaderDesktop = () => {
 
           <HeaderEventsSearch />
 
-          <IconButton color='primary'>
+          <IconButton color='primary' ref={buttonRef}>
             <FilterAltIcon fontSize='medium' />
           </IconButton>
           <IconButton color='primary'>

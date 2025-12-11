@@ -15,9 +15,10 @@ export const baseApi = createApi({
     credentials: 'include',
     prepareHeaders: (headers) => {
       headers.set('Accept', 'application/json');
+      headers.set('Content-Type', 'application/json');
       return headers;
     },
   }),
-  tagTypes: ['Profile'],
+  tagTypes: ['Profile', 'Events'],
   endpoints: () => ({}),
 });
