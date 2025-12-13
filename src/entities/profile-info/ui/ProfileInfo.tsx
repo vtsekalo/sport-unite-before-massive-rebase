@@ -31,7 +31,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
   return (
     <>
-      <Styled.GridContainer>
+      <Styled.GridContainer gap={isMobile ? spacing(1) : spacing(2)}>
         <Box
           gridArea={isMobile ? 'profile' : 'avatar'}
           display='flex'
@@ -116,7 +116,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           display='flex'
           justifyContent='center'
           alignItems='center'
-          height='86px'
         >
           <Box
             display='flex'
@@ -136,6 +135,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <Box
           gridArea='logout'
           display='flex'
+          alignSelf='flex-end'
           justifyContent={{ xs: 'center', md: 'flex-end' }}
           width='100%'
           alignItems={{ xs: 'flex-start', md: 'center' }}

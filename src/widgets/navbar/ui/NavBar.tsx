@@ -71,13 +71,16 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === '/auth'
+            activeButton === '/profile'
               ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
-          <IconButton color='primary' onClick={() => handleNavigate('/auth')}>
-            {activeButton === '/auth' ? (
+          <IconButton
+            color='primary'
+            onClick={() => handleNavigate('/profile')}
+          >
+            {activeButton === '/profile' ? (
               <AccountCircleIcon />
             ) : (
               <AccountCircleOutlinedIcon />

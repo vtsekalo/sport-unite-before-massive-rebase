@@ -26,7 +26,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
   };
 
   return (
-    <Box>
+    <Box height={'100%'}>
       <Box
         display='flex'
         justifyContent='center'

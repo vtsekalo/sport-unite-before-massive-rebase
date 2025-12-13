@@ -21,9 +21,13 @@ import {
 
 import { QueryInfo } from '@entities/query-info';
 import { useGetMyProfileQuery } from '@shared/api';
-import { GenderVariant, convertFileToBase64 } from '@shared/lib';
+import { GenderVariant } from '@shared/lib';
 
-import { useUpdateMyProfileMutation } from '../api/profileEditApi';
+import {
+  useDeleteMyAvatarMutation,
+  useUpdateMyAvatarMutation,
+  useUpdateMyProfileMutation,
+} from '../api/profileEditApi';
 import { FORM_LIMITS } from '../lib/constants';
 import { ProfileEditFormData, profileEditSchema } from '../lib/schema';
 import {
@@ -42,9 +46,16 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onCancel,
   onSaved,
 }) => {
-  const { data: profile, isLoading } = useGetMyProfileQuery();
+  const { data: profile, isLoading, refetch } = useGetMyProfileQuery();
   const [updateMyProfile, { isLoading: isSaving }] =
     useUpdateMyProfileMutation();
+  const [deleteMyAvatar, { isLoading: isLoadingDeleteAvatar }] =
+    useDeleteMyAvatarMutation();
+
+  const [
+    updateImage,
+    { data: updateImageData, isLoading: isLoadingUpdateAvatar },
+  ] = useUpdateMyAvatarMutation();
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,6 +91,13 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const profilePictureValue = watch('profilePicture');
 
   useEffect(() => {
+    if (updateImageData?.photoUrl) {
+      setAvatarPreview(updateImageData.photoUrl);
+      refetch();
+    }
+  }, [updateImageData, refetch]);
+
+  useEffect(() => {
     if (profile) {
       reset({
         nickname: profile.nickname || '',
@@ -104,19 +122,17 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       shouldDirty: true,
     });
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatarPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    updateImage({ id: profile?.id ?? '', file: formData });
   };
 
   const handleRemoveAvatar = () => {
-    setValue('profilePicture', null, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
     setAvatarPreview(null);
+    deleteMyAvatar({ id: profile?.id ?? '' })
+      .unwrap()
+      .then(refetch);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -148,11 +164,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             .map((_, index) => index + 1)
         : [],
       profilePicture:
-        data.profilePicture instanceof File
-          ? await convertFileToBase64(data.profilePicture)
-          : data.profilePicture === null
-            ? null
-            : profile.profilePicture,
+        updateImageData?.photoUrl || profile?.profilePicture || '',
     };
 
     await updateMyProfile(updateData).unwrap();
@@ -171,7 +183,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   if (!profile) {
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
   }
-  const avatarSrc = avatarPreview || profile.profilePicture;
+  const avatarSrc = `${updateImageData?.photoUrl || profile.profilePicture || avatarPreview}?v=${updateImageData?.fileName}${updateImageData?.fileSize}_${Math.random()}`;
 
   return (
     <StyledGridContainer>
@@ -203,8 +215,12 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             overflow='hidden'
             fontSize='100px'
           >
-            {avatarSrc ? (
-              <StyledAvatarImage src={avatarSrc} alt='Avatar' />
+            {avatarSrc && !isLoadingUpdateAvatar ? (
+              <StyledAvatarImage
+                key={`${updateImageData?.fileName}${updateImageData?.fileSize}`}
+                src={avatarSrc}
+                alt='Avatar'
+              />
             ) : (
               <PhotoCameraFrontIcon color='primary' fontSize='inherit' />
             )}
@@ -221,6 +237,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               size='mediumFixed'
               variant='contained'
               fullWidth
+              loading={isLoadingUpdateAvatar}
               onClick={handleAvatarClick}
             >
               Изменить фото
@@ -228,6 +245,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <StyledDeleteAvatarButton
               variant='contained'
               color='primary'
+              loading={isLoadingDeleteAvatar}
               onClick={handleRemoveAvatar}
               disabled={!avatarPreview && !profilePictureValue}
             >
