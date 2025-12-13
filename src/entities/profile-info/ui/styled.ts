@@ -11,8 +11,8 @@ export const StyledGridContainer = styled(Box)`
   grid-template-columns: 160px 1fr;
   grid-template-rows: auto auto auto auto;
   width: 100%;
-  height: 100dvh;
   max-width: 329px;
+  height: 100%;
   max-height: 716px;
   padding: 0px;
   border-radius: 10px;
@@ -28,8 +28,6 @@ export const StyledGridContainer = styled(Box)`
     grid-template-rows: 1fr auto auto;
     overflow-y: hidden;
     max-width: 1191px;
-    max-height: 690px;
-    gap: 8px;
     padding: 0px 80px 40px 80px;
   }
 `;

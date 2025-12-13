@@ -13,7 +13,6 @@ export const StyledGridContainer = styled(Box)`
   max-width: 361px;
   height: 100dvh;
   padding: 10px;
-  overflow-y: auto;
   gap: 16px;
 
   @media (min-width: 900px) {
@@ -27,7 +26,6 @@ export const StyledGridContainer = styled(Box)`
     height: 100dvh;
     padding: 0px 80px 20px 80px;
     gap: 8px;
-    overflow-y: hidden;
   }
 `;
 

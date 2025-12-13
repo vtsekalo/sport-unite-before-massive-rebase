@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import CreateIcon from '@mui/icons-material/Create';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -37,8 +38,10 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   const [contactsAnchorEl, setContactsAnchorEl] = useState<null | HTMLElement>(
     null,
   );
+  const navigate = useNavigate();
 
   const { profile, isLoading, isError } = useProfile();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -47,6 +50,13 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
       {text}
     </MenuItem>
   );
+
+  useEffect(() => {
+    if (isError) {
+      // TODO сделать редирект только на ошибку авторизации
+      navigate('/auth');
+    }
+  }, [isError, navigate]);
 
   if (isError) {
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
@@ -123,7 +133,10 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
 
     return {
       avatarNode: profile.profilePicture ? (
-        <StyledAvatarImage src={profile.profilePicture} alt='Avatar' />
+        <StyledAvatarImage
+          src={`${profile.profilePicture}?v=${Math.random()}`}
+          alt='Avatar'
+        />
       ) : (
         <StyledPhotoCameraFrontIcon color='primary' />
       ),
@@ -183,8 +196,6 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
           }}
         >
           {renderMenuItem(`Email: ${profile.email}`, true)}
-          {renderMenuItem('Телефон: +7 (999) 123-45-67', true)}
-          {renderMenuItem('Telegram: @username')}
         </StyledMenu>
       ) : null,
     };
@@ -197,20 +208,16 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   }
 
   return (
-    <>
-      <ProfileInfo
-        avatarNode={content.avatarNode}
-        mobileNicknameNode={content.mobileNicknameNode}
-        personalNode={content.personalNode}
-        nicknameNode={content.nicknameNode}
-        buttonsNode={buttonsNode}
-        ratingNode={content.ratingNode}
-        logoutNode={logoutNode}
-        contactsMenuNode={content.contactsMenuNode}
-      />
-
-      {content.contactsMenuNode}
-    </>
+    <ProfileInfo
+      avatarNode={content.avatarNode}
+      mobileNicknameNode={content.mobileNicknameNode}
+      personalNode={content.personalNode}
+      nicknameNode={content.nicknameNode}
+      buttonsNode={buttonsNode}
+      ratingNode={content.ratingNode}
+      logoutNode={logoutNode}
+      contactsMenuNode={content.contactsMenuNode}
+    />
   );
 };
 

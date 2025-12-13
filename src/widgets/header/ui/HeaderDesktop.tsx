@@ -1,15 +1,17 @@
 import { RefObject } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import InputIcon from '@mui/icons-material/Input';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Box, IconButton, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
+import { useGetMyProfileQuery } from '@shared/api';
 import Logo from '@shared/assets/Logo.svg';
 import { HeaderEventsSearch } from '@shared/ui/input';
 
@@ -21,6 +23,18 @@ interface HeaderDesktopProps {
 
 export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { data: profile, isLoading } = useGetMyProfileQuery();
+
+  const handleNavigate = (route: string) => {
+    if (route === location.pathname) {
+      navigate('/');
+
+      return;
+    }
+
+    navigate(route);
+  };
 
   return (
     <StyledHeaderWrapper width='95%' height='88px' padding='0 64px'>
@@ -41,7 +55,7 @@ export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
             component='img'
             src={Logo}
             alt='Logo'
-            onClick={() => navigate('/')}
+            onClick={() => handleNavigate('/')}
           />
 
           <HeaderEventsSearch />
@@ -49,43 +63,57 @@ export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
           <IconButton color='primary' ref={buttonRef}>
             <FilterAltIcon fontSize='medium' />
           </IconButton>
-          <IconButton color='primary'>
-            <MenuIcon fontSize='medium' onClick={() => navigate('/')} />
+          <IconButton onClick={() => handleNavigate('/list')} color='primary'>
+            <FormatListBulletedIcon fontSize='medium' />
           </IconButton>
         </Stack>
         <Stack direction='row' spacing={2}>
-          <Box display='flex' alignItems='center' onClick={() => navigate('/')}>
+          <Box display='flex' alignItems='center'>
             <IconButton color='primary'>
               <LocationOnIcon fontSize='medium' />
             </IconButton>
             <Typography color='primary'>
-              <u>Москва</u>
+              <u>{profile?.city}</u>
             </Typography>
           </Box>
-          <IconButton color='primary'>
+          <IconButton loading={isLoading} disabled={!profile} color='primary'>
             <NotificationsIcon
               fontSize='medium'
-              onClick={() => navigate('/notifications')}
+              onClick={() => handleNavigate('/notifications')}
             />
           </IconButton>
-          <IconButton color='primary'>
+          <IconButton loading={isLoading} disabled={!profile} color='primary'>
             <EmailIcon
               fontSize='medium'
-              onClick={() => navigate('/messages')}
+              onClick={() => handleNavigate('/messages')}
             />
           </IconButton>
-          <Box
-            display='flex'
-            alignItems='center'
-            bgcolor={'rgba(54, 119, 255, 0.3)'}
-            padding={2}
-            gap={2}
-            borderRadius={2}
-            onClick={() => navigate('/profile')}
-          >
-            <AccountCircleIcon fontSize='medium' />
-            <Typography color='primary'>Никнейм</Typography>
-          </Box>
+          {profile ? (
+            <Box
+              display='flex'
+              alignItems='center'
+              bgcolor={'rgba(54, 119, 255, 0.3)'}
+              padding={2}
+              gap={2}
+              borderRadius={2}
+              onClick={() => handleNavigate('/profile')}
+            >
+              {profile?.profilePicture ? (
+                <img
+                  width={20}
+                  height={20}
+                  src={`${profile.profilePicture}?v=${Math.random()}`}
+                />
+              ) : (
+                <AccountCircleIcon fontSize='medium' />
+              )}
+              <Typography color='primary'>{profile.nickname}</Typography>
+            </Box>
+          ) : (
+            <IconButton onClick={() => navigate('/auth')}>
+              <InputIcon color='info' fontSize='medium' />
+            </IconButton>
+          )}
         </Stack>
       </Stack>
     </StyledHeaderWrapper>

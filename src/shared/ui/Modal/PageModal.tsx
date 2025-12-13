@@ -8,18 +8,8 @@ interface PageModalProps {
   onClose?: () => void;
 }
 
-export const PageModal: React.FC<PageModalProps> = ({
-  open,
-  children,
-  onClose,
-}) => {
+export const PageModal: React.FC<PageModalProps> = ({ open, children }) => {
   const theme = useTheme();
-
-  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget && onClose) {
-      onClose();
-    }
-  };
 
   if (!open) return null;
 
@@ -44,12 +34,11 @@ export const PageModal: React.FC<PageModalProps> = ({
         md: '32px',
       }}
       px='10px'
-      onClick={handleBackdropClick}
     >
       <Box
         width='100%'
         maxWidth={{ xs: 361, md: 1351 }}
-        height='100dvh'
+        height='100%'
         maxHeight={{
           xs: 'calc(100dvh - 176px)',
           md: 'calc(100dvh - 184px)',
