@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const useActiveButton = () => {
@@ -12,13 +12,16 @@ export const useActiveButton = () => {
     }
   }, [location.pathname]);
 
-  const handleNavigate = useCallback(
-    (path: string) => {
-      navigate(path);
-      setActiveButton(path);
-    },
-    [navigate],
-  );
+  const handleNavigate = (path: string) => {
+    if (path === location.pathname) {
+      navigate('/');
+      setActiveButton('/');
+      return;
+    }
+
+    navigate(path);
+    setActiveButton(path);
+  };
 
   return { activeButton, setActiveButton, handleNavigate };
 };
