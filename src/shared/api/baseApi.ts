@@ -24,6 +24,10 @@ export const baseApi = createApi({
     'UploadImage',
     'UpdateMyAvatar',
     'DeleteMyAvatar',
+    'ChatMessages',
+    'Chats',
+    'UpdateMyProfile',
+    'MyProfile',
   ],
   endpoints: () => ({}),
 });

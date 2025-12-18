@@ -1,4 +1,5 @@
 import { API_PATHS, type IUserProfile } from '@shared/lib';
+import { WithMeta } from '@shared/lib/types/general';
 
 import { baseApi } from './baseApi';
 
@@ -8,9 +9,10 @@ export const usersApi = baseApi.injectEndpoints({
       query: (userId) => `${API_PATHS.USER_SERVICE}/users/${userId}`,
       providesTags: ['Profile'],
     }),
-    getMyProfile: builder.query<IUserProfile, void>({
+    getMyProfile: builder.query<IUserProfile, WithMeta<object>>({
       query: () => `${API_PATHS.USER_SERVICE}/users/me`,
-      providesTags: ['Profile'],
+      providesTags: [{ type: 'MyProfile', id: 'me' }],
+      serializeQueryArgs: () => 'getMyProfile',
     }),
   }),
 });

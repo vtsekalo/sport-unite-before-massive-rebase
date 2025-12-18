@@ -46,7 +46,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onCancel,
   onSaved,
 }) => {
-  const { data: profile, isLoading, refetch } = useGetMyProfileQuery();
+  const { data: profile, isLoading } = useGetMyProfileQuery({});
   const [updateMyProfile, { isLoading: isSaving }] =
     useUpdateMyProfileMutation();
   const [deleteMyAvatar, { isLoading: isLoadingDeleteAvatar }] =
@@ -93,9 +93,8 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   useEffect(() => {
     if (updateImageData?.photoUrl) {
       setAvatarPreview(updateImageData.photoUrl);
-      refetch();
     }
-  }, [updateImageData, refetch]);
+  }, [updateImageData]);
 
   useEffect(() => {
     if (profile) {
@@ -130,9 +129,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const handleRemoveAvatar = () => {
     setAvatarPreview(null);
-    deleteMyAvatar({ id: profile?.id ?? '' })
-      .unwrap()
-      .then(refetch);
+    deleteMyAvatar({ id: profile?.id ?? '' }).unwrap();
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -184,6 +181,8 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
   }
   const avatarSrc = `${updateImageData?.photoUrl || profile.profilePicture || avatarPreview}?v=${updateImageData?.fileName}${updateImageData?.fileSize}_${Math.random()}`;
+
+  console.log(profile, interestsValue);
 
   return (
     <StyledGridContainer>

@@ -18,14 +18,14 @@ export const profileEditApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     updateMyProfile: builder.mutation<IUserProfile, UserUpdateDto>({
       query: (body) => ({
-        url: `${API_PATHS.USER_SERVICE}/users/updateMyProfile`,
+        url: `${API_PATHS.USER_SERVICE}/users/me`,
         method: 'PATCH',
         body,
         headers: {
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: ['Profile'],
+      invalidatesTags: [{ type: 'MyProfile', id: 'me' }, 'MyProfile'],
     }),
     updateMyAvatar: builder.mutation<
       IUploadImage,
@@ -36,14 +36,14 @@ export const profileEditApi = baseApi.injectEndpoints({
         method: 'POST',
         body: file,
       }),
-      invalidatesTags: ['UpdateMyAvatar'],
+      invalidatesTags: [{ type: 'MyProfile', id: 'me' }, 'MyProfile'],
     }),
     deleteMyAvatar: builder.mutation<IUploadImage, { id: string }>({
       query: ({ id }) => ({
         url: `${API_PATHS.IMAGE_SERVICE}/resources/images/${id}/delete?photoType=USER`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['DeleteMyAvatar'],
+      invalidatesTags: [{ type: 'MyProfile', id: 'me' }, 'MyProfile'],
     }),
   }),
 });

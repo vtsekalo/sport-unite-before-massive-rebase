@@ -56,13 +56,11 @@ export const NavBar = () => {
             color='primary'
             onClick={() => handleNavigate('/messages')}
           >
-            <Badge color='error' variant='dot'>
-              {activeButton === '/messages' ? (
-                <EmailIcon />
-              ) : (
-                <EmailOutlinedIcon />
-              )}
-            </Badge>
+            {activeButton === '/messages' ? (
+              <EmailIcon />
+            ) : (
+              <EmailOutlinedIcon />
+            )}
           </IconButton>
         </Box>
 
