@@ -24,7 +24,9 @@ interface HeaderDesktopProps {
 export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: profile, isLoading } = useGetMyProfileQuery();
+  const { data: profile, isLoading } = useGetMyProfileQuery({
+    __meta: { toast: false },
+  });
 
   const handleNavigate = (route: string) => {
     if (route === location.pathname) {

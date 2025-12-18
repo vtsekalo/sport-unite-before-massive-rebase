@@ -47,6 +47,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
         justifyContent='center'
         alignItems='center'
         flex={1}
+        paddingY='10px'
         width='100%'
       >
         {!isEdit ? (

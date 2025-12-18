@@ -20,7 +20,7 @@ export function showSnackbar(
     <Snackbar
       open
       onClose={handleClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <Box width={'100%'}>
         <Alert onClose={handleClose} severity={type} variant='filled'>
