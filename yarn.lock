@@ -175,7 +175,6 @@
     regenerator-runtime "^0.14.0"
 
 "@babel/runtime@^7.26.0", "@babel/runtime@^7.28.4":
-"@babel/runtime@^7.26.0", "@babel/runtime@^7.28.4":
   version "7.28.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.4.tgz#a70226016fabe25c5783b2f22d3e1c9bc5ca3326"
   integrity sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==
@@ -812,10 +811,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-5.2.5.tgz#69efffe6ccfae138cbe1806f41daa39cef986b59"
   integrity sha512-kbsPKj0S4p44JdYRFiW78Td8Ge2sBVxi/PIBwmih+RpSXUdvS9nbs1HIiuUSPtRMi14CqLEZ/fbk7dj7vni1Sg==
 
-"@fontsource/roboto@^5.2.8":
-  version "5.2.8"
-  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.2.8.tgz#73411c434b9162019b8ca18abd8245489809cca9"
-  integrity sha512-oh9g4Cg3loVMz9MWeKWfDI+ooxxG1aRVetkiKIb2ESS2rrryGecQ/y4pAj4z5A5ebyw450dYRi/c4k/I3UBhHA==
+"@fontsource/roboto@^5.2.9":
+  version "5.2.9"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.2.9.tgz#55092cf992ab8d5082be73b79b42f383a9c0903c"
+  integrity sha512-ZTkyHiPk74B/aj8BZWbsxD5Yu+Lq+nR64eV4wirlrac2qXR7jYk2h6JlLYuOuoruTkGQWNw2fMuKNavw7/rg0w==
 
 "@hookform/resolvers@^3.10.0":
   version "3.10.0"
@@ -995,6 +994,13 @@
     clsx "^2.1.1"
     csstype "^3.1.3"
     prop-types "^15.8.1"
+
+"@mui/types@^7.4.9":
+  version "7.4.9"
+  resolved "https://registry.yarnpkg.com/@mui/types/-/types-7.4.9.tgz#99accc87920b4c8c4ce33c5076a58f7f81b528fa"
+  integrity sha512-dNO8Z9T2cujkSIaCnWwprfeKmTWh97cnjkgmpFJ2sbfXLx8SMZijCYHOtP/y5nnUb/Rm2omxbDMmtUoSaUtKaw==
+  dependencies:
+    "@babel/runtime" "^7.28.4"
 
 "@mui/types@~7.2.24":
   version "7.2.24"
@@ -4231,6 +4237,11 @@ react-is@^19.0.0:
   version "19.1.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.1.1.tgz#038ebe313cf18e1fd1235d51c87360eb87f7c36a"
   integrity sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==
+
+react-is@^19.2.0:
+  version "19.2.3"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.3.tgz#eec2feb69c7fb31f77d0b5c08c10ae1c88886b29"
+  integrity sha512-qJNJfu81ByyabuG7hPFEbXqNcWSU3+eVus+KJs+0ncpGfMyYdvSmxiJxbWR65lYi1I+/0HBcliO029gc4F+PnA==
 
 react-redux@^9.2.0:
   version "9.2.0"

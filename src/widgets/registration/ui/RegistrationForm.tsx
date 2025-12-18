@@ -7,7 +7,6 @@ import EventIcon from '@mui/icons-material/Event';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-  Alert,
   Checkbox,
   FormControlLabel,
   IconButton,
@@ -41,7 +40,6 @@ export const RegistrationForm = () => {
       agree: false,
     },
   });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -56,28 +54,8 @@ export const RegistrationForm = () => {
   const watchedValues = watch();
 
   const onSubmit = async (data: RegistrationFormData) => {
-    try {
-      await registerUser(data).unwrap();
-      window.location.assign(
-        'http://api-gateway.dev.sport-unite.it-mentor.space/oauth2/authorization/gateway',
-      );
-      reset();
-    } catch (error: unknown) {
-      const err = error as {
-        status?: number;
-        data?: { message?: string };
-        message?: string;
-      };
-      if (err?.status === 400) {
-        setErrorMessage('Некорректные данные. Проверьте введённую информацию');
-      } else if (err?.status === 409) {
-        setErrorMessage('Пользователь с таким email уже существует');
-      } else if (err?.status === 0 || err?.status === undefined) {
-        setErrorMessage('Нет соединения с сервером. Проверьте интернет');
-      } else {
-        setErrorMessage(err?.data?.message || 'Ошибка регистрации');
-      }
-    }
+    await registerUser(data).unwrap();
+    reset();
   };
 
   return (
@@ -249,11 +227,6 @@ export const RegistrationForm = () => {
                 : 'Необходимо ознакомиться и согласиться с правилами'}
             </Styled.Tooltip>
           </Styled.FlagContainer>
-          {errorMessage && (
-            <Alert severity='error' sx={{ mb: 3, width: '100%' }}>
-              {errorMessage}
-            </Alert>
-          )}
           <Styled.RegistrationButton
             type='submit'
             variant='contained'

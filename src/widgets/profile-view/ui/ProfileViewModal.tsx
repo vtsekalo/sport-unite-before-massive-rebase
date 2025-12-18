@@ -40,7 +40,7 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   );
   const navigate = useNavigate();
 
-  const { profile, isLoading, isError } = useProfile();
+  const { profile, isLoading, isAuthError, isError } = useProfile();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,11 +52,10 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
   );
 
   useEffect(() => {
-    if (isError) {
-      // TODO сделать редирект только на ошибку авторизации
+    if (isAuthError) {
       navigate('/auth');
     }
-  }, [isError, navigate]);
+  }, [isAuthError, navigate]);
 
   if (isError) {
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;

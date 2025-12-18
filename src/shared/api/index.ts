@@ -6,3 +6,5 @@ export {
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
 } from './eventApi';
+
+export * from './chatApi';
