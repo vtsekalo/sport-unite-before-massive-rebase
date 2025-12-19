@@ -72,7 +72,6 @@ export const rtkQuerySnackbarMiddleware: Middleware =
     }
 
     const status = getStatus(action) as keyof typeof StatusMessages | null;
-    const endpointName = getEndpointName(action);
 
     if (
       status === StatusCodes.Unauthorized ||
@@ -86,8 +85,6 @@ export const rtkQuerySnackbarMiddleware: Middleware =
 
       return next(action);
     }
-
-    console.log('Endpoint Name:', endpointName);
 
     if (isRejectedWithValue(action)) {
       const errorMessage =

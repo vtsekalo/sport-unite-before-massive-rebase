@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import EventIcon from '@mui/icons-material/Event';
@@ -26,6 +27,7 @@ import { RegistrationFormData, registrationSchema } from '../lib/schema';
 import { Styled } from './RegistrationForm.styled';
 
 export const RegistrationForm = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -55,6 +57,7 @@ export const RegistrationForm = () => {
 
   const onSubmit = async (data: RegistrationFormData) => {
     await registerUser(data).unwrap();
+    navigate('/send-email');
     reset();
   };
 

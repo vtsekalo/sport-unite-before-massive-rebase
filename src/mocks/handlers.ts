@@ -22,7 +22,6 @@ let currentProfile: IUserProfile = {
   profilePicture: null,
   averageRating: 4.5,
   interests: ['Люблю бегать'],
-  interestIds: [1, 2],
 };
 
 const fileToDataURL = (file: File): Promise<string> => {
