@@ -30,7 +30,6 @@ const FormStack = styled(Box)`
   background-color: #ffffff;
 
   @media (max-width: 900px) {
-    min-height: 689px;
     width: 360px;
     padding: 16px;
     gap: 8px;

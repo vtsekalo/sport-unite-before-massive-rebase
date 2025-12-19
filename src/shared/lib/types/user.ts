@@ -29,6 +29,5 @@ export interface IUserProfile {
   biography: string;
   profilePicture: string | null;
   averageRating: number;
-  interests: string[];
-  interestIds?: number[];
+  interests?: string[];
 }
