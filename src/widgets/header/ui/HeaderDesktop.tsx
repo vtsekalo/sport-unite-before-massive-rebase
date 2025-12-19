@@ -12,7 +12,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
 import { useGetMyProfileQuery } from '@shared/api';
-import Logo from '@shared/assets/Logo.svg';
+import { Logo } from '@shared/ui/icons';
 import { HeaderEventsSearch } from '@shared/ui/input';
 
 import { StyledHeaderWrapper } from './Header.styled';

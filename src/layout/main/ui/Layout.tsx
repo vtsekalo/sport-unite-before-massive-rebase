@@ -1,14 +1,13 @@
-import React, { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
 import { FilterEventsModal } from '@features/filter-events/ui/FilterEventsModal';
-import { PageModal } from '@shared/ui/Modal';
-import { HeaderMobile } from '@widgets/header';
-import { HeaderDesktop } from '@widgets/header/';
-import { AppMap } from '@widgets/map';
-import { NavBar } from '@widgets/navbar/';
+import { PageModal } from '@shared/ui/modal';
+import { HeaderDesktop, HeaderMobile } from '@widgets/header';
+import { EventsMap } from '@widgets/map';
+import { NavBar } from '@widgets/navbar';
 
 export const Layout = () => {
   const location = useLocation();
@@ -19,7 +18,7 @@ export const Layout = () => {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const memoizedMap = React.useMemo(() => <AppMap />, []);
+  const memoizedMap = useMemo(() => <EventsMap />, []);
 
   const handleCloseModal = () => {
     navigate('/');

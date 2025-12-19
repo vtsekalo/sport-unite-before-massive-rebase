@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { baseApi, eventApi } from '@shared/api';
-import { mapReducer } from '@shared/store';
+import { filtersReducer, mapReducer } from '@shared/store';
 import { registrationApi } from '@widgets/registration';
 
 import { rtkQuerySnackbarMiddleware } from './middlewares/rtkQueryToastMiddleware';
@@ -9,6 +9,7 @@ import { rtkQuerySnackbarMiddleware } from './middlewares/rtkQueryToastMiddlewar
 export const store = configureStore({
   reducer: {
     map: mapReducer,
+    filters: filtersReducer,
     [baseApi.reducerPath]: baseApi.reducer,
     [registrationApi.reducerPath]: registrationApi.reducer,
   },
@@ -18,6 +19,7 @@ export const store = configureStore({
       .concat(registrationApi.middleware)
       .concat(rtkQuerySnackbarMiddleware)
       .concat(eventApi.middleware),
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 export type RootState = ReturnType<typeof store.getState>;

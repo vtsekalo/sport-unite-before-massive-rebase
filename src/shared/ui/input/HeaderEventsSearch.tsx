@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, InputAdornment, useMediaQuery, useTheme } from '@mui/material';
 
-import Logo from '@shared/assets/Logo.svg';
+import { Logo } from '@shared/ui/icons';
 
 import { StyledHeaderEventsSearch } from './Input.styled';
 

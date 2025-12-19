@@ -1,4 +1,3 @@
-export { default as mapReducer, setMapCenter } from './map/mapSlice';
 export {
   default as filtersReducer,
   setFilterCoordinates,
@@ -15,4 +14,4 @@ export {
   selectFilterRange,
   selectUseCustomRange,
   selectEventSearchRequest,
-} from './filters/filtersSlice';
+} from './filtersSlice';
