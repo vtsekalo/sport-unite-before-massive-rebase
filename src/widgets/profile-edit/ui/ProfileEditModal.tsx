@@ -76,7 +76,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       nickname: '',
       dateOfBirth: '',
       gender: GenderVariant.MALE,
-      interests: '',
+      interestIds: [],
       biography: '',
       email: '',
       city: '',
@@ -85,7 +85,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   });
 
   const nicknameValue = watch('nickname') || '';
-  const interestsValue = watch('interests') || '';
+  // const interestsValue = watch('interestIds') || [];
   const biographyValue = watch('biography') || '';
   const cityValue = watch('city') || '';
   const profilePictureValue = watch('profilePicture');
@@ -102,7 +102,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         nickname: profile.nickname || '',
         dateOfBirth: profile.dateOfBirth || '',
         gender: profile.gender || GenderVariant.MALE,
-        interests: profile.interests?.join(', ') || '',
+        interestIds: [],
         biography: profile.biography || '',
         email: profile.email || '',
         city: profile.city || '',
@@ -153,13 +153,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       lastName: profile.lastName,
       biography: data.biography || '',
       city: data.city,
-      interestIds: data.interests
-        ? data.interests
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-            .map((_, index) => index + 1)
-        : [],
+      interestIds: [],
       profilePicture:
         updateImageData?.photoUrl || profile?.profilePicture || '',
     };
@@ -181,8 +175,6 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
   }
   const avatarSrc = `${updateImageData?.photoUrl || profile.profilePicture || avatarPreview}?v=${updateImageData?.fileName}${updateImageData?.fileSize}_${Math.random()}`;
-
-  console.log(profile, interestsValue);
 
   return (
     <StyledGridContainer>
@@ -364,20 +356,47 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 )}
               />
 
-              <Controller
-                name='interests'
+              {/* <Controller
+                name='interestIds'
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='Мои интересы'
-                    variant='outlined'
-                    fullWidth
-                    placeholder='Например: бег, плавание, чтение'
-                    helperText={`${interestsValue.length}/${FORM_LIMITS.INTERESTS}`}
-                  />
+                  <FormControl fullWidth>
+                    <InputLabel id='demo-multiple-checkbox-label'>
+                      Мои интересы
+                    </InputLabel>
+                    <Select
+                      {...field}
+                      multiple
+                      input={
+                        <OutlinedInput
+                          placeholder='Например: бег, плавание, чтение'
+                          label='Мои интересы'
+                        />
+                      }
+                      renderValue={(selected) =>  (
+                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((value) => {
+                              const type = typeEvents?.find((t) => t.typeId === value);
+
+                              return (
+                              <Chip key={value} label={type ? type.typeName : value} />
+                            )})}
+                          </Box>
+                        )
+                      }
+                    >
+                      {typeEvents?.map((name) => (
+                        <MenuItem key={name.typeId} value={name.typeId}>
+                          <Checkbox
+                            checked={interestsValue.includes(name.typeId)}
+                          />
+                          <ListItemText primary={name.typeName} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 )}
-              />
+              /> */}
 
               <Controller
                 name='biography'
@@ -470,6 +489,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             Отмена
           </Button>
           <Button
+            loading={isSaving}
             fullWidth={isMobile}
             size='mediumFixed'
             variant='contained'
@@ -477,7 +497,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             onClick={handleSubmit(onSubmit)}
             disabled={!canSave}
           >
-            {isSaving ? 'Сохранение...' : 'Сохранить'}
+            Сохранить
           </Button>
         </Box>
       </Box>

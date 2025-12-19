@@ -13,7 +13,7 @@ export const StatusMessages = {
 };
 
 export const EndPointsMessages = {
-  '/registration': {
+  'registration': {
     400: 'Некорректные данные. Проверьте введённую информацию',
     409: 'Пользователь с таким email уже существует',
     0: 'Нет соединения с сервером. Проверьте интернет',

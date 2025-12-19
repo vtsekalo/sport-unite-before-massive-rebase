@@ -68,14 +68,11 @@ export const profileEditSchema = yup.object({
     .min(2, 'Город должен содержать минимум 2 символа')
     .max(FORM_LIMITS.CITY, `Максимум ${FORM_LIMITS.CITY} символов`),
 
-  interests: yup
-    .string()
-    .max(FORM_LIMITS.INTERESTS, `Максимум ${FORM_LIMITS.INTERESTS} символов`),
+  interestIds: yup.array().of(yup.number().positive().required()).required(),
 
   biography: yup
     .string()
     .max(FORM_LIMITS.BIOGRAPHY, `Максимум ${FORM_LIMITS.BIOGRAPHY} символов`),
-
   profilePicture: profilePictureSchema,
 });
 

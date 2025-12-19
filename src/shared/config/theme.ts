@@ -66,5 +66,10 @@ export const theme = (isMobile: boolean) =>
           size: isMobile ? 'small' : 'medium',
         },
       },
+      MuiSelect: {
+        defaultProps: {
+          size: isMobile ? 'small' : 'medium',
+        },
+      },
     },
   });
