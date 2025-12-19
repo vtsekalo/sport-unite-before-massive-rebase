@@ -1,54 +1,66 @@
-// useEventFilters.ts
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFilteredEventsQuery } from '@shared/api/eventApi';
 import {
-  EventScope,
-  EventSearchRequest,
-  EventStatus,
-  useCurrentMapCoords,
-} from '@shared/lib';
+  applyFilters as applyFiltersAction,
+  resetFilters as resetFiltersAction,
+  selectEventSearchRequest,
+  setEventScope,
+  setEventStartDateTime,
+  setEventStatuses,
+  setEventTypes,
+  setFilterCoordinates,
+} from '@shared/store';
 
-import { CoordinateFilterDto, IEvent } from '../types/event';
-
-const CoordinateDefault: CoordinateFilterDto = {
-  latitude: 55.754167,
-  longitude: 37.620001,
-  range: 5000,
-};
-
-const FILTER_DEFAULTS: EventSearchRequest = {
-  eventStatuses: [EventStatus.PLANNED, EventStatus.IN_PROCESS],
-  scope: EventScope.ALL,
-  coordinateFilterDto: CoordinateDefault,
-  eventTypes: undefined,
-  eventStartDateTime: undefined,
-};
+import { EventScope, EventStatus } from '../types/enums';
+import { EventSearchRequest, IEvent } from '../types/event';
+import { useCurrentMapCoords } from './useCurrentMapCoords';
 
 export const useEventSearch = () => {
+  const dispatch = useDispatch();
   const { coords } = useCurrentMapCoords();
-
   const prevCoordsRef = useRef(coords);
-
-  const [eventsState, setEventsState] = useState<IEvent[]>([]);
-
-  const [filters, setFilters] = useState<EventSearchRequest>(() => ({
-    ...FILTER_DEFAULTS,
-    coordinateFilterDto: {
-      ...FILTER_DEFAULTS.coordinateFilterDto,
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    },
-  }));
+  const filters = useSelector(selectEventSearchRequest);
 
   const { data, isLoading, error, refetch } =
     useGetFilteredEventsQuery(filters);
 
-  useEffect(() => {
-    if (data?.events && data.events.length > 0) {
-      setEventsState(data.events);
+  const filteredData = useMemo(() => {
+    if (!data) {
+      return data;
     }
-  }, [data?.events]);
+
+    if (!filters.eventStartDateTime) {
+      return data;
+    }
+
+    try {
+      const filterDateOnly = filters.eventStartDateTime.split('T')[0];
+
+      const filtered = data.filter((event) => {
+        const eventWithDate = event as IEvent & { eventStartDate?: string };
+        const eventDateField =
+          eventWithDate.eventStartDate || event.eventStartDateTime;
+
+        if (!eventDateField) {
+          return false;
+        }
+
+        try {
+          const eventDateOnly = eventDateField.split('T')[0];
+          const passes = eventDateOnly >= filterDateOnly;
+          return passes;
+        } catch {
+          return false;
+        }
+      });
+
+      return filtered;
+    } catch {
+      return data;
+    }
+  }, [data, filters.eventStartDateTime]);
 
   useEffect(() => {
     const coordsChanged =
@@ -56,31 +68,15 @@ export const useEventSearch = () => {
       prevCoordsRef.current.longitude !== coords.longitude;
 
     if (coordsChanged) {
-      setFilters((prev) => ({
-        ...prev,
-        coordinateFilterDto: {
-          ...prev.coordinateFilterDto,
+      dispatch(
+        setFilterCoordinates({
           latitude: coords.latitude,
           longitude: coords.longitude,
-        },
-      }));
+        }),
+      );
       prevCoordsRef.current = coords;
     }
-  }, [coords]);
-
-  const updateFiltersWithCurrentCoords = useCallback(
-    (filtersToUpdate: EventSearchRequest): EventSearchRequest => {
-      return {
-        ...filtersToUpdate,
-        coordinateFilterDto: {
-          ...filtersToUpdate.coordinateFilterDto,
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-        },
-      };
-    },
-    [coords],
-  );
+  }, [coords, dispatch]);
 
   const applyCurrentFilters = useCallback(() => {
     return refetch();
@@ -89,54 +85,83 @@ export const useEventSearch = () => {
   const updateAndApplyFilters = useCallback(
     (
       updater:
-        | EventSearchRequest
-        | ((prev: EventSearchRequest) => EventSearchRequest),
+        | Partial<EventSearchRequest>
+        | ((prev: EventSearchRequest) => Partial<EventSearchRequest>),
     ) => {
-      setFilters((prev) => {
-        const newFilters =
-          typeof updater === 'function' ? updater(prev) : updater;
-
-        return updateFiltersWithCurrentCoords(newFilters);
-      });
+      const updates =
+        typeof updater === 'function' ? updater(filters) : updater;
+      dispatch(applyFiltersAction(updates));
     },
-    [updateFiltersWithCurrentCoords],
+    [dispatch, filters],
   );
 
   const updateFilters = useCallback(
     (
       updater:
-        | EventSearchRequest
-        | ((prev: EventSearchRequest) => EventSearchRequest),
+        | Partial<EventSearchRequest>
+        | ((prev: EventSearchRequest) => Partial<EventSearchRequest>),
     ) => {
-      setFilters((prev) => {
-        const newFilters =
-          typeof updater === 'function' ? updater(prev) : updater;
-
-        return updateFiltersWithCurrentCoords(newFilters);
-      });
+      const updates =
+        typeof updater === 'function' ? updater(filters) : updater;
+      dispatch(applyFiltersAction(updates));
     },
-    [updateFiltersWithCurrentCoords],
+    [dispatch, filters],
   );
 
   const applyFilters = useCallback(
-    (newFilters: EventSearchRequest) => {
-      setFilters(updateFiltersWithCurrentCoords(newFilters));
+    (newFilters: Partial<EventSearchRequest>) => {
+      dispatch(applyFiltersAction(newFilters));
     },
-    [updateFiltersWithCurrentCoords],
+    [dispatch],
   );
 
   const resetFilters = useCallback(() => {
-    setFilters(updateFiltersWithCurrentCoords(FILTER_DEFAULTS));
-  }, [updateFiltersWithCurrentCoords]);
+    dispatch(resetFiltersAction());
+  }, [dispatch]);
+
+  const setTypes = useCallback(
+    (types: string[] | undefined) => {
+      dispatch(setEventTypes(types));
+    },
+    [dispatch],
+  );
+
+  const setStatuses = useCallback(
+    (statuses: EventStatus[]) => {
+      dispatch(setEventStatuses(statuses));
+    },
+    [dispatch],
+  );
+
+  const setStartDateTime = useCallback(
+    (dateTime: string | undefined) => {
+      dispatch(setEventStartDateTime(dateTime));
+    },
+    [dispatch],
+  );
+
+  const setScope = useCallback(
+    (scope: EventScope) => {
+      dispatch(setEventScope(scope));
+    },
+    [dispatch],
+  );
 
   return {
     filters,
+
     setFilters: updateFilters,
     updateAndApplyFilters,
     applyCurrentFilters,
     applyFilters,
     resetFilters,
-    events: eventsState,
+
+    setTypes,
+    setStatuses,
+    setStartDateTime,
+    setScope,
+
+    events: filteredData || [],
     isLoading,
     error,
     refetch,

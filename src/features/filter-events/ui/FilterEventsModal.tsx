@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
   Checkbox,
@@ -13,6 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { IEventType, useEventSearch, useEventTypes } from '@shared/lib';
+import { setFilterRange } from '@shared/store';
 
 import { Styled } from './FilterEventsModal.styled';
 
@@ -25,6 +27,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const dispatch = useDispatch();
   const eventsByFilter = useEventSearch();
   const { eventTypes } = useEventTypes();
 
@@ -69,20 +72,17 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   const closeLocation = () => setLocationAnchorEl(null);
 
   const handleApplyDate = useCallback(() => {
-    const dateString = dateValue?.toISOString() || undefined;
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      eventStartDateTime: dateString,
-    }));
+    const dateString = dateValue
+      ? `${dateValue.format('YYYY-MM-DD')}T00:00:00.000Z`
+      : undefined;
+
+    eventsByFilter.setStartDateTime(dateString);
     closeDate();
     closeMain();
   }, [dateValue, eventsByFilter]);
 
   const handleResetDate = useCallback(() => {
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      eventStartDateTime: undefined,
-    }));
+    eventsByFilter.setStartDateTime(undefined);
     setDateValue(null);
     closeDate();
     closeMain();
@@ -101,20 +101,13 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
       const sport = eventTypes.find((s) => s.typeId.toString() === id);
       return sport ? sport.typeName : id;
     });
-
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      eventTypes: sportNames.length > 0 ? sportNames : undefined,
-    }));
+    eventsByFilter.setTypes(sportNames.length > 0 ? sportNames : undefined);
     closeSport();
     closeMain();
   }, [selectedSports, eventsByFilter, eventTypes]);
 
   const handleResetSport = useCallback(() => {
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      eventTypes: undefined,
-    }));
+    eventsByFilter.setTypes(undefined);
     setSelectedSports([]);
     setSearchTerm('');
     closeSport();
@@ -122,29 +115,17 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   }, [eventsByFilter]);
 
   const handleApplyLocation = useCallback(() => {
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      coordinateFilterDto: {
-        ...prev.coordinateFilterDto,
-        range: radius * 1000,
-      },
-    }));
+    dispatch(setFilterRange({ range: radius * 1000, fromUser: true }));
     closeLocation();
     closeMain();
-  }, [radius, eventsByFilter]);
+  }, [radius, dispatch]);
 
   const handleResetLocation = useCallback(() => {
-    eventsByFilter.updateAndApplyFilters((prev) => ({
-      ...prev,
-      coordinateFilterDto: {
-        ...prev.coordinateFilterDto,
-        range: 5000,
-      },
-    }));
+    dispatch(setFilterRange({ range: 5000, fromUser: false }));
     setRadius(5);
     closeLocation();
     closeMain();
-  }, [eventsByFilter]);
+  }, [dispatch]);
 
   const handleSliderChange = useCallback(
     (_: Event, value: number | number[]) => {
