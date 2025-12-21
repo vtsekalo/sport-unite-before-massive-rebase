@@ -41,9 +41,6 @@ docker-build:
     - docker push $HARBOR_HOST/front/$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG:latest
     - docker image prune -a --filter "until=24h" -f
   when: always 
-  rules:
-      - if: '$CI_COMMIT_BRANCH == "develop"'
-      - if: '$CI_COMMIT_BRANCH == "master"'
 
 lint-helm:
   image: alpine/k8s:1.29.11
@@ -59,9 +56,6 @@ lint-helm:
     - echo "Lint develop chart"
     - helm template -f ./helm/values.prod.yaml ./helm
   when: always
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_COMMIT_BRANCH == "master"'
 
 deploy-to-k8-prod:
   variables:

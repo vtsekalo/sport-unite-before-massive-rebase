@@ -4,7 +4,7 @@ import { isFulfilled, isRejectedWithValue } from '@reduxjs/toolkit';
 import { showSnackbar } from '@shared/lib';
 import { RequestMeta } from '@shared/lib';
 
-import { StatusCodes, StatusMessages } from './messages';
+import { EndPointsMessages, StatusCodes, StatusMessages } from './messages';
 
 const getStatus = (action: unknown): number | null => {
   if (
@@ -22,7 +22,9 @@ const getStatus = (action: unknown): number | null => {
   return null;
 };
 
-const getEndpointName = (action: unknown): string | null => {
+const getEndpointName = (
+  action: unknown,
+): keyof typeof EndPointsMessages | null => {
   if (
     typeof action === 'object' &&
     action !== null &&
@@ -35,7 +37,7 @@ const getEndpointName = (action: unknown): string | null => {
     'endpointName' in action.meta.arg &&
     typeof action.meta.arg.endpointName === 'string'
   ) {
-    return action.meta.arg.endpointName;
+    return action.meta.arg.endpointName as keyof typeof EndPointsMessages;
   }
 
   return null;
@@ -66,12 +68,13 @@ const getMeta = (action: unknown): RequestMeta | null => {
 export const rtkQuerySnackbarMiddleware: Middleware =
   () => (next) => (action) => {
     const meta = getMeta(action);
+    const endPoint = getEndpointName(action);
 
     if (meta?.toast === false) {
       return next(action);
     }
 
-    const status = getStatus(action) as keyof typeof StatusMessages | null;
+    const status = getStatus(action);
 
     if (
       status === StatusCodes.Unauthorized ||
@@ -87,15 +90,22 @@ export const rtkQuerySnackbarMiddleware: Middleware =
     }
 
     if (isRejectedWithValue(action)) {
-      const errorMessage =
+      let errorMessage =
         (action.payload as { data?: { message?: string } })?.data?.message ||
         'Произошла ошибка';
+
+      if (endPoint && status != null) {
+        const map = EndPointsMessages[endPoint];
+        if (status in map) {
+          errorMessage = map[status as keyof typeof map];
+        }
+      }
+
       showSnackbar(errorMessage, 'error');
     }
 
-    if (isFulfilled(action)) {
-      const endpointName = getEndpointName(action);
-      if (endpointName === 'registrationUser') {
+    if (isFulfilled(action) && endPoint) {
+      if (endPoint === 'registration') {
         showSnackbar('Регистрация прошла успешно!', 'success');
       }
     }

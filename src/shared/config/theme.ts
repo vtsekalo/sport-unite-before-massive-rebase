@@ -20,6 +20,9 @@ export const theme = (isMobile: boolean) =>
         main: 'rgba(54, 119, 255, 1)',
         dark: '#0056b3',
       },
+      info: {
+        main: '#3677FF',
+      },
     },
 
     breakpoints: {

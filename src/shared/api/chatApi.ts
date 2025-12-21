@@ -1,5 +1,7 @@
+import { createSelector } from '@reduxjs/toolkit';
+
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { type IChat, type IMessage } from '@shared/lib';
+import { type IChat, type IMessage, RootState } from '@shared/lib';
 
 export const chatApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,7 +12,7 @@ export const chatApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Chats'],
     }),
-    getChatMessages: builder.query<IMessage[], string>({
+    getChatMessages: builder.query<IMessage[], string | undefined>({
       query: (id) => ({
         url: `${ApiEndpoints.CHAT_MESSAGES}/${id}/messages`,
         method: 'GET',
@@ -19,5 +21,18 @@ export const chatApi = baseApi.injectEndpoints({
     }),
   }),
 });
+
+export const selectUserChatsQueryResult = (state: RootState) =>
+  chatApi.endpoints.getUserChats.select(undefined)(state);
+
+export const selectUserChats = createSelector(
+  [selectUserChatsQueryResult],
+  (res) => res.data ?? [],
+);
+
+export const selectChatById = createSelector(
+  [selectUserChats, (_: RootState, eventId?: string) => eventId],
+  (chats, eventId) => chats.find((c) => c.eventId === eventId),
+);
 
 export const { useGetChatMessagesQuery, useGetUserChatsQuery } = chatApi;
