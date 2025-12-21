@@ -1,1 +1,1 @@
-export { HeaderEventsSearch } from './HeaderEventsSearch';
+export { InputSearch } from './InputSearch';

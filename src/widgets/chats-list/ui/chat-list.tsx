@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Box, Skeleton, Typography } from '@mui/material';
 
@@ -8,12 +9,16 @@ import basketbolIcon from '@shared/assets/sports_basketball.svg';
 import { IChat } from '@shared/lib';
 import { formatDateOrTime } from '@shared/lib';
 
+import { CardWrapper } from './chat-list.styled';
+
 interface ChatsListProps {
   loading?: boolean;
   chats?: IChat[];
 }
 
 export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
+  const navigate = useNavigate();
+
   if (!loading && !chats?.length) {
     return (
       <Box>
@@ -64,39 +69,43 @@ export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
         ))}
       {!loading &&
         mappedChats.map((chat) => (
-          <ChatCardEntity
+          <CardWrapper
             key={chat.id}
-            typeNode={
-              <img width={24} height={24} src={basketbolIcon} alt='icon' />
-            }
-            titleNode={
-              <Typography fontWeight={500} fontSize='14px'>
-                {chat.title}
-              </Typography>
-            }
-            addressNode={
-              <Typography fontSize='12px' fontWeight={400} color='#B5B5B5'>
-                {chat.eventLocation}
-              </Typography>
-            }
-            lastTimeMessageNode={
-              chat.lastMessageDateTime && (
-                <Typography color='#B5B5B5' fontWeight={400} fontSize='12px'>
-                  {chat.lastMessageDateTime}
+            onClick={() => navigate(`/chats/${chat.eventId}`)}
+          >
+            <ChatCardEntity
+              typeNode={
+                <img width={24} height={24} src={basketbolIcon} alt='icon' />
+              }
+              titleNode={
+                <Typography fontWeight={500} fontSize='14px'>
+                  {chat.title}
                 </Typography>
-              )
-            }
-            eventTimeNode={
-              <Typography color='#3677FF' fontWeight={400} fontSize='12px'>
-                {chat.eventStartDate}
-              </Typography>
-            }
-            lastMessageNode={
-              <Typography fontWeight={400} fontSize='12px'>
-                {chat.lastMessage}
-              </Typography>
-            }
-          />
+              }
+              addressNode={
+                <Typography fontSize='12px' fontWeight={400} color='#B5B5B5'>
+                  {chat.eventLocation}
+                </Typography>
+              }
+              lastTimeMessageNode={
+                chat.lastMessageDateTime && (
+                  <Typography color='#B5B5B5' fontWeight={400} fontSize='12px'>
+                    {chat.lastMessageDateTime}
+                  </Typography>
+                )
+              }
+              eventTimeNode={
+                <Typography color='#3677FF' fontWeight={400} fontSize='12px'>
+                  {chat.eventStartDate}
+                </Typography>
+              }
+              lastMessageNode={
+                <Typography fontWeight={400} fontSize='12px'>
+                  {chat.lastMessage}
+                </Typography>
+              }
+            />
+          </CardWrapper>
         ))}
     </Box>
   );

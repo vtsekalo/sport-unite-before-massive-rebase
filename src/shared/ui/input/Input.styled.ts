@@ -1,6 +1,6 @@
-import { InputBase, styled } from '@mui/material';
+import { InputAdornment, InputBase, styled } from '@mui/material';
 
-export const StyledHeaderEventsSearch = styled(InputBase)(({ theme }) => ({
+export const StyledInput = styled(InputBase)(({ theme }) => ({
   width: '100%',
   borderRadius: '12px',
   backgroundColor: 'rgba(54, 119, 255, 0.05)',
@@ -23,4 +23,8 @@ export const StyledHeaderEventsSearch = styled(InputBase)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     height: '40px',
   },
+}));
+
+export const StyledInputAdornment = styled(InputAdornment)(() => ({
+  cursor: 'pointer',
 }));

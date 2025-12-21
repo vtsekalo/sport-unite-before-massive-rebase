@@ -19,7 +19,6 @@ import { ProfileInfo } from '@entities/profile-info';
 import { QueryInfo } from '@entities/query-info';
 import { UserStatusVariant, useProfile } from '@shared/lib';
 
-import { BUTTONS_LABELS } from '../lib/constants';
 import {
   StyledAvatarImage,
   StyledMenu,
@@ -63,25 +62,23 @@ const ProfileViewModal: React.FC<ProfileViewModalProps> = ({
 
   const buttonsNode = (
     <>
-      {BUTTONS_LABELS.map((label) => (
-        <Button
-          key={label}
-          fullWidth
-          variant='outlined'
-          color='primary'
-          endIcon={
-            label === 'Мои контакты' ? <KeyboardArrowDownIcon /> : undefined
-          }
-          onClick={
-            label === 'Мои контакты'
-              ? (e) => setContactsAnchorEl(e.currentTarget)
-              : () => console.log(`Button: ${label}`)
-          }
-        >
-          {label}
-        </Button>
-      ))}
-
+      <Button
+        fullWidth
+        variant='outlined'
+        color='primary'
+        endIcon={<KeyboardArrowDownIcon />}
+        onClick={(e) => setContactsAnchorEl(e.currentTarget)}
+      >
+        Мои контакты
+      </Button>
+      <Button
+        fullWidth
+        variant='outlined'
+        color='primary'
+        onClick={() => navigate('/my-events')}
+      >
+        Мои события
+      </Button>
       <Button
         fullWidth
         variant='outlined'

@@ -13,10 +13,13 @@ export const StatusMessages = {
 };
 
 export const EndPointsMessages = {
-  'registration': {
+  registration: {
     400: 'Некорректные данные. Проверьте введённую информацию',
     409: 'Пользователь с таким email уже существует',
     0: 'Нет соединения с сервером. Проверьте интернет',
     500: 'Ошибка регистрации',
   },
-};
+  getChatMessages: {
+    404: 'Информация о чате не найдена',
+  },
+} as const satisfies Record<string, Partial<Record<number, string>>>;

@@ -47,20 +47,13 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === '/messages'
+            activeButton === '/chats'
               ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
-          <IconButton
-            color='primary'
-            onClick={() => handleNavigate('/messages')}
-          >
-            {activeButton === '/messages' ? (
-              <EmailIcon />
-            ) : (
-              <EmailOutlinedIcon />
-            )}
+          <IconButton color='primary' onClick={() => handleNavigate('/chats')}>
+            {activeButton === '/chats' ? <EmailIcon /> : <EmailOutlinedIcon />}
           </IconButton>
         </Box>
 
