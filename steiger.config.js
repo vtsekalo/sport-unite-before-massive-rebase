@@ -13,4 +13,11 @@ export default defineConfig([
       'fsd/no-public-api-sidestep': 'error',
     },
   },
+  {
+    files: ['./src/shared/lib/hooks/base-hooks.ts'],
+    rules: {
+      'fsd/forbidden-imports': 'off',
+      'fsd/no-public-api-sidestep': 'off',
+    },
+  },
 ]);

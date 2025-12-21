@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 
 import { useGetMyProfileQuery } from '@shared/api';
 import { Logo } from '@shared/ui/icons';
-import { HeaderEventsSearch } from '@shared/ui/input';
+import { InputSearch } from '@shared/ui/input';
 
 import { StyledHeaderWrapper } from './Header.styled';
 
@@ -60,7 +60,7 @@ export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
             onClick={() => handleNavigate('/')}
           />
 
-          <HeaderEventsSearch />
+          <InputSearch />
 
           <IconButton color='primary' ref={buttonRef}>
             <FilterAltIcon fontSize='medium' />
@@ -87,7 +87,7 @@ export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
           <IconButton loading={isLoading} disabled={!profile} color='primary'>
             <EmailIcon
               fontSize='medium'
-              onClick={() => handleNavigate('/messages')}
+              onClick={() => handleNavigate('/chats')}
             />
           </IconButton>
           {profile ? (

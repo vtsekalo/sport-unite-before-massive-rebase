@@ -5,6 +5,10 @@ body {
   box-sizing: border-box;
 }
 
+html {
+  overflow: hidden;
+}
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 *::-webkit-scrollbar {

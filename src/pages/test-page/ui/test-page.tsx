@@ -156,18 +156,6 @@ export function TestPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = () => {
-    window.location.assign(
-      'http://api-gateway.dev.sport-unite.it-mentor.space/oauth2/authorization/gateway',
-    );
-  };
-
-  const logout = () => {
-    window.location.assign(
-      'http://api-gateway.dev.sport-unite.it-mentor.space/logout',
-    );
-  };
-
   return (
     <Container maxWidth='sm' sx={{ mt: 4 }}>
       <Paper
@@ -180,14 +168,6 @@ export function TestPage() {
           alignItems='center'
         >
           <Typography variant='h5'>SockJS + STOMP Chat</Typography>
-          <Stack direction='row' spacing={1}>
-            <Button variant='outlined' onClick={login}>
-              Login
-            </Button>
-            <Button variant='outlined' onClick={logout}>
-              Logout
-            </Button>
-          </Stack>
         </Stack>
 
         <Typography variant='body2' sx={{ mt: 1, mb: 2 }}>

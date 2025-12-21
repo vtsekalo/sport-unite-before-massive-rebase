@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from '@layout/main';
 
 import { AuthPage } from '@pages/auth';
+import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
@@ -14,7 +15,8 @@ export const Routers: React.FC = () => {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        <Route path='messages' element={<Chats />} />
+        <Route path='chats' element={<Chats />} />
+        <Route path='chats/:id' element={<Chat />} />
         <Route path='addevent' element={<>Добавить ивент</>} />
         <Route path='notifications' element={<>Уведомления</>} />
         <Route path='profile' element={<ProfilePage />} />
