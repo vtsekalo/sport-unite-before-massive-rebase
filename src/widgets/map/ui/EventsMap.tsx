@@ -153,8 +153,8 @@ export const EventsMap = ({
     <MapWrapper data-testid='base-map'>
       <BaseMap
         markers={markers}
-        center={center}
-        zoom={zoom}
+        center={mapCenter}
+        zoom={mapZoom}
         apiKey={MAP_API_KEY}
         onZoomChange={handleZoomChange}
         onCenterChange={handleCenterChange}
