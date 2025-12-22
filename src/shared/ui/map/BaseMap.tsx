@@ -96,26 +96,16 @@ export const BaseMap = ({
       mapInstanceRef.current?.destroy();
       mapInstanceRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     apiKey,
     showZoomControl,
-    center,
-    zoom,
     onZoomChange,
     onCenterChange,
     onMoveStart,
     onMapReady,
     createMarkers,
-    markers,
   ]);
-
-  useEffect(() => {
-    mapInstanceRef.current?.setCenter(center);
-  }, [center]);
-
-  useEffect(() => {
-    mapInstanceRef.current?.setZoom(zoom);
-  }, [zoom]);
 
   useEffect(() => {
     if (markers.length > 0) {
