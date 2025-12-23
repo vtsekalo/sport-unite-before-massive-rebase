@@ -63,9 +63,7 @@ export const BaseMap = ({
 
         onMapReady?.(mapInstance);
 
-        if (markers.length > 0) {
-          createMarkers(markers);
-        }
+        createMarkers(markers);
 
         if (onZoomChange) {
           mapInstance.on('zoomend', () => onZoomChange(mapInstance.getZoom()));
@@ -108,9 +106,7 @@ export const BaseMap = ({
   ]);
 
   useEffect(() => {
-    if (markers.length > 0) {
-      createMarkers(markers);
-    }
+    createMarkers(markers);
   }, [markers, createMarkers]);
 
   return <MapContainer ref={mapRef} />;
