@@ -121,7 +121,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   }, [radius, dispatch]);
 
   const handleResetLocation = useCallback(() => {
-    dispatch(setFilterRange({ range: 5000, fromUser: false }));
+    dispatch(setFilterRange({ range: undefined, fromUser: false }));
     setRadius(5);
     closeLocation();
     closeMain();
