@@ -5,7 +5,7 @@ import { EventScope, EventSearchRequest, EventStatus } from '@shared/lib';
 interface FiltersState {
   latitude: number;
   longitude: number;
-  range: number;
+  range: number | undefined;
   eventTypes?: string[];
   eventStatuses: EventStatus[];
   eventStartDateTime?: string;
@@ -16,7 +16,7 @@ interface FiltersState {
 const initialState: FiltersState = {
   latitude: 55.754167,
   longitude: 37.620001,
-  range: 5000,
+  range: undefined,
   eventStatuses: [EventStatus.PLANNED, EventStatus.IN_PROCESS],
   scope: EventScope.ALL,
   eventTypes: undefined,
@@ -38,7 +38,7 @@ const filtersSlice = createSlice({
 
     setFilterRange: (
       state,
-      action: PayloadAction<{ range: number; fromUser?: boolean }>,
+      action: PayloadAction<{ range: number | undefined; fromUser?: boolean }>,
     ) => {
       state.range = action.payload.range;
       if (action.payload.fromUser) {
@@ -97,7 +97,9 @@ const filtersSlice = createSlice({
       state.eventStatuses = initialState.eventStatuses;
       state.eventStartDateTime = initialState.eventStartDateTime;
       state.scope = initialState.scope;
-      state.range = initialState.range;
+      state.range = undefined;
+      state.latitude = initialState.latitude;
+      state.longitude = initialState.longitude;
       state.useCustomRange = false;
     },
 
@@ -143,7 +145,7 @@ export const selectEventSearchRequest = createSelector(
     coordinateFilterDto: {
       latitude: filters.latitude,
       longitude: filters.longitude,
-      range: filters.range,
+      range: filters.range ?? 50000000,
     },
   }),
 );
