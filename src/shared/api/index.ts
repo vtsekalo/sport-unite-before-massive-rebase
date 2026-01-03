@@ -5,6 +5,7 @@ export {
   eventApi,
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
+  useGetUserEventsQuery,
 } from './eventApi';
 
 export * from './chatApi';

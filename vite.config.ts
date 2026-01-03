@@ -41,24 +41,28 @@ export default defineConfig(({ mode }) => {
     } : undefined, 
     proxy: isDevWithMocks ? undefined : {
       '/user-service': {
-        target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
+        target: 'http://api-gateway.dev.sport-unite.it-mentor.space',
         changeOrigin: true,
+        secure: false
       },
       '/oauth2': {
         target: 'http://api-gateway.dev.sport-unite.it-mentor.space',
         changeOrigin: true,
+        secure: false
       },
       '/chat-service': {
         target: 'http://api-gateway.dev.sport-unite.it-mentor.space',
         changeOrigin: true,
         ws: true, 
-        rewrite: (path) => path.replace(/^\/chat-service/, '/chat-service')
+        secure: false,
       },
       '/event-service': {
-        target: 'http://api-gateway.dev.sport-unite.it-mentor.space/',
+        target: 'http://api-gateway.dev.sport-unite.it-mentor.space',
         changeOrigin: true,
+        secure: false
       },
     },
     },
   }
 })
+

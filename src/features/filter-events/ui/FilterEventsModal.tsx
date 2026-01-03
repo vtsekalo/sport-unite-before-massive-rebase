@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -19,7 +19,7 @@ import { setFilterRange } from '@shared/store';
 import { Styled } from './FilterEventsModal.styled';
 
 interface FilterEventsModalProps {
-  buttonRef: RefObject<HTMLButtonElement | null>;
+  buttonRef: HTMLButtonElement | null;
 }
 
 export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
@@ -53,7 +53,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   );
 
   useEffect(() => {
-    const button = buttonRef.current;
+    const button = buttonRef;
     if (!button) return;
 
     const handleClick = () => setAnchorEl(button);
@@ -153,7 +153,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
     <>
       <Styled.MainPopover
         open={Boolean(anchorEl)}
-        anchorEl={buttonRef.current}
+        anchorEl={buttonRef}
         onClose={closeMain}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}

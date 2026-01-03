@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
@@ -23,8 +23,10 @@ export const Layout = () => {
   const handleCloseModal = () => {
     navigate('/');
   };
-
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
+    setAnchorEl(node);
+  }, []);
 
   return (
     <Box
@@ -40,11 +42,11 @@ export const Layout = () => {
       {memoizedMap}
 
       {isMobile ? (
-        <HeaderMobile buttonRef={buttonRef} />
+        <HeaderMobile buttonRef={buttonRefCallback} />
       ) : (
-        <HeaderDesktop buttonRef={buttonRef} />
+        <HeaderDesktop buttonRef={buttonRefCallback} />
       )}
-      <FilterEventsModal buttonRef={buttonRef} />
+      <FilterEventsModal buttonRef={anchorEl} />
       <PageModal open={location.pathname !== '/'} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>

@@ -1,3 +1,4 @@
-import Logo from './logo.svg';
+import CrownIcon from './crown.svg';
 
-export { Logo };
+export * from './sport-icon';
+export { CrownIcon };
