@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Skeleton, Typography } from '@mui/material';
 
 import { ChatCardEntity } from '@entities/chat-card';
-import basketbolIcon from '@shared/assets/sports_basketball.svg';
 import { IChat } from '@shared/lib';
 import { formatDateOrTime } from '@shared/lib';
+import { SportIcon } from '@shared/ui/sport-icons';
 
 import { CardWrapper } from './chat-list.styled';
 
@@ -74,9 +74,7 @@ export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
             onClick={() => navigate(`/chats/${chat.eventId}`)}
           >
             <ChatCardEntity
-              typeNode={
-                <img width={24} height={24} src={basketbolIcon} alt='icon' />
-              }
+              typeNode={<SportIcon type={chat.eventType} />}
               titleNode={
                 <Typography fontWeight={500} fontSize='14px'>
                   {chat.title}

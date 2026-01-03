@@ -8,9 +8,15 @@ import {
   MAP_API_KEY,
   zoomToRadius,
 } from '@shared/config';
-import { EventStatus, IEvent, IEventWithCoordinates } from '@shared/lib';
+import {
+  CoordinatesTuple,
+  EventStatus,
+  IEvent,
+  IEventWithCoordinates,
+  MapMarker,
+  showSnackbar,
+} from '@shared/lib';
 import { useDebounce } from '@shared/lib/hooks';
-import { mockEvents } from '@shared/mocks';
 import {
   selectEventSearchRequest,
   selectUseCustomRange,
@@ -18,11 +24,14 @@ import {
   setFilterRange,
 } from '@shared/store';
 import { BaseMap } from '@shared/ui/map';
-import type { IMapMarker } from '@shared/ui/map';
 
 import { getMarkerIcon } from '../lib';
-import type { MapProps } from '../model/types';
 import { MapWrapper } from './Map.styled';
+
+interface MapProps {
+  center?: CoordinatesTuple;
+  zoom?: number;
+}
 
 export const EventsMap = ({
   center = DEFAULT_MAP_CENTER,
@@ -39,6 +48,7 @@ export const EventsMap = ({
     [debouncedZoom],
   );
   const filters = useSelector(selectEventSearchRequest);
+
   const useCustomRange = useSelector(selectUseCustomRange);
 
   useEffect(() => {
@@ -56,26 +66,20 @@ export const EventsMap = ({
     }
   }, [radiusFromZoom, useCustomRange, dispatch]);
 
-  const useMocks = import.meta.env.VITE_USE_MOCKS === 'true';
   const { data: eventsData, isError } = useGetFilteredEventsQuery(filters, {
-    skip: useMocks,
     refetchOnMountOrArgChange: true,
   });
 
   const events = useMemo<IEventWithCoordinates[]>(() => {
-    if (useMocks) {
-      return mockEvents;
+    if (isError) {
+      showSnackbar('Ошибка фильтра событий!');
     }
 
-    if (isError || !eventsData) {
-      return mockEvents;
-    }
-
-    if (eventsData.length === 0) {
+    if (!eventsData || eventsData.length === 0) {
       return [];
     }
 
-    let filteredEvents = eventsData;
+    let filteredEvents = eventsData || [];
 
     if (filters.eventStartDateTime) {
       const filterDateOnly = filters.eventStartDateTime.split('T')[0];
@@ -83,7 +87,7 @@ export const EventsMap = ({
       filteredEvents = eventsData.filter((event: IEvent) => {
         const eventWithDate = event as IEvent & { eventStartDate?: string };
         const eventDateField =
-          eventWithDate.eventStartDate || event.eventStartDateTime;
+          eventWithDate.eventStartDate || event.eventStartDate;
 
         if (!eventDateField) {
           return false;
@@ -96,23 +100,25 @@ export const EventsMap = ({
       });
     }
 
+    if (!Array.isArray(filteredEvents)) {
+      return [];
+    }
+
     return filteredEvents.map((event: IEvent) => ({
       eventId: event.eventId,
       eventName: event.eventName,
       eventType: event.eventType,
+      eventLocation: event.eventLocation,
       eventStatus: EventStatus.PLANNED,
-      eventStartDate: event.eventStartDateTime || '',
-      eventEndDate: event.eventStartDateTime || '',
+      eventStartDate: event.eventStartDate || '',
+      eventEndDate: event.eventStartDate || '',
       countUsers: 0,
       eventDescription: event.eventDescription,
       eventPhoto: event.eventPhoto,
-      coords: [event.coordinates.longitude, event.coordinates.latitude] as [
-        number,
-        number,
-      ],
+      coords: [event.coordinates.longitude, event.coordinates.latitude],
       users: [],
     }));
-  }, [eventsData, isError, useMocks, filters.eventStartDateTime]);
+  }, [eventsData, filters.eventStartDateTime, isError]);
 
   const handleZoomChange = useCallback((newZoom: number) => {
     setMapZoom(newZoom);
@@ -123,9 +129,9 @@ export const EventsMap = ({
   }, []);
 
   const previousMarkerIdsRef = useRef<string>('');
-  const previousMarkersRef = useRef<IMapMarker[]>([]);
+  const previousMarkersRef = useRef<MapMarker[]>([]);
 
-  const markers = useMemo<IMapMarker[]>(() => {
+  const markers = useMemo<MapMarker[]>(() => {
     const newMarkers = events.map((event) => ({
       id: event.eventId,
       coordinates: event.coords,

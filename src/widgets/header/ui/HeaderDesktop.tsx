@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { Ref } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -18,7 +18,7 @@ import { InputSearch } from '@shared/ui/input';
 import { StyledHeaderWrapper } from './Header.styled';
 
 interface HeaderDesktopProps {
-  buttonRef: RefObject<HTMLButtonElement | null>;
+  buttonRef: Ref<HTMLButtonElement | null>;
 }
 
 export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {

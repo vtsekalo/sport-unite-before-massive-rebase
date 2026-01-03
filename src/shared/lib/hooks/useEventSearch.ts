@@ -41,7 +41,7 @@ export const useEventSearch = () => {
       const filtered = data.filter((event) => {
         const eventWithDate = event as IEvent & { eventStartDate?: string };
         const eventDateField =
-          eventWithDate.eventStartDate || event.eventStartDateTime;
+          eventWithDate.eventStartDate || event.eventStartDate;
 
         if (!eventDateField) {
           return false;

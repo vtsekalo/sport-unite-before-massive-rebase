@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { Ref } from 'react';
 
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { IconButton } from '@mui/material';
@@ -9,7 +9,7 @@ import { InputSearch } from '@shared/ui/input';
 import { StyledHeaderWrapper } from './Header.styled';
 
 interface HeaderMobileProps {
-  buttonRef: RefObject<HTMLButtonElement | null>;
+  buttonRef: Ref<HTMLButtonElement | null>;
 }
 
 export const HeaderMobile = ({ buttonRef }: HeaderMobileProps) => {
