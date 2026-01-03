@@ -2,8 +2,10 @@ import { HttpResponse, http } from 'msw';
 
 import {
   EventSearchRequest,
-  EventSearchResponse,
+  EventStatus,
+  IEvent,
   IEventType,
+  UserRole,
 } from '@shared/lib';
 import { GenderVariant, IUserProfile, UserStatusVariant } from '@shared/lib';
 
@@ -241,219 +243,437 @@ export const handlers = [
 
     console.log('[MSW] Mock: /api/v1/events/search', filters);
 
-    const allEvents = [
+    const events: IEvent[] = [
+      {
+        eventId: '12345677fse',
+        eventName: 'Баскетбол:московская лига',
+        eventLocation: 'г. Москва, ул. Ленина, 5, на входе',
+        eventType: 'Баскетбол',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-09-24T11:30:00Z',
+        eventEndDate: '2026-09-24T14:00:00Z',
+        countUsers: 12,
+        eventDescription:
+          "Баскетбол — это командная спортивная игра, популярная во всем мире, в которой две команды по пять игроков пытаются забросить мяч руками в кольцо (корзину) соперника. Название игры происходит от английских слов 'basket' (корзина) и 'ball' (мяч). Баскетбол развивает координацию, выносливость и командный дух, поэтому его часто включают в программы физической подготовки.",
+        eventPhoto: 'https://example.com/events/EVT-2077-099/photo.png',
+        coordinates: {
+          latitude: 55.7558,
+          longitude: 37.6173,
+        },
+        users: [
+          {
+            userId: '7b21a8f2-2dcd-489b-9d2d-f43a67e98a1e',
+            nickName: 'nick1989',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://example.com/events/EVT-2025-002/photo.png',
+          },
+        ],
+      },
+      {
+        eventId: '12345678abc',
+        eventName: 'Футбол: Московская лига',
+        eventLocation: "г. Москва, Стадион 'Лужники', Северная трибуна",
+        eventType: 'Футбол',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-09-25T18:00:00Z',
+        eventEndDate: '2026-09-25T20:00:00Z',
+        countUsers: 22,
+        eventDescription:
+          "Футбол — это командная спортивная игра, популярная во всем мире, в которой две команды по одиннадцать игроков пытаются забить мяч ногами или другими частями тела (кроме рук) в ворота соперника. Название игры происходит от английских слов 'foot' (нога) и 'ball' (мяч). Футбол развивает скорость, выносливость, координацию и командную тактику, поэтому он считается самым популярным видом спорта на планете и включен в программу физического воспитания во многих странах.",
+        eventPhoto: 'https://example.com/events/EVT-2077-100/photo.png',
+        coordinates: {
+          latitude: 55.7587,
+          longitude: 37.6192,
+        },
+        users: [
+          {
+            userId: '8c31b9g3-3ede-590c-0e3e-g54b78h09b2f',
+            nickName: 'capitan2024',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://example.com/avatars/capitan2024.png',
+          },
+        ],
+      },
       {
         eventId: 'EVT00001',
         eventName: 'Новогодний утренний бег',
+        eventLocation: 'Центральный парк, Москва',
         eventType: 'Бег',
-        eventStartDate: '2025-12-01T09:00:00Z',
-        eventEndDate: '2025-12-01T11:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-01T09:00:00Z',
+        eventEndDate: '2026-12-01T11:00:00Z',
+        countUsers: 50,
         eventDescription:
           'Приглашаем всех на утренний бег по зимнему парку. Дистанция 5км и 10км на выбор.',
         eventPhoto: 'https://cdn.example.com/events/running1.jpg',
-        coordinates: { latitude: 55.7558, longitude: 37.6173 },
-        countUsers: 50,
+        coordinates: {
+          latitude: 55.7558,
+          longitude: 37.6173,
+        },
         users: [
           {
-            keycloakUserId: 'u-1001',
-            nickname: 'Алексей Бегов',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u01.jpg',
+            userId: 'u-1001',
+            nickName: 'Алексей Бегов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u01.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00002',
         eventName: 'Зимний футбольный матч',
+        eventLocation: "Стадион 'Спартак', Москва",
         eventType: 'Футбол',
-        eventStartDate: '2025-12-05T18:00:00Z',
-        eventEndDate: '2025-12-05T20:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-05T18:00:00Z',
+        eventEndDate: '2026-12-05T20:00:00Z',
+        countUsers: 22,
         eventDescription:
           'Товарищеский матч на крытом поле. Форма и бутсы обязательны.',
         eventPhoto: 'https://cdn.example.com/events/football1.jpg',
-        coordinates: { latitude: 55.7517, longitude: 37.6178 },
-        countUsers: 22,
+        coordinates: {
+          latitude: 55.7517,
+          longitude: 37.6178,
+        },
         users: [
           {
-            keycloakUserId: 'u-1002',
-            nickname: 'Сергей Футболов',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u02.jpg',
+            userId: 'u-1002',
+            nickName: 'Сергей Футболов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u02.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00003',
         eventName: 'Предновогодний марафон',
+        eventLocation: 'ВДНХ, Москва',
         eventType: 'Бег',
-        eventStartDate: '2025-12-10T14:30:00Z',
-        eventEndDate: '2025-12-10T17:30:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-10T14:30:00Z',
+        eventEndDate: '2026-12-10T17:30:00Z',
+        countUsers: 100,
         eventDescription:
           'Годовой марафон 42км по живописному маршруту города.',
         eventPhoto: 'https://cdn.example.com/events/marathon1.jpg',
-        coordinates: { latitude: 55.7601, longitude: 37.6175 },
-        countUsers: 100,
+        coordinates: {
+          latitude: 55.7601,
+          longitude: 37.6175,
+        },
         users: [
           {
-            keycloakUserId: 'u-1003',
-            nickname: 'Мария Марафон',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u03.jpg',
+            userId: 'u-1003',
+            nickName: 'Мария Марафон',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u03.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00004',
         eventName: 'Зимний велопробег',
+        eventLocation: 'Парк Горького, Москва',
         eventType: 'Велоспорт',
-        eventStartDate: '2025-12-07T12:00:00Z',
-        eventEndDate: '2025-12-07T15:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-07T12:00:00Z',
+        eventEndDate: '2026-12-07T15:00:00Z',
+        countUsers: 30,
         eventDescription:
           'Велопрогулка по заснеженным паркам. Горные велосипеды приветствуются.',
-        coordinates: { latitude: 55.7539, longitude: 37.6208 },
-        countUsers: 30,
+        eventPhoto: 'https://cdn.example.com/events/cycling1.jpg',
+        coordinates: {
+          latitude: 55.7539,
+          longitude: 37.6208,
+        },
         users: [
           {
-            keycloakUserId: 'u-1004',
-            nickname: 'Дмитрий Велосипедов',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u04.jpg',
+            userId: 'u-1004',
+            nickName: 'Дмитрий Велосипедов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u04.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00005',
         eventName: 'Закрытый теннисный турнир',
+        eventLocation: "Теннисный клуб 'Чемпион', Москва",
         eventType: 'Теннис',
-        eventStartDate: '2025-12-15T16:00:00Z',
-        eventEndDate: '2025-12-15T19:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-15T16:00:00Z',
+        eventEndDate: '2026-12-15T19:00:00Z',
+        countUsers: 16,
         eventDescription: 'Ежегодный зимний теннисный турнир в крытом корте.',
         eventPhoto: 'https://cdn.example.com/events/tennis1.jpg',
-        coordinates: { latitude: 55.758, longitude: 37.6162 },
-        countUsers: 16,
+        coordinates: {
+          latitude: 55.758,
+          longitude: 37.6162,
+        },
         users: [
           {
-            keycloakUserId: 'u-1005',
-            nickname: 'Анна Теннисова',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u05.jpg',
+            userId: 'u-1005',
+            nickName: 'Анна Теннисова',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u05.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00006',
         eventName: 'Рождественский футбол',
+        eventLocation: "Футбольное поле 'Северное', Москва",
         eventType: 'Футбол',
-        eventStartDate: '2025-12-20T19:30:00Z',
-        eventEndDate: '2025-12-20T21:30:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-20T19:30:00Z',
+        eventEndDate: '2026-12-20T21:30:00Z',
+        countUsers: 24,
         eventDescription:
           'Футбольный матч в рождественской атмосфере с горячими напитками.',
-        coordinates: { latitude: 55.7492, longitude: 37.6185 },
-        countUsers: 24,
+        eventPhoto: 'https://cdn.example.com/events/football2.jpg',
+        coordinates: {
+          latitude: 55.7492,
+          longitude: 37.6185,
+        },
         users: [
           {
-            keycloakUserId: 'u-1006',
-            nickname: 'Петр Футбольный',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u06.jpg',
+            userId: 'u-1006',
+            nickName: 'Петр Футбольный',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u06.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00007',
         eventName: 'Рождественский забег',
+        eventLocation: 'Красная площадь, Москва',
         eventType: 'Бег',
-        eventStartDate: '2025-12-25T10:00:00Z',
-        eventEndDate: '2025-12-25T12:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-25T10:00:00Z',
+        eventEndDate: '2026-12-25T12:00:00Z',
+        countUsers: 200,
         eventDescription:
           'Семейный забег в рождественских костюмах. Призы для всех участников!',
         eventPhoto: 'https://cdn.example.com/events/christmas_run.jpg',
-        coordinates: { latitude: 55.7634, longitude: 37.6191 },
-        countUsers: 200,
+        coordinates: {
+          latitude: 55.7634,
+          longitude: 37.6191,
+        },
         users: [
           {
-            keycloakUserId: 'u-1007',
-            nickname: 'Ольга Рождественская',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u07.jpg',
+            userId: 'u-1007',
+            nickName: 'Ольга Рождественская',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u07.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00008',
         eventName: 'Зимний баскетбол',
+        eventLocation: "Спорткомплекс 'Олимпийский', Москва",
         eventType: 'Баскетбол',
-        eventStartDate: '2025-12-12T17:00:00Z',
-        eventEndDate: '2025-12-12T19:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-12T17:00:00Z',
+        eventEndDate: '2026-12-12T19:00:00Z',
+        countUsers: 20,
         eventDescription:
           'Баскетбольная тренировка в спортивном зале для всех уровней подготовки.',
         eventPhoto: 'https://cdn.example.com/events/basketball1.jpg',
-        coordinates: { latitude: 55.7573, longitude: 37.6215 },
-        countUsers: 20,
+        coordinates: {
+          latitude: 55.7573,
+          longitude: 37.6215,
+        },
         users: [
           {
-            keycloakUserId: 'u-1008',
-            nickname: 'Иван Баскетболов',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u08.jpg',
+            userId: 'u-1008',
+            nickName: 'Иван Баскетболов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u08.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00009',
         eventName: 'Новогодние заплывы',
+        eventLocation: "Бассейн 'Чайка', Москва",
         eventType: 'Плавание',
-        eventStartDate: '2025-12-28T11:00:00Z',
-        eventEndDate: '2025-12-28T13:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-28T11:00:00Z',
+        eventEndDate: '2026-12-28T13:00:00Z',
+        countUsers: 40,
         eventDescription:
           'Соревнования по плаванию в 25-метровом бассейне. Дистанции 50м и 100м.',
-        coordinates: { latitude: 55.7527, longitude: 37.6223 },
-        countUsers: 40,
+        eventPhoto: 'https://cdn.example.com/events/swimming1.jpg',
+        coordinates: {
+          latitude: 55.7527,
+          longitude: 37.6223,
+        },
         users: [
           {
-            keycloakUserId: 'u-1009',
-            nickname: 'Екатерина Плавалова',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u09.jpg',
+            userId: 'u-1009',
+            nickName: 'Екатерина Плавалова',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u09.jpg',
           },
         ],
       },
       {
         eventId: 'EVT00010',
         eventName: 'Прощальный матч года',
+        eventLocation: "Стадион 'Лужники', Москва",
         eventType: 'Футбол',
-        eventStartDate: '2025-12-31T15:00:00Z',
-        eventEndDate: '2025-12-31T17:00:00Z',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-31T15:00:00Z',
+        eventEndDate: '2026-12-31T17:00:00Z',
+        countUsers: 26,
         eventDescription:
           'Последний футбольный матч уходящего года с фейерверком в финале.',
         eventPhoto: 'https://cdn.example.com/events/newyear_football.jpg',
-        coordinates: { latitude: 55.7544, longitude: 37.6158 },
-        countUsers: 26,
+        coordinates: {
+          latitude: 55.7544,
+          longitude: 37.6158,
+        },
         users: [
           {
-            keycloakUserId: 'u-1010',
-            nickname: 'Николай Новогодний',
-            role: 'organizer',
-            userMainPhoto: 'https://cdn.example.com/users/u10.jpg',
+            userId: 'u-1010',
+            nickName: 'Николай Новогодний',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u10.jpg',
+          },
+        ],
+      },
+      // 5 новых событий
+      {
+        eventId: 'EVT00011',
+        eventName: 'Волейбол на снегу',
+        eventLocation: "Парк 'Сокольники', Москва",
+        eventType: 'Волейбол',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-02T14:00:00Z',
+        eventEndDate: '2026-12-02T16:00:00Z',
+        countUsers: 18,
+        eventDescription:
+          'Зимний волейбол на открытой площадке. Теплая спортивная форма обязательна!',
+        eventPhoto: 'https://cdn.example.com/events/volleyball1.jpg',
+        coordinates: {
+          latitude: 55.7592,
+          longitude: 37.6189,
+        },
+        users: [
+          {
+            userId: 'u-1011',
+            nickName: 'Андрей Волейболов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u11.jpg',
+          },
+        ],
+      },
+      {
+        eventId: 'EVT00012',
+        eventName: 'Хоккей на льду',
+        eventLocation: "Каток 'ВДНХ', Москва",
+        eventType: 'Хоккей',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-08T19:00:00Z',
+        eventEndDate: '2026-12-08T21:00:00Z',
+        countUsers: 14,
+        eventDescription:
+          'Товарищеский матч по хоккею на открытом катке. Коньки и клюшки приветствуются!',
+        eventPhoto: 'https://cdn.example.com/events/hockey1.jpg',
+        coordinates: {
+          latitude: 55.7613,
+          longitude: 37.6179,
+        },
+        users: [
+          {
+            userId: 'u-1012',
+            nickName: 'Игорь Хоккеистов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u12.jpg',
+          },
+        ],
+      },
+      {
+        eventId: 'EVT00013',
+        eventName: 'Йога в парке',
+        eventLocation: "Парк 'Зарядье', Москва",
+        eventType: 'Йога',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-03T08:00:00Z',
+        eventEndDate: '2026-12-03T09:30:00Z',
+        countUsers: 25,
+        eventDescription:
+          'Утренняя йога на свежем воздухе. Коврики приносите с собой. Подходит для всех уровней подготовки.',
+        eventPhoto: 'https://cdn.example.com/events/yoga1.jpg',
+        coordinates: {
+          latitude: 55.7547,
+          longitude: 37.6201,
+        },
+        users: [
+          {
+            userId: 'u-1013',
+            nickName: 'Марина Йогина',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u13.jpg',
+          },
+        ],
+      },
+      {
+        eventId: 'EVT00014',
+        eventName: 'Боксерский спарринг',
+        eventLocation: "Спортзал 'Атлет', Москва",
+        eventType: 'Бокс',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-18T17:00:00Z',
+        eventEndDate: '2026-12-18T19:00:00Z',
+        countUsers: 8,
+        eventDescription:
+          'Тренировочные спарринги для боксеров начального и среднего уровня. Защитное снаряжение обязательно.',
+        eventPhoto: 'https://cdn.example.com/events/boxing1.jpg',
+        coordinates: {
+          latitude: 55.7502,
+          longitude: 37.6195,
+        },
+        users: [
+          {
+            userId: 'u-1014',
+            nickName: 'Денис Боксеров',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u14.jpg',
+          },
+        ],
+      },
+      {
+        eventId: 'EVT00015',
+        eventName: 'Скалолазание для начинающих',
+        eventLocation: "Скалодром 'Вертикаль', Москва",
+        eventType: 'Скалолазание',
+        eventStatus: EventStatus.PLANNED,
+        eventStartDate: '2026-12-22T12:00:00Z',
+        eventEndDate: '2026-12-22T15:00:00Z',
+        countUsers: 15,
+        eventDescription:
+          'Вводное занятие по скалолазанию для новичков. Все необходимое снаряжение предоставляется.',
+        eventPhoto: 'https://cdn.example.com/events/climbing1.jpg',
+        coordinates: {
+          latitude: 55.7568,
+          longitude: 37.6169,
+        },
+        users: [
+          {
+            userId: 'u-1015',
+            nickName: 'Артем Скалолазов',
+            userRole: UserRole.ORGANIZER,
+            urlUserPhoto: 'https://cdn.example.com/users/u15.jpg',
           },
         ],
       },
     ];
 
-    const transformedEvents = allEvents.map((event) => ({
-      eventId: event.eventId,
-      userId: event.users[0]?.keycloakUserId || 'default-user',
-      eventName: event.eventName,
-      eventType: event.eventType,
-      eventStartDateTime: event.eventStartDate,
-      eventDescription: event.eventDescription,
-      eventPhoto: event.eventPhoto || '',
-      userRole: true,
-      coordinates: event.coordinates,
-    }));
+    let filteredEvents = events;
 
-    let filteredEvents = transformedEvents;
-
+    // Применяем фильтры
     if (filters.eventTypes && filters.eventTypes.length > 0) {
       filteredEvents = filteredEvents.filter((event) =>
         filters.eventTypes!.includes(event.eventType),
@@ -463,18 +683,15 @@ export const handlers = [
     if (filters.eventStartDateTime) {
       const filterDate = new Date(filters.eventStartDateTime);
       filteredEvents = filteredEvents.filter((event) => {
-        const eventDate = new Date(event.eventStartDateTime);
+        const eventDate = new Date(event.eventStartDate);
         return eventDate >= filterDate;
       });
     }
 
-    const mockResponse: EventSearchResponse = {
-      events: filteredEvents,
-    };
-
     await new Promise((resolve) => setTimeout(resolve, 500));
-    return HttpResponse.json(mockResponse);
+    return HttpResponse.json(filteredEvents);
   }),
+
   http.get('*/api/v1/events/types', async () => {
     console.log('[MSW] Mock: /api/v1/events/types');
     const mockSportTypes: IEventType[] = [
@@ -483,6 +700,12 @@ export const handlers = [
       { typeId: 3, typeName: 'Теннис' },
       { typeId: 4, typeName: 'Бег' },
       { typeId: 5, typeName: 'Плавание' },
+      { typeId: 6, typeName: 'Велоспорт' },
+      { typeId: 7, typeName: 'Волейбол' },
+      { typeId: 8, typeName: 'Хоккей' },
+      { typeId: 9, typeName: 'Йога' },
+      { typeId: 10, typeName: 'Бокс' },
+      { typeId: 11, typeName: 'Скалолазание' },
     ];
     await new Promise((resolve) => setTimeout(resolve, 500));
     return HttpResponse.json(mockSportTypes);

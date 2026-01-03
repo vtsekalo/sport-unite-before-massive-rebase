@@ -4,9 +4,21 @@ import { load } from '@2gis/mapgl';
 import { Map, Marker } from '@2gis/mapgl/types';
 
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@shared/config/map';
+import { CoordinatesTuple, MapMarker } from '@shared/lib';
 
 import { MapContainer } from './Map.styled';
-import type { IBaseMapProps, IMapMarker } from './types';
+
+interface BaseMapProps {
+  center?: CoordinatesTuple;
+  zoom?: number;
+  apiKey: string;
+  markers?: MapMarker[];
+  showZoomControl?: boolean;
+  onZoomChange?: (zoom: number) => void;
+  onCenterChange?: (center: CoordinatesTuple) => void;
+  onMoveStart?: () => void;
+  onMapReady?: (mapInstance: Map) => void;
+}
 
 export const BaseMap = ({
   center = DEFAULT_MAP_CENTER,
@@ -18,12 +30,12 @@ export const BaseMap = ({
   onCenterChange,
   onMoveStart,
   onMapReady,
-}: IBaseMapProps) => {
+}: BaseMapProps) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<Map | null>(null);
   const markersRef = useRef<Marker[]>([]);
 
-  const createMarkers = useCallback(async (markersData: IMapMarker[]) => {
+  const createMarkers = useCallback(async (markersData: MapMarker[]) => {
     if (!mapInstanceRef.current) return;
 
     markersRef.current.forEach((marker) => marker.destroy());
@@ -94,16 +106,9 @@ export const BaseMap = ({
       mapInstanceRef.current?.destroy();
       mapInstanceRef.current = null;
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    apiKey,
-    showZoomControl,
-    onZoomChange,
-    onCenterChange,
-    onMoveStart,
-    onMapReady,
-    createMarkers,
-  ]);
+  }, []);
 
   useEffect(() => {
     createMarkers(markers);

@@ -4,4 +4,5 @@ export enum ApiEndpoints {
   EVENTS_TYPES = '/event-service/api/v1/events/types',
   USER_CHATS = '/chat-service/api/v1/chat-rooms/my',
   CHAT_MESSAGES = '/chat-service/api/v1/chat-rooms',
+  USER_EVENTS = '/event-service/api/v1/events/user',
 }

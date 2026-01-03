@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Coordinates } from '../types/event';
+import { Coordinates } from '../types/map';
 import { normalizeCoord } from '../utils/normalizeCoord';
 
 export const useCurrentMapCoords = () => {

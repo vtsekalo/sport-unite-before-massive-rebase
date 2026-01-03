@@ -1,4 +1,4 @@
-import { GenderVariant, UserStatusVariant } from './enums';
+import { GenderVariant, UserRole, UserStatusVariant } from './enums';
 
 /**
  * @prop id - Идентификатор пользователя.
@@ -30,4 +30,11 @@ export interface IUserProfile {
   profilePicture: string | null;
   averageRating: number;
   interests?: string[];
+}
+
+export interface IUserParticipant {
+  userId: string;
+  nickName: string;
+  userRole: UserRole;
+  urlUserPhoto: string | null;
 }
