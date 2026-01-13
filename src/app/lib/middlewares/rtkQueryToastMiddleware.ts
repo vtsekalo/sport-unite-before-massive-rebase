@@ -96,7 +96,7 @@ export const rtkQuerySnackbarMiddleware: Middleware =
 
       if (endPoint && status != null) {
         const map = EndPointsMessages[endPoint];
-        if (status in map) {
+        if (map && status in map) {
           errorMessage = map[status as keyof typeof map];
         }
       }

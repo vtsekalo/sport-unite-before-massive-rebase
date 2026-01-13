@@ -31,12 +31,12 @@ export const useEventSearch = () => {
       return data;
     }
 
-    if (!filters.eventStartDateTime) {
+    if (!filters.eventStartDate) {
       return data;
     }
 
     try {
-      const filterDateOnly = filters.eventStartDateTime.split('T')[0];
+      const filterDateOnly = filters.eventStartDate.split('T')[0];
 
       const filtered = data.filter((event) => {
         const eventWithDate = event as IEvent & { eventStartDate?: string };
@@ -60,7 +60,7 @@ export const useEventSearch = () => {
     } catch {
       return data;
     }
-  }, [data, filters.eventStartDateTime]);
+  }, [data, filters.eventStartDate]);
 
   useEffect(() => {
     const coordsChanged =

@@ -21,6 +21,7 @@ export const baseApi = createApi({
   tagTypes: [
     'Profile',
     'Events',
+    'EventById',
     'EventTypes',
     'UploadImage',
     'UpdateMyAvatar',
