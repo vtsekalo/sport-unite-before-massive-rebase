@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FC, useState, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import { Box, Tab, Typography } from '@mui/material';
 
@@ -29,10 +29,14 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
 
   const eventsTab = useMemo(() => {
     switch (value) {
-      case 0: return grouped.active;
-      case 1: return grouped.completed;
-      case 2: return grouped.cancelled;
-      default: return [];
+      case 0:
+        return grouped.active;
+      case 1:
+        return grouped.completed;
+      case 2:
+        return grouped.cancelled;
+      default:
+        return [];
     }
   }, [value, grouped]);
 
@@ -49,7 +53,7 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
         <Tab label='Завершённые' />
         <Tab label='Отменённые' />
       </Styled.StyledTabs>
-      
+
       <Styled.MobileEventsContainer
         width='100%'
         display='flex'

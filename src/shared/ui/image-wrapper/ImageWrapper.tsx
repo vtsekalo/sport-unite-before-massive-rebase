@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import { Box, BoxProps } from '@mui/material';
 
@@ -15,24 +16,20 @@ export const ImageWrapper = ({ src, children, ...props }: FallbackProps) => {
   if (isInvalid || hasError) {
     return (
       <Box
-        {...props} 
+        {...props}
         display='flex'
         alignItems='center'
         justifyContent='center'
         bgcolor='grey.300'
         borderRadius='10px'
       >
-        <BrokenImageIcon color='disabled'/>
+        <BrokenImageIcon color='disabled' />
       </Box>
     );
   }
 
   return (
-    <Box 
-      component="div" 
-      onError={() => setHasError(true)} 
-      display='contents'
-    >
+    <Box component='div' onError={() => setHasError(true)} display='contents'>
       {children}
     </Box>
   );

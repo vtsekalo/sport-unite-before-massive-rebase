@@ -12,6 +12,7 @@ export * from './utils/file-convert';
 export * from './utils/normalizeCoord';
 export * from './utils/provides-list.ts';
 export * from './constants/api';
+export * from './formatDate';
 export * from './types/chat.ts';
 export * from './utils/date';
 export * from './showSnackbar';

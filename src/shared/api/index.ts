@@ -5,6 +5,7 @@ export {
   eventApi,
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
+  useGetEventByIdQuery,
   useGetUserEventsQuery,
 } from './eventApi';
 

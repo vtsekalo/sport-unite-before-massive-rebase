@@ -47,8 +47,8 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   );
   const [radius, setRadius] = useState<number>(5);
   const [dateValue, setDateValue] = useState<Dayjs | null>(() =>
-    eventsByFilter.filters.eventStartDateTime
-      ? dayjs(eventsByFilter.filters.eventStartDateTime)
+    eventsByFilter.filters.eventStartDate
+      ? dayjs(eventsByFilter.filters.eventStartDate)
       : null,
   );
 

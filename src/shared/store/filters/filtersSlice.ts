@@ -67,8 +67,32 @@ const filtersSlice = createSlice({
 
     applyFilters: (
       state,
-      action: PayloadAction<Partial<Omit<FiltersState, 'useCustomRange'>>>,
+      action: PayloadAction<
+        | Partial<Omit<FiltersState, 'useCustomRange'>>
+        | Partial<EventSearchRequest>
+      >,
     ) => {
+      const payload = action.payload;
+
+      if ('coordinateFilterDto' in payload) {
+        const eventSearchPayload = payload as Partial<EventSearchRequest>;
+        if (eventSearchPayload.coordinateFilterDto) {
+          state.latitude = eventSearchPayload.coordinateFilterDto.latitude;
+          state.longitude = eventSearchPayload.coordinateFilterDto.longitude;
+          state.range = eventSearchPayload.coordinateFilterDto.range;
+          state.useCustomRange = true;
+        }
+        if (eventSearchPayload.eventTypes !== undefined)
+          state.eventTypes = eventSearchPayload.eventTypes;
+        if (eventSearchPayload.eventStatuses !== undefined)
+          state.eventStatuses = eventSearchPayload.eventStatuses;
+        if (eventSearchPayload.eventStartDate !== undefined)
+          state.eventStartDateTime = eventSearchPayload.eventStartDate;
+        if (eventSearchPayload.scope !== undefined)
+          state.scope = eventSearchPayload.scope;
+        return;
+      }
+
       const {
         latitude,
         longitude,
@@ -77,7 +101,7 @@ const filtersSlice = createSlice({
         eventStatuses,
         eventStartDateTime,
         scope,
-      } = action.payload;
+      } = payload as Partial<Omit<FiltersState, 'useCustomRange'>>;
 
       if (latitude !== undefined) state.latitude = latitude;
       if (longitude !== undefined) state.longitude = longitude;
@@ -93,6 +117,8 @@ const filtersSlice = createSlice({
     },
 
     resetFilters: (state) => {
+      state.latitude = initialState.latitude;
+      state.longitude = initialState.longitude;
       state.eventTypes = initialState.eventTypes;
       state.eventStatuses = initialState.eventStatuses;
       state.eventStartDateTime = initialState.eventStartDateTime;
@@ -140,7 +166,7 @@ export const selectEventSearchRequest = createSelector(
   (filters): EventSearchRequest => ({
     eventTypes: filters.eventTypes,
     eventStatuses: filters.eventStatuses,
-    eventStartDateTime: filters.eventStartDateTime,
+    eventStartDate: filters.eventStartDateTime,
     scope: filters.scope,
     coordinateFilterDto: {
       latitude: filters.latitude,

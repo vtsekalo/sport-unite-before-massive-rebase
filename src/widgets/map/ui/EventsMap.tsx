@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { useGetFilteredEventsQuery } from '@shared/api';
 import {
@@ -41,6 +42,15 @@ export const EventsMap = ({
   const [mapCenter, setMapCenter] = useState<[number, number]>(center);
   const [mapZoom, setMapZoom] = useState<number>(zoom);
 
+  const navigate = useNavigate();
+
+  const handleMarkerClick = useCallback(
+    (eventId: string) => {
+      navigate(`/events/${eventId}`);
+    },
+    [navigate],
+  );
+
   const debouncedCenter = useDebounce(mapCenter, 1000);
   const debouncedZoom = useDebounce(mapZoom, 1000);
   const radiusFromZoom = useMemo(
@@ -48,7 +58,6 @@ export const EventsMap = ({
     [debouncedZoom],
   );
   const filters = useSelector(selectEventSearchRequest);
-
   const useCustomRange = useSelector(selectUseCustomRange);
 
   useEffect(() => {
@@ -81,13 +90,11 @@ export const EventsMap = ({
 
     let filteredEvents = eventsData || [];
 
-    if (filters.eventStartDateTime) {
-      const filterDateOnly = filters.eventStartDateTime.split('T')[0];
+    if (filters.eventStartDate) {
+      const filterDateOnly = filters.eventStartDate.split('T')[0];
 
       filteredEvents = eventsData.filter((event: IEvent) => {
-        const eventWithDate = event as IEvent & { eventStartDate?: string };
-        const eventDateField =
-          eventWithDate.eventStartDate || event.eventStartDate;
+        const eventDateField = event.eventStartDate;
 
         if (!eventDateField) {
           return false;
@@ -111,14 +118,14 @@ export const EventsMap = ({
       eventLocation: event.eventLocation,
       eventStatus: EventStatus.PLANNED,
       eventStartDate: event.eventStartDate || '',
-      eventEndDate: event.eventStartDate || '',
-      countUsers: 0,
+      eventEndDate: event.eventEndDate || event.eventStartDate || '',
+      countUsers: event.countUsers ?? 0,
       eventDescription: event.eventDescription,
       eventPhoto: event.eventPhoto,
       coords: [event.coordinates.longitude, event.coordinates.latitude],
       users: [],
     }));
-  }, [eventsData, filters.eventStartDateTime, isError]);
+  }, [eventsData, filters.eventStartDate, isError]);
 
   const handleZoomChange = useCallback((newZoom: number) => {
     setMapZoom(newZoom);
@@ -136,6 +143,7 @@ export const EventsMap = ({
       id: event.eventId,
       coordinates: event.coords,
       icon: getMarkerIcon(event.eventType),
+      onClick: () => handleMarkerClick(event.eventId),
     }));
 
     const currentIds = newMarkers
@@ -153,7 +161,7 @@ export const EventsMap = ({
     previousMarkerIdsRef.current = currentIds;
     previousMarkersRef.current = newMarkers;
     return newMarkers;
-  }, [events]);
+  }, [events, handleMarkerClick]);
 
   return (
     <MapWrapper data-testid='base-map'>
