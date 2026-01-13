@@ -1,5 +1,10 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { EventSearchRequest, IEvent, IEventType, providesList } from '@shared/lib';
+import {
+  EventSearchRequest,
+  IEvent,
+  IEventType,
+  providesList,
+} from '@shared/lib';
 
 export const eventApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,11 +21,18 @@ export const eventApi = baseApi.injectEndpoints({
         url: ApiEndpoints.EVENTS_TYPES,
         method: 'GET',
       }),
-      providesTags: ['EventTypes'],
+      providesTags: ['Events'],
     }),
     getUserEvents: builder.query<IEvent[], void>({
       query: () => ({ url: ApiEndpoints.USER_EVENTS, method: 'GET' }),
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
+    }),
+    getEventById: builder.query<IEvent, string>({
+      query: (eventId) => ({
+        url: `${ApiEndpoints.EVENT_BY_ID}${eventId}`,
+        method: 'GET',
+      }),
+      providesTags: ['EventById'],
     }),
   }),
 });
@@ -28,5 +40,7 @@ export const eventApi = baseApi.injectEndpoints({
 export const {
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
+  useGetEventByIdQuery,
+  useLazyGetFilteredEventsQuery,
   useGetUserEventsQuery,
 } = eventApi;
