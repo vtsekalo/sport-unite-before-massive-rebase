@@ -1,10 +1,21 @@
+{{- $hasTls := false }}
+{{- if and .Values.tls .Values.tls.enabled }}
+  {{- $hasTls = true }}
+{{- end }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ .Values.APP_NAME }}"
   annotations:
+    {{- if $hasTls }}
+    cert-manager.io/cluster-issuer: "{{ .Values.tls.issuer | default "letsencrypt" }}"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- else }}
     ingress.kubernetes.io/ssl-redirect: "false"
     traefik.ingress.kubernetes.io/router.entrypoints: web
+    {{- end }}
 spec:
   rules:
     - host: "{{ .Values.INGRESS_HOST }}"
