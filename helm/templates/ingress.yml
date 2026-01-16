@@ -17,6 +17,13 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web
     {{- end }}
 spec:
+  ingressClassName: traefik
+  {{- if $hasTls }}
+  tls:
+    - hosts:
+      - "{{ .Values.INGRESS_HOST }}"
+      secretName: "{{ .Values.APP_NAME }}-tls"
+  {{- end }}
   rules:
     - host: "{{ .Values.INGRESS_HOST }}"
       http:
