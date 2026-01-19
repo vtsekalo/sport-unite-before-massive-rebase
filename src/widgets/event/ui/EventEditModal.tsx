@@ -21,7 +21,7 @@ import {
 
 import { EventInfo, Styled } from '@entities/event-card';
 import { QueryInfo } from '@entities/query-info';
-import { useGetEventByIdQuery } from '@shared/api';
+import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import { Run } from '@shared/assets';
 import {
   EventStatus,
@@ -48,6 +48,7 @@ export const EventEditModal: React.FC<EventEditModalProps> = ({ onClose }) => {
     refetchOnMountOrArgChange: true,
   });
 
+  const [joinEvent] = useGetJoinInEventsMutation();
   const { profile, isLoading: isProfileLoading } = useProfile();
   const isAuthenticated = !!profile;
 
@@ -74,7 +75,7 @@ export const EventEditModal: React.FC<EventEditModalProps> = ({ onClose }) => {
       eventStartDateTime: startDateTime,
       eventStartDate: startDateTime,
       eventEndDate: endDate.toISOString(),
-      countUsers: eventData.users.length,
+      countUsers: eventData.countUsers,
       eventDescription: eventData.eventDescription,
       eventPhoto: eventData.eventPhoto,
       eventLocation: eventData.eventLocation,
@@ -92,6 +93,15 @@ export const EventEditModal: React.FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
+  const handleJoinEvent = async () => {
+    if (!eventId) return;
+    console.error('Ошибка:');
+    try {
+      await joinEvent(eventId).unwrap();
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
   if (isProfileLoading) {
     return (
       <Box
@@ -124,7 +134,6 @@ export const EventEditModal: React.FC<EventEditModalProps> = ({ onClose }) => {
       </Box>
     );
   }
-
   const renderContent = () => {
     if (isLoading) {
       const headerNode = (
@@ -347,9 +356,13 @@ export const EventEditModal: React.FC<EventEditModalProps> = ({ onClose }) => {
             <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
           </Button>
         ) : (
-          <Button variant='fullWidthAction' disabled={!hasFreeSlots}>
+          <Button
+            variant='fullWidthAction'
+            disabled={!hasFreeSlots}
+            onClick={handleJoinEvent}
+          >
             <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
-            <Styled.ButtonLabel>Участвовать</Styled.ButtonLabel>
+            <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
           </Button>
         )}
 
