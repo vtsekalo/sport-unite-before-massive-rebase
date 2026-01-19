@@ -19,7 +19,7 @@ export const EventListSkeleton = ({
         <EventCardEntity
           key={index}
           eventStatus={EventStatus.PLANNED}
-          userRole={UserRole.ORGANIZER}
+          userRole={UserRole.organizer}
           typeNode={
             <Skeleton
               sx={{ borderRadius: '10px' }}

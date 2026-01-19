@@ -66,7 +66,8 @@ const getMeta = (action: unknown): RequestMeta | null => {
 };
 
 export const rtkQuerySnackbarMiddleware: Middleware =
-  () => (next) => (action) => {
+  (res) => (next) => (action) => {
+    console.log(action, res);
     const meta = getMeta(action);
     const endPoint = getEndpointName(action);
 
@@ -96,12 +97,16 @@ export const rtkQuerySnackbarMiddleware: Middleware =
 
       if (endPoint && status != null) {
         const map = EndPointsMessages[endPoint];
-        if (map && status in map) {
+        const arrayKeys = map ? Object.keys(map).map(Number) : [];
+
+        if (arrayKeys.includes(status)) {
           errorMessage = map[status as keyof typeof map];
         }
       }
 
-      showSnackbar(errorMessage, 'error');
+      if (errorMessage) {
+        showSnackbar(errorMessage, 'error');
+      }
     }
 
     if (isFulfilled(action) && endPoint) {

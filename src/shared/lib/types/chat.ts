@@ -11,10 +11,12 @@ export interface IChat {
 
 export interface IMessage {
   id: string;
-  createdAt: string;
-  updatedAt: string;
   chatRoomId: string;
-  senderId: string;
-  senderName: string;
-  message: string;
+  userId: string;
+  text: string;
+  createdAt: string;
+  userPhotoUrl: string;
+  eventName: string;
+  eventType: string;
+  eventStartDate: string;
 }

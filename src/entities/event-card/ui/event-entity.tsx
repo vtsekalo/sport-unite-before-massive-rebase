@@ -58,7 +58,7 @@ export const EventCardEntity: FC<EventEntityProps> = ({
           flexDirection='column'
         >
           {typeNode}
-          {userRole === UserRole.ORGANIZER && roleNode}
+          {userRole === UserRole.organizer && roleNode}
         </Box>
         <Box
           width='100%'

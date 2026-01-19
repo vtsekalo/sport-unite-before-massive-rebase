@@ -7,6 +7,7 @@ import { AuthPage } from '@pages/auth';
 import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
 import { MyEvents } from '@pages/my-events';
+import { Notifications } from '@pages/notifications';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
 import { TestPage } from '@pages/test-page';
@@ -20,7 +21,7 @@ export const Routers: React.FC = () => {
         <Route path='chats' element={<Chats />} />
         <Route path='chats/:id' element={<Chat />} />
         <Route path='addevent' element={<>Добавить ивент</>} />
-        <Route path='notifications' element={<>Уведомления</>} />
+        <Route path='notifications' element={<Notifications />} />
         <Route path='profile' element={<ProfilePage />} />
         <Route path='/events/:eventId' element={<EventEditModal />} />
         <Route path='my-events' element={<MyEvents />} />

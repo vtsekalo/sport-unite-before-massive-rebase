@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -9,15 +11,39 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { Badge, Box, IconButton, Stack, alpha, useTheme } from '@mui/material';
 
+import { useGetCountNotificationsQuery } from '@shared/api';
+
 import { useActiveButton } from '../lib/useActiveButton';
 import { useSwitchState } from '../lib/useSwitchState';
 import { StyledNavBar, StyledSwitch, StyledSwitchThumb } from './NavBar.styled';
 
 export const NavBar = () => {
   const { activeButton, setActiveButton, handleNavigate } = useActiveButton();
+  const { data: count } = useGetCountNotificationsQuery(
+    {
+      __meta: { toast: false },
+    },
+    {
+      pollingInterval: 20_000,
+      skipPollingIfUnfocused: true,
+    },
+  );
   const { checked, handleSwitchChange } = useSwitchState(setActiveButton);
 
   const theme = useTheme();
+
+  const actualNotifications = count
+    ? count?.countAllActualMessages - count?.countReadMessages
+    : 0;
+
+  const notificationIconWrapper = (icon: ReactNode) =>
+    count && actualNotifications > 0 ? (
+      <Badge color='error' variant='dot'>
+        {icon}
+      </Badge>
+    ) : (
+      icon
+    );
 
   return (
     <StyledNavBar
@@ -127,13 +153,13 @@ export const NavBar = () => {
             color='primary'
             onClick={() => handleNavigate('/notifications')}
           >
-            <Badge color='error' variant='dot'>
-              {activeButton === '/notifications' ? (
+            {notificationIconWrapper(
+              activeButton === '/notifications' ? (
                 <NotificationsIcon />
               ) : (
                 <NotificationsNoneOutlinedIcon />
-              )}
-            </Badge>
+              ),
+            )}
           </IconButton>
         </Box>
       </Stack>

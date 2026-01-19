@@ -6,4 +6,8 @@ export enum ApiEndpoints {
   USER_CHATS = '/chat-service/api/v1/chat-rooms/my',
   CHAT_MESSAGES = '/chat-service/api/v1/chat-rooms',
   USER_EVENTS = '/event-service/api/v1/events/user',
+  GET_NOTIFICATIONS = 'notification-service/api/v1/inapp',
+  GET_COUNT_NOTIFICATIONS = 'notification-service/api/v1/inapp/count',
+  MARK_AS_READ_NOTIFICATIONS = 'notification-service/api/v1/inapp/read',
+  DELETE_NOTIFICATIONS = 'notification-service/api/v1/inapp/delete',
 }

@@ -18,3 +18,5 @@ export * from './utils/date';
 export * from './showSnackbar';
 export * from './types/general';
 export * from './hooks/base-hooks';
+export * from './constants/styles';
+export * from './types/notification';
