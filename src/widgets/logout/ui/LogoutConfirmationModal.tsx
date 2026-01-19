@@ -9,15 +9,17 @@ import {
   useTheme,
 } from '@mui/material';
 
+import { useLogout } from '../lib/useLogout';
+
 type LogoutConfirmationModalProps = {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
 };
 
 export const LogoutConfirmationModal: React.FC<
   LogoutConfirmationModalProps
-> = ({ open, onClose, onConfirm }) => {
+> = ({ open, onClose }) => {
+  const { logout } = useLogout();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -36,8 +38,7 @@ export const LogoutConfirmationModal: React.FC<
       <DialogActions>
         <Box
           display='flex'
-          flexDirection={isMobile ? 'column' : 'row'}
-          justifyContent={isMobile ? 'center' : 'flex-end'}
+          flexWrap={isMobile ? 'wrap' : 'nowrap'}
           gap='16px'
           width='100%'
           px={'16px'}
@@ -45,18 +46,18 @@ export const LogoutConfirmationModal: React.FC<
           <Button
             variant='outlined'
             color='primary'
-            size='large'
+            size='medium'
             onClick={onClose}
-            fullWidth={isMobile}
+            fullWidth={true}
           >
             Отмена
           </Button>
           <Button
             variant='contained'
             color='primary'
-            size='large'
-            onClick={onConfirm}
-            fullWidth={isMobile}
+            size='medium'
+            onClick={logout}
+            fullWidth={true}
           >
             Выйти
           </Button>

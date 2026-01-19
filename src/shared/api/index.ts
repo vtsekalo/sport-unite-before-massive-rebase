@@ -10,3 +10,4 @@ export {
 } from './eventApi';
 
 export * from './chatApi';
+export * from './notification';

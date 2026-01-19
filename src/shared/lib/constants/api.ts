@@ -4,4 +4,5 @@ export const API_PATHS = {
   CHAT_SERVICE: 'chat-service/api/v1',
   AUTH_SERVICE: 'oauth2',
   IMAGE_SERVICE: 'image-service/api/v1',
+  NOTIFICATION_SERVICE: '',
 } as const;

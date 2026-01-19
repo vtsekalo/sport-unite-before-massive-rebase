@@ -1,4 +1,13 @@
-import { GenderVariant, UserRole, UserStatusVariant } from './enums';
+import { GenderVariant, UserStatusVariant } from './enums';
+
+/**
+ * ORGANIZER - Организатор.
+ * PARTICIPANT - Участник
+ */
+export enum UserRole {
+  organizer = 'ORGANIZER',
+  participant = 'PARTICIPANT',
+}
 
 /**
  * @prop id - Идентификатор пользователя.
