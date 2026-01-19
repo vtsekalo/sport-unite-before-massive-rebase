@@ -21,5 +21,10 @@ export const EndPointsMessages = {
   },
   getChatMessages: {
     404: 'Информация о чате не найдена',
+    403: 'Доступ к чату запрещен',
+  },
+  getUserChats: {
+    500: 'Наш сервис временно не доступен',
+    404: 'У вас нет доступных чатов',
   },
 } as const satisfies Record<string, Partial<Record<number, string>>>;

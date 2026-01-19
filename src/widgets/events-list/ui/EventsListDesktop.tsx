@@ -81,7 +81,7 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
                     key={event.eventId}
                     eventStatus={event.eventStatus}
                     userRole={
-                      event.users?.[0]?.userRole || UserRole.PARTICIPANT
+                      event.users?.[0]?.userRole || UserRole.participant
                     }
                     typeNode={
                       <Styled.EventIcon $status={event.eventStatus}>

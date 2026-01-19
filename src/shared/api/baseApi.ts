@@ -30,6 +30,8 @@ export const baseApi = createApi({
     'Chats',
     'UpdateMyProfile',
     'MyProfile',
+    'GetMyNotifications',
+    'GetCountNotifications',
   ],
   endpoints: () => ({}),
 });

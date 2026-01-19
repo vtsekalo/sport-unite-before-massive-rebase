@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Box,
@@ -22,15 +21,15 @@ import {
 import { useAppSelector } from '@shared/lib';
 import { InputSearch } from '@shared/ui/input';
 
+// import { ChatMessages } from '@widgets/chat-messages';
+
 import { ChatEntity } from './chat-entity';
 import iconSrc from './sports_and_outdoors.svg';
 
 export const Chat: FC = () => {
   // TODO - нужно вытаскивать не useGetUserChatsQuery
   const { isLoading: isLoadingChats } = useGetUserChatsQuery();
-  const { data: profile, isLoading: isLoadingProfile } = useGetMyProfileQuery(
-    {},
-  );
+  const { isLoading: isLoadingProfile } = useGetMyProfileQuery({});
 
   const { id: eventId } = useParams();
   const { data: messages, isLoading: isLoadingMessages } =
@@ -40,8 +39,7 @@ export const Chat: FC = () => {
   const chat = useAppSelector((state) => selectChatById(state, eventId));
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  console.log({ chat, eventId });
-
+  console.log({ chat, messages });
   if (isLoadingChats || isLoadingMessages || isLoadingProfile) {
     return (
       <ChatEntity
@@ -142,23 +140,8 @@ export const Chat: FC = () => {
         />
       }
     >
-      {messages?.map((message) => (
-        <MessageCard
-          avtorNode={message.senderName}
-          timeNode={
-            <Typography>
-              {message?.createdAt && dayjs(message.createdAt).format('HH:mm')}
-            </Typography>
-          }
-          messageNode={
-            <Typography fontSize='14px' fontWeight={400}>
-              {message.message}
-            </Typography>
-          }
-          avatarNode={<AccountCircleIcon />}
-          isMyMessage={profile?.id === message.senderId}
-        />
-      ))}
+      {null}
+      {/* <ChatMessages messages={messages} profile={profile} /> */}
     </ChatEntity>
   );
 };

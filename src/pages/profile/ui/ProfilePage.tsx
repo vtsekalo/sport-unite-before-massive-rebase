@@ -6,24 +6,17 @@ import { LogoutConfirmationModal } from '@widgets/logout';
 import { ProfileEditModal } from '@widgets/profile-edit';
 import { ProfileViewModal } from '@widgets/profile-view';
 
-import { useLogout } from '../lib/useLogout';
-
 type ProfilePageProps = Record<string, never>;
 
 export const ProfilePage: React.FC<ProfilePageProps> = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
-  const { logout } = useLogout();
 
   const handleOpenEdit = () => setIsEdit(true);
   const handleCloseEdit = () => setIsEdit(false);
 
   const handleOpenLogoutModal = () => setOpenLogoutModal(true);
   const handleCloseLogoutModal = () => setOpenLogoutModal(false);
-  const handleLogout = () => {
-    logout();
-    handleCloseLogoutModal();
-  };
 
   return (
     <Box height={'100%'}>
@@ -66,7 +59,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
       <LogoutConfirmationModal
         open={openLogoutModal}
         onClose={handleCloseLogoutModal}
-        onConfirm={handleLogout}
       />
     </Box>
   );

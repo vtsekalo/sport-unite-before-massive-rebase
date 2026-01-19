@@ -27,6 +27,7 @@ export const InputSearch: FC<InputSearchProps> = ({
   endIcon = <SearchIcon />,
   onClick,
   placeholder = 'Поиск...',
+  ...rest
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -44,9 +45,15 @@ export const InputSearch: FC<InputSearchProps> = ({
 
   return (
     <StyledInput
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          onClick?.();
+        }
+      }}
       placeholder={placeholder}
       startAdornment={startAdornment}
       endAdornment={endAdornment}
+      {...rest}
     />
   );
 };

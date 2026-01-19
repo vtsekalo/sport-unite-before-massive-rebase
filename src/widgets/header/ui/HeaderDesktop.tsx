@@ -39,7 +39,7 @@ export const HeaderDesktop = ({ buttonRef }: HeaderDesktopProps) => {
   };
 
   return (
-    <StyledHeaderWrapper width='95%' height='88px' padding='0 64px'>
+    <StyledHeaderWrapper width='95%' height='88px' padding='0 24px'>
       <Stack
         direction='row'
         justifyContent='space-between'

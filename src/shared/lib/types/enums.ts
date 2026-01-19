@@ -35,13 +35,3 @@ export enum EventScope {
   ORGANIZER = 'ORGANIZER',
   PARTICIPANT = 'PARTICIPANT',
 }
-
-/**
- * ORGANIZER - Организатор.
- * PARTICIPANT - Участник
- */
-
-export enum UserRole {
-  ORGANIZER = 'ORGANIZER',
-  PARTICIPANT = 'PARTICIPANT',
-}

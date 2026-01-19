@@ -1260,6 +1260,18 @@
   resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-7.2.0.tgz#ff0b8b14b24a9c61bc062a02dedba0edb9d77dc8"
   integrity sha512-+Waf/wdSxgRmXHWg7HXUt51YNK/Cp2pMhW+OELwX5fzbO6pd+O2bLrWqGmyFNC/RyeUQIMGESP7oE3L1dXXm0Q==
 
+"@tanstack/react-virtual@^3.13.18":
+  version "3.13.18"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.18.tgz#9124ee9f08b2ca3c67ffd508dae3732328983362"
+  integrity sha512-dZkhyfahpvlaV0rIKnvQiVoWPyURppl6w4m9IwMDpuIjcJ1sD9YGWrt0wISvgU7ewACXx2Ct46WPgI6qAD4v6A==
+  dependencies:
+    "@tanstack/virtual-core" "3.13.18"
+
+"@tanstack/virtual-core@3.13.18":
+  version "3.13.18"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.13.18.tgz#586e3c1fe08547ee6abf87e8fb7c99087b9c47ff"
+  integrity sha512-Mx86Hqu1k39icq2Zusq+Ey2J6dDWTjDvEv43PJtRCoEYTLyfaPnxIQ6iy7YAOK0NV/qOEmZQ/uCufrppZxTgcg==
+
 "@trivago/prettier-plugin-sort-imports@^5.2.2":
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/@trivago/prettier-plugin-sort-imports/-/prettier-plugin-sort-imports-5.2.2.tgz#38983f0b83490a0a7d974a6f1e409fb4bf678d02"
@@ -1368,6 +1380,13 @@
   version "4.4.12"
   resolved "https://registry.npmjs.org/@types/react-transition-group/-/react-transition-group-4.4.12.tgz#b5d76568485b02a307238270bfe96cb51ee2a044"
   integrity sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==
+
+"@types/react-window@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-2.0.0.tgz#9fe45015d6f98ec98a069362518c855fcc1fa8d0"
+  integrity sha512-E8hMDtImEpMk1SjswSvqoSmYvk7GEtyVaTa/GJV++FdDNuMVVEzpAClyJ0nqeKYBrMkGiyH6M1+rPLM0Nu1exQ==
+  dependencies:
+    react-window "*"
 
 "@types/react@^19.2.2":
   version "19.2.2"
@@ -4297,6 +4316,11 @@ react-transition-group@^4.4.5:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-window@*, react-window@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-2.2.3.tgz#f8ffdddbb612ccd3e1314b59fce79af85d3f15e3"
+  integrity sha512-gTRqQYC8ojbiXyd9duYFiSn2TJw0ROXCgYjenOvNKITWzK0m0eCvkUsEUM08xvydkMh7ncp+LE0uS3DeNGZxnQ==
 
 react@^19.2.0:
   version "19.2.0"
