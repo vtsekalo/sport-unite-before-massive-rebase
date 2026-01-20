@@ -7,7 +7,7 @@ export {
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useGetUserEventsQuery,
-  useGetJoinInEventsMutation
+  useGetJoinInEventsMutation,
 } from './eventApi';
 
 export * from './chatApi';
