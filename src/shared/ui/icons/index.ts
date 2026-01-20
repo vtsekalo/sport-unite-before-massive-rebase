@@ -1,7 +1,12 @@
-import Logo from './Logo.svg';
-
+export { default as Logo } from './Logo.svg';
+export { default as basketballIcon } from './basketballIcon.svg';
 export { default as basketballLogo } from './basketballLogo.svg';
+export { default as cyclingIcon } from './cyclingIcon.svg';
+export { default as defaultMarker } from './defaultMarker.svg';
+export { default as footballIcon } from './footballIcon.svg';
 export { default as footballLogo } from './footballLogo.svg';
+export { default as runningIcon } from './runningIcon.svg';
+export { default as tennisIcon } from './tennisIcon.svg';
+export { default as volleyballIcon } from './volleyballIcon.svg';
 export { default as volleyballLogo } from './volleyballLogo.svg';
-
-export { Logo };
+export { default as yogaIcon } from './yogaIcon.svg';

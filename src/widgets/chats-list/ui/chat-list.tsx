@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Skeleton, Typography } from '@mui/material';
 
 import { ChatCardEntity } from '@entities/chat-card';
-import { IChat } from '@shared/lib';
+import { IChat, ROUTES } from '@shared/lib';
 import { formatDateOrTime } from '@shared/lib';
 import { SportIcon } from '@shared/ui/sport-icons';
 
@@ -71,7 +71,7 @@ export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
         mappedChats.map((chat) => (
           <CardWrapper
             key={chat.id}
-            onClick={() => navigate(`/chats/${chat.eventId}`)}
+            onClick={() => navigate(ROUTES.CHATS.DETAIL(chat.eventId))}
           >
             <ChatCardEntity
               typeNode={<SportIcon type={chat.eventType} />}

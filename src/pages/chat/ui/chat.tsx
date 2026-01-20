@@ -3,15 +3,10 @@ import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 
 import SendIcon from '@mui/icons-material/Send';
-import {
-  Box,
-  Skeleton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Skeleton, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 import { MessageCard } from '@entities/message-card';
+import { ModalWrapper } from '@entities/modal-wrapper';
 import {
   selectChatById,
   useGetChatMessagesQuery,
@@ -42,71 +37,67 @@ export const Chat: FC = () => {
   console.log({ chat, messages });
   if (isLoadingChats || isLoadingMessages || isLoadingProfile) {
     return (
-      <ChatEntity
-        dateNode={<Skeleton width='80px' height='22px' />}
-        chatTitleNode={
-          <>
-            <img src={iconSrc} />
-            <Skeleton height='18px' width='120px' />
-          </>
-        }
-        inputNode={
-          <Skeleton
-            width={isMobile ? '297px' : '500px'}
-            height={isMobile ? '40px' : '56px'}
+      <ModalWrapper>
+        <ChatEntity
+          dateNode={<Skeleton width='80px' height='22px' />}
+          chatTitleNode={
+            <>
+              <img src={iconSrc} />
+              <Skeleton height='18px' width='120px' />
+            </>
+          }
+          inputNode={
+            <Skeleton
+              width={isMobile ? '297px' : '500px'}
+              height={isMobile ? '40px' : '56px'}
+            />
+          }
+        >
+          <MessageCard
+            timeNode={<Skeleton width={80} height={24} />}
+            messageNode={<Skeleton width={150} height={60} />}
+            isMyMessage={false}
+            avtorNode={<Skeleton width={150} height={24} />}
+            avatarNode={<Skeleton width={40} height={40} variant='circular' />}
           />
-        }
-      >
-        <MessageCard
-          timeNode={<Skeleton width={80} height={24} />}
-          messageNode={<Skeleton width={150} height={60} />}
-          isMyMessage={false}
-          avtorNode={<Skeleton width={150} height={24} />}
-          avatarNode={<Skeleton width={40} height={40} variant='circular' />}
-        />
-        <MessageCard
-          timeNode={<Skeleton width={80} height={24} />}
-          messageNode={<Skeleton width={150} height={60} />}
-          isMyMessage={true}
-          avatarNode={<Skeleton width={40} height={40} variant='circular' />}
-        />
-        <MessageCard
-          timeNode={<Skeleton width={80} height={24} />}
-          messageNode={<Skeleton width={150} height={60} />}
-          isMyMessage={false}
-          avtorNode={<Skeleton width={150} height={24} />}
-          avatarNode={<Skeleton width={40} height={40} variant='circular' />}
-        />
-        <MessageCard
-          timeNode={<Skeleton width={80} height={24} />}
-          messageNode={<Skeleton width={150} height={60} />}
-          isMyMessage={true}
-          avatarNode={<Skeleton width={40} height={40} variant='circular' />}
-        />
-        <MessageCard
-          timeNode={<Skeleton width={80} height={24} />}
-          messageNode={<Skeleton width={150} height={60} />}
-          isMyMessage={false}
-          avtorNode={<Skeleton width={150} height={24} />}
-          avatarNode={<Skeleton width={40} height={40} variant='circular' />}
-        />
-      </ChatEntity>
+          <MessageCard
+            timeNode={<Skeleton width={80} height={24} />}
+            messageNode={<Skeleton width={150} height={60} />}
+            isMyMessage={true}
+            avatarNode={<Skeleton width={40} height={40} variant='circular' />}
+          />
+          <MessageCard
+            timeNode={<Skeleton width={80} height={24} />}
+            messageNode={<Skeleton width={150} height={60} />}
+            isMyMessage={false}
+            avtorNode={<Skeleton width={150} height={24} />}
+            avatarNode={<Skeleton width={40} height={40} variant='circular' />}
+          />
+          <MessageCard
+            timeNode={<Skeleton width={80} height={24} />}
+            messageNode={<Skeleton width={150} height={60} />}
+            isMyMessage={true}
+            avatarNode={<Skeleton width={40} height={40} variant='circular' />}
+          />
+          <MessageCard
+            timeNode={<Skeleton width={80} height={24} />}
+            messageNode={<Skeleton width={150} height={60} />}
+            isMyMessage={false}
+            avtorNode={<Skeleton width={150} height={24} />}
+            avatarNode={<Skeleton width={40} height={40} variant='circular' />}
+          />
+        </ChatEntity>
+      </ModalWrapper>
     );
   }
 
   if (!chat) {
     return (
-      <Box
-        paddingTop={20}
-        width='100%'
-        display='flex'
-        alignItems='center'
-        justifyContent='center'
-      >
+      <ModalWrapper alignItems='center' justifyContent='center'>
         <Typography component='span' width='fit-content'>
           Информация о чате не найдена
         </Typography>
-      </Box>
+      </ModalWrapper>
     );
   }
 
@@ -116,32 +107,34 @@ export const Chat: FC = () => {
     chat?.eventStartDate && dayjs(chat?.eventStartDate).format('HH:mm');
 
   return (
-    <ChatEntity
-      dateNode={
-        <Typography color='#3677FF' fontWeight={400} fontSize='12px'>
-          {date}
-          <br />
-          {horse}
-        </Typography>
-      }
-      chatTitleNode={
-        <>
-          <img src={iconSrc} />
-          <Typography noWrap maxWidth={100} fontWeight={500} fontSize='14px'>
-            {chat.title}
+    <ModalWrapper>
+      <ChatEntity
+        dateNode={
+          <Typography color='#3677FF' fontWeight={400} fontSize='12px'>
+            {date}
+            <br />
+            {horse}
           </Typography>
-        </>
-      }
-      inputNode={
-        <InputSearch
-          endIcon={<SendIcon color='info' />}
-          placeholder='Введите сообщение'
-          startIcon={null}
-        />
-      }
-    >
-      {null}
-      {/* <ChatMessages messages={messages} profile={profile} /> */}
-    </ChatEntity>
+        }
+        chatTitleNode={
+          <>
+            <img src={iconSrc} />
+            <Typography noWrap maxWidth={100} fontWeight={500} fontSize='14px'>
+              {chat.title}
+            </Typography>
+          </>
+        }
+        inputNode={
+          <InputSearch
+            endIcon={<SendIcon color='info' />}
+            placeholder='Введите сообщение'
+            startIcon={null}
+          />
+        }
+      >
+        {null}
+        {/* <ChatMessages messages={messages} profile={profile} /> */}
+      </ChatEntity>
+    </ModalWrapper>
   );
 };

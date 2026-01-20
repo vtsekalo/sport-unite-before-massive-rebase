@@ -1,1 +1,1 @@
-export { BaseMap } from './BaseMap';
+export * from './base-map';

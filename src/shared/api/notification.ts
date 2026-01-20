@@ -5,7 +5,7 @@ import {
   INotification,
 } from '@shared/lib/types/notification';
 
-export const eventApi = baseApi.injectEndpoints({
+export const notificationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMyNotifications: builder.query<INotification[], void>({
       query: () => ({
@@ -27,4 +27,4 @@ export const eventApi = baseApi.injectEndpoints({
 });
 
 export const { useGetMyNotificationsQuery, useGetCountNotificationsQuery } =
-  eventApi;
+  notificationApi;

@@ -1,1 +1,1 @@
-export { MyEvents } from './ui/MyEvents';
+export { MyEvents } from './ui/my-events';

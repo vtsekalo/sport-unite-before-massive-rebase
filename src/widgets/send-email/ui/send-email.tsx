@@ -1,41 +1,46 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Typography } from '@mui/material';
+import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+
+import { ModalWrapper } from '@entities/modal-wrapper';
+import { ROUTES } from '@shared/lib';
 
 export const SendEmail = () => {
   const navigate = useNavigate();
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return (
-    <Box
-      padding='20px'
-      display='flex'
+    <ModalWrapper
+      p={2}
       justifyContent='center'
       alignItems='center'
-      flexDirection='column'
       gap='32px'
+      height='auto'
+      maxHeight='100%'
+      maxWidth={500}
     >
       <Typography
-        component='span'
-        width='min-content'
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
         fontWeight={700}
         fontSize='24px'
       >
         Регистрация
       </Typography>
-      <Box
-        justifyContent='center'
-        display='flex'
-        flexDirection='column'
-        gap='40px'
+
+      <Typography align='center' fontWeight={400} fontSize='16px'>
+        Письмо отправлено на указанную почту. Перейдите по ссылке, чтобы
+        завершить регистрацию.
+      </Typography>
+      <Button
+        variant='contained'
+        fullWidth={isMobile}
+        size='mediumFixed'
+        onClick={() => navigate(ROUTES.HOME)}
       >
-        <Typography fontWeight={400} fontSize='16px'>
-          Письмо отправлено на указанную почту. Перейдите по ссылке, чтобы
-          завершить регистрацию.
-        </Typography>
-        <Button variant='contained' onClick={() => navigate('/')}>
-          Главная страница
-        </Button>
-      </Box>
-    </Box>
+        Главная страница
+      </Button>
+    </ModalWrapper>
   );
 };
