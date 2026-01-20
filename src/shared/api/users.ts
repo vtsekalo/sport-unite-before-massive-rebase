@@ -1,7 +1,7 @@
 import { API_PATHS, type IUserProfile } from '@shared/lib';
 import { WithMeta } from '@shared/lib/types/general';
 
-import { baseApi } from './baseApi';
+import { baseApi } from './base-api';
 
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

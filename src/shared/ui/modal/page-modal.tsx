@@ -1,17 +1,34 @@
-import React from 'react';
+import { FC, ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 
-import { Box, alpha, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
+
+import { ROUTE_SETTINGS } from './route-settings';
 
 interface PageModalProps {
   open: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose?: () => void;
 }
 
-export const PageModal: React.FC<PageModalProps> = ({ open, children }) => {
-  const theme = useTheme();
+export const PageModal: FC<PageModalProps> = ({ open, children }) => {
+  const { pathname } = useLocation();
 
   if (!open) return null;
+
+  let config = ROUTE_SETTINGS[pathname];
+
+  if (!config) {
+    const prefixKey = Object.keys(ROUTE_SETTINGS).find(
+      (key) => key !== '/' && pathname.startsWith(key),
+    );
+    if (prefixKey) config = ROUTE_SETTINGS[prefixKey];
+  }
+
+  const bgcolor = config?.bgcolor || 'rgba(54, 119, 255, 0.6)';
+  const justifyContent = config?.justifyContent || 'center';
+  const pointerEvents = config?.pointerEvents || 'default';
+  const backdropFilter = config?.pointerEvents || 'blur(4px)';
 
   return (
     <Box
@@ -23,8 +40,12 @@ export const PageModal: React.FC<PageModalProps> = ({ open, children }) => {
       zIndex={10}
       display='flex'
       alignItems='center'
-      justifyContent='center'
-      bgcolor={alpha(theme.palette.primary.main, 0.6)}
+      justifyContent={{ xs: 'center', md: justifyContent }}
+      bgcolor={bgcolor}
+      px={{
+        xs: '16px',
+        md: '100px',
+      }}
       pt={{
         xs: '88px',
         md: '136px',
@@ -33,26 +54,16 @@ export const PageModal: React.FC<PageModalProps> = ({ open, children }) => {
         xs: '88px',
         md: '32px',
       }}
-      px='10px'
+      sx={{
+        pointerEvents: pointerEvents,
+        '& > *': {
+          pointerEvents: 'auto',
+        },
+        backdropFilter: backdropFilter,
+        WebkitBackdropFilter: backdropFilter,
+      }}
     >
-      <Box
-        width='100%'
-        maxWidth={{ xs: 361, md: 1351 }}
-        height='100%'
-        maxHeight={{
-          xs: 'calc(100dvh - 176px)',
-          md: 'calc(100dvh - 184px)',
-        }}
-        bgcolor='background.paper'
-        borderRadius='10px'
-        boxShadow={8}
-        display='flex'
-        flexDirection='column'
-        flex='1'
-        overflow='auto'
-      >
-        {children}
-      </Box>
+      {children}
     </Box>
   );
 };

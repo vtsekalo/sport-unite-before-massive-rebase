@@ -17,7 +17,7 @@ import Stack from '@mui/material/Stack';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import { useGetMyNotificationsQuery } from '@shared/api';
-import { INotification, StatusNotification } from '@shared/lib';
+import { INotification, ROUTES, StatusNotification } from '@shared/lib';
 
 import { useMarkAsReadMutation } from '../api/notifications';
 import { useDeleteNotificationsMutation } from '../api/notifications';
@@ -45,7 +45,7 @@ export function NotificationsList() {
 
   useEffect(() => {
     if (error && 'status' in error && error.status === 401) {
-      navigate('/auth');
+      navigate(ROUTES.AUTH);
     }
   }, [error, navigate]);
 

@@ -1,1 +1,1 @@
-export { SportIcon } from './SportIcon';
+export { SportIcon } from './sport-icon';

@@ -1,18 +1,2 @@
-export { default as mapReducer, setMapCenter } from './map/mapSlice';
-export {
-  default as filtersReducer,
-  setFilterCoordinates,
-  setFilterRange,
-  setEventTypes,
-  setEventStatuses,
-  setEventStartDateTime,
-  setEventScope,
-  applyFilters,
-  resetFilters,
-  resetCustomRange,
-  selectFilters,
-  selectFilterCoordinates,
-  selectFilterRange,
-  selectUseCustomRange,
-  selectEventSearchRequest,
-} from './filters/filtersSlice';
+export * from './map';
+export * from './filters';
