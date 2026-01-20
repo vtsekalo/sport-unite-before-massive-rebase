@@ -1,27 +1,25 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useOutlet } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
-import { FilterEventsModal } from '@features/filter-events/ui/FilterEventsModal';
+import { FilterEventsModal } from '@features/filter-events/ui/filter-events-modal';
+import { ROUTES } from '@shared/lib';
 import { PageModal } from '@shared/ui/modal';
 import { HeaderDesktop, HeaderMobile } from '@widgets/header';
 import { EventsMap } from '@widgets/map';
 import { NavBar } from '@widgets/navbar';
 
 export const Layout = () => {
-  const location = useLocation();
-
   const navigate = useNavigate();
 
+  const hasOutlet = useOutlet();
   const theme = useTheme();
-
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
   const memoizedMap = useMemo(() => <EventsMap />, []);
 
   const handleCloseModal = () => {
-    navigate('/');
+    navigate(ROUTES.HOME);
   };
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
@@ -47,7 +45,7 @@ export const Layout = () => {
         <HeaderDesktop buttonRef={buttonRefCallback} />
       )}
       <FilterEventsModal buttonRef={anchorEl} />
-      <PageModal open={location.pathname !== '/'} onClose={handleCloseModal}>
+      <PageModal open={Boolean(hasOutlet)} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>
 

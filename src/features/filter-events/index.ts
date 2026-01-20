@@ -1,1 +1,1 @@
-export { FilterEventsModal } from './ui/FilterEventsModal';
+export { FilterEventsModal } from './ui/filter-events-modal';

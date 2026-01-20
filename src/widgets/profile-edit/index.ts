@@ -1,1 +1,1 @@
-export { default as ProfileEditModal } from './ui/ProfileEditModal';
+export { ProfileEdit } from './ui/profile-edit';

@@ -1,1 +1,1 @@
-export { EventEditModal } from './ui/EventEditModal';
+export { EventEditModal } from './ui/event-edit-modal';

@@ -1,1 +1,1 @@
-export { PageModal } from './page-modal';
+export * from './page-modal';

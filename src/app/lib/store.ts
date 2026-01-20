@@ -5,7 +5,7 @@ import { filtersReducer, mapReducer } from '@shared/store';
 import { chatReducer } from '@widgets/chat-messages';
 import { registrationApi } from '@widgets/registration';
 
-import { rtkQuerySnackbarMiddleware } from './middlewares/rtkQueryToastMiddleware';
+import { rtkQuerySnackbarMiddleware } from './middlewares/rtk-query-toast-middleware';
 
 export const store = configureStore({
   reducer: {

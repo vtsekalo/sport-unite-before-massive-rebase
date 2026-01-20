@@ -1,1 +1,1 @@
-export { getMarkerIcon, getEventTypeName } from './getMarkerIcon';
+export { getMarkerIcon, getEventTypeName } from './get-marker-icon';
