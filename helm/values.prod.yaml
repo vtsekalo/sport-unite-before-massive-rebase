@@ -6,7 +6,7 @@ INGRESS_HOST: "prod.sport-unite.it-mentor.space"
 VITE_KEYCLOAK_URL: "http://keycloak.it-mentor.space/"
 VITE_TOKEN_URL: "realms/itm-platform-prod/protocol/openid-connect/token"
 VITE_CLIENT_SECRET: "F1vWhQvY2qNPZKvD7mPFEKIb0Bh6o5eO"
-VITE_BASE_URL: "http://api-gateway.prod.sport-unite.it-mentor.space"
+VITE_BASE_URL: "https://api-gateway.prod.sport-unite.it-mentor.space"
 
 replicaCount: 1
 

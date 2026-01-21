@@ -10,7 +10,7 @@ export const AuthPage = () => {
 
   const login = () => {
     window.location.assign(
-      'http://api-gateway.dev.sport-unite.it-mentor.space/oauth2/authorization/gateway',
+      'https://api-gateway.dev.sport-unite.it-mentor.space/oauth2/authorization/gateway',
     );
   };
 
