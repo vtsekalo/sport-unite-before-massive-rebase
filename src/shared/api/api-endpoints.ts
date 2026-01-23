@@ -1,13 +1,16 @@
-export enum ApiEndpoints {
-  CREATE_USER = '/user-service/api/v1/users',
-  EVENTS_SEARCH = '/event-service/api/v1/events/search',
-  EVENTS_TYPES = '/event-service/api/v1/events/types',
-  EVENT_BY_ID = '/event-service/api/v1/events/',
-  USER_CHATS = '/chat-service/api/v1/chat-rooms/my',
-  CHAT_MESSAGES = '/chat-service/api/v1/chat-rooms',
-  USER_EVENTS = '/event-service/api/v1/events/user',
-  GET_NOTIFICATIONS = 'notification-service/api/v1/inapp',
-  GET_COUNT_NOTIFICATIONS = 'notification-service/api/v1/inapp/count',
-  MARK_AS_READ_NOTIFICATIONS = 'notification-service/api/v1/inapp/read',
-  DELETE_NOTIFICATIONS = 'notification-service/api/v1/inapp/delete',
-}
+import { API_PATHS } from '@shared/lib';
+
+export const ApiEndpoints = {
+  GET_MY_USER: `/${API_PATHS.USER_SERVICE}/users/me`,
+  CREATE_USER: `/${API_PATHS.USER_SERVICE}/users`,
+  EVENTS_SEARCH: `/${API_PATHS.EVENT_SERVICE}/events/search`,
+  EVENTS_TYPES: `/${API_PATHS.EVENT_SERVICE}/events/types`,
+  EVENT_BY_ID: `/${API_PATHS.EVENT_SERVICE}/events`,
+  USER_CHATS: `/${API_PATHS.CHAT_SERVICE}/chat-rooms/my`,
+  CHAT_MESSAGES: `/${API_PATHS.CHAT_SERVICE}/chat-rooms`,
+  USER_EVENTS: `/${API_PATHS.EVENT_SERVICE}/events/user`,
+  GET_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp`,
+  GET_COUNT_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/count`,
+  MARK_AS_READ_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/read`,
+  DELETE_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/delete`,
+} as const;

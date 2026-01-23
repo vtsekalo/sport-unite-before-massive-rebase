@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 
 import { store } from '@app/lib/store';
-import { Routers } from '@app/routes/Routers';
+import { Routers } from '@app/routes/routers';
 import { theme } from '@shared/config';
 
 export const App = () => {

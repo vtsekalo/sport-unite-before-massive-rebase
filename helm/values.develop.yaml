@@ -3,7 +3,7 @@ APP_IMAGE_NAME: "harbor.itm-space.net/front/sport-unite-sport-unite-develop"
 APP_IMAGE_TAG: "latest"
 INGRESS_HOST: "dev.sport-unite.it-mentor.space"
 
-VITE_KEYCLOAK_URL: "http://keycloak.it-mentor.space/"
+VITE_KEYCLOAK_URL: "https://keycloak.it-mentor.space/"
 VITE_TOKEN_URL: "realms/itm-platform-dev/protocol/openid-connect/token"
 VITE_CLIENT_SECRET: "z0E6Cruf5PuJ98z9R9q54bTPsQoVWq8j"
 VITE_BASE_URL: "https://api-gateway.dev.sport-unite.it-mentor.space"
