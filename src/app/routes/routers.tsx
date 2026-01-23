@@ -8,11 +8,12 @@ import { AuthPage } from '@pages/auth';
 import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
 import { MyEvents } from '@pages/my-events';
+import { NotFoundPage } from '@pages/not-found-page';
 import { Notifications } from '@pages/notifications';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
 import { TestPage } from '@pages/test-page';
-import { ROUTES } from '@shared/lib';
+import { DeletionGuard, ROUTES } from '@shared/lib';
 import { EventEditModal } from '@widgets/event';
 import { Profile } from '@widgets/profile';
 import { ProfileDeleted } from '@widgets/profile-deleted';
@@ -40,9 +41,12 @@ export const Routers: FC = () => {
         <Route path={ROUTES.PROFILE.INDEX} element={<ProfilePage />}>
           <Route index element={<Profile />} />
           <Route path={ROUTES.PROFILE.EDIT} element={<ProfileEdit />} />
-          <Route path={ROUTES.PROFILE.DELETED} element={<ProfileDeleted />} />
+          <Route element={<DeletionGuard />}>
+            <Route path={ROUTES.PROFILE.DELETED} element={<ProfileDeleted />} />
+          </Route>
         </Route>
         <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEvents />} />
+        <Route path={ROUTES.PROFILE.DETAIL(':id')} element={<ProfilePage />} />
         <Route
           path={ROUTES.EVENT.DETAIL(':eventId')}
           element={<EventEditModal />}
@@ -55,6 +59,7 @@ export const Routers: FC = () => {
         <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
         <Route path={ROUTES.SEND_EMAIL} element={<SendEmail />} />
       </Route>
+      <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
       <Route path={ROUTES.TEST_PAGE} element={<TestPage />} />
     </Routes>
   );

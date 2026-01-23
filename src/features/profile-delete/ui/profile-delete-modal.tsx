@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 
-import { setDeletionAccess } from '@shared/lib';
+import { profileDeletionStorage } from '@shared/lib';
 import { ConfirmModal } from '@shared/ui/confirm-modal';
 
 import { useDeleteMyProfileMutation } from '../api/profile-delete-api';
@@ -22,7 +22,7 @@ export const ProfileDeleteModal: FC<LogoutConfirmationModalProps> = ({
     useDeleteMyProfileMutation();
   const onSubmit = async () => {
     await deleteMyProfile({}).unwrap();
-    setDeletionAccess();
+    profileDeletionStorage.set();
     onConfirm();
     onClose();
   };

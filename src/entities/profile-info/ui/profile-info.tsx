@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 
 import { Box, alpha, useMediaQuery, useTheme } from '@mui/material';
 
-import { Styled } from './styled';
+import { Styled } from './profile-info.styled';
 
 type ProfileInfoProps = {
   avatarNode: ReactNode;

@@ -14,7 +14,6 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -265,19 +264,17 @@ export const ProfileEdit: FC = () => {
             >
               Настройки конфиденциальности
             </StyledButtonSettingsConf>
-            <Tooltip title={nicknameValue}>
-              <Typography
-                fontWeight={700}
-                fontSize='40px'
-                color='text.primary'
-                display={{ xs: 'none', md: 'flex' }}
-                maxWidth='400px'
-                overflow='hidden'
-                whiteSpace='nowrap'
-              >
-                {nicknameValue}
-              </Typography>
-            </Tooltip>
+            <Typography
+              fontWeight={700}
+              fontSize='40px'
+              color='text.primary'
+              display={{ xs: 'none', md: 'flex' }}
+              maxWidth='400px'
+              overflow='hidden'
+              whiteSpace='nowrap'
+            >
+              {profile?.nickname}
+            </Typography>
           </Box>
 
           <Box

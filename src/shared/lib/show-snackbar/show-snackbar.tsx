@@ -43,8 +43,10 @@ export const showSnackbar = (
         slotProps={{
           transition: {
             onExited: () => {
-              root.unmount();
-              mountPoint.remove();
+              setTimeout(() => {
+                root.unmount();
+                mountPoint.remove();
+              }, 0);
             },
           },
         }}

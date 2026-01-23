@@ -1,1 +1,1 @@
-export { QueryInfo } from './ui/query-Info';
+export { QueryInfo } from './ui/query-info';

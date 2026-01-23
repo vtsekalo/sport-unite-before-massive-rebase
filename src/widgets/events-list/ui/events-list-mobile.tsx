@@ -9,7 +9,7 @@ import { EventStatus, IEvent } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
-import { groupEventsByStatus } from '../lib/groupEventsByStatus';
+import { groupEventsByStatus } from '../lib/group-events-by-status';
 import { EventListSkeleton } from './event-list-skeleton';
 import { Styled } from './event-list.style';
 

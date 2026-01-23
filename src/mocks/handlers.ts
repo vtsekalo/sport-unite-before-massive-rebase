@@ -1,253 +1,261 @@
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, delay, http } from 'msw';
 
-import { IEventType } from '@shared/lib';
-import { GenderVariant, IUserProfile, UserStatusVariant } from '@shared/lib';
+import { ApiEndpoints } from '@shared/api';
+import {
+  EventScope,
+  EventSearchRequest,
+  EventStatus,
+  GenderVariant,
+  IEvent,
+  INotification,
+  IUserProfile,
+  StatusNotification,
+  UserRole,
+  UserStatusVariant,
+} from '@shared/lib';
 
-let currentProfile: IUserProfile = {
-  id: '1',
-  nickname: '@Ivanov',
+// --- СОСТОЯНИЕ МОКОВ (DB) ---
+const currentProfile: IUserProfile = {
+  id: 'user-123',
+  nickname: 'Ivanov',
   email: 'ivanov@example.com',
-  emailVerified: false,
+  emailVerified: true,
   dateOfBirth: '1994-05-25',
   userStatus: UserStatusVariant.ACTIVE,
   firstName: 'Иван',
   lastName: 'Иванов',
-  city: 'Nabereznie Chelny, Russian Federation',
+  city: 'Москва',
   gender: GenderVariant.MALE,
-  biography: 'Супер работник',
+  biography: 'Frontend dev',
   profilePicture: null,
   averageRating: 4.5,
-  interests: ['Люблю бегать'],
+  interests: ['Спорт'],
 };
 
-const fileToDataURL = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
+const mockEvents: IEvent[] = [
+  {
+    eventId: 'e1',
+    userId: 'user-123',
+    eventName: 'Турнир по футболу 5х5',
+    eventType: 'Футбол',
+    eventStatus: EventStatus.PLANNED,
+    eventStartDate: '2026-06-01T10:00:00Z',
+    eventEndDate: '2026-06-01T12:00:00Z',
+    countUsers: 10,
+    eventDescription: 'Собираемся на стадионе Динамо. Уровень средний.',
+    eventPhoto: 'https://picsum.photos',
+    eventLocation: 'ул. Льва Яшина, 5, Москва',
+    coordinates: { latitude: 55.7915, longitude: 37.5598 },
+    userRole: true,
+    users: [
+      {
+        userId: 'user-123',
+        nickName: 'Ivanov',
+        userRole: UserRole.organizer,
+        urlUserPhoto: null,
+      },
+    ],
+  },
+  {
+    eventId: 'e2',
+    userId: 'user-456',
+    eventName: 'Забег в парке',
+    eventType: 'Бег',
+    eventStatus: EventStatus.PLANNED,
+    eventStartDate: '2026-06-05T08:00:00Z',
+    eventEndDate: '2026-06-05T09:30:00Z',
+    countUsers: 50,
+    eventDescription: 'Утренняя пробежка 5км. Ждем всех желающих!',
+    eventPhoto: 'https://picsum.photos',
+    eventLocation: 'Парк Горького, центральный вход',
+    coordinates: { latitude: 55.728, longitude: 37.601 },
+    userRole: false,
+    users: [
+      {
+        userId: 'user-456',
+        nickName: 'Runner',
+        userRole: UserRole.organizer,
+        urlUserPhoto: null,
+      },
+    ],
+  },
+  {
+    eventId: 'e3',
+    userId: 'user-789',
+    eventName: 'Баскетбольный Баскетбол',
+    eventType: 'Баскетбол',
+    eventStatus: EventStatus.IN_PROCESS,
+    eventStartDate: '2026-06-10T15:00:00Z',
+    eventEndDate: '2026-06-10T20:00:00Z',
+    countUsers: 30,
+    eventDescription: 'Соревнования по Баскетболу. Призы от спонсоров.',
+    eventPhoto: 'https://picsum.photos',
+    eventLocation: 'Скейт-парк Садовники',
+    coordinates: { latitude: 55.662, longitude: 37.658 },
+    userRole: false,
+    users: [
+      {
+        userId: 'user-789',
+        nickName: '@Skater',
+        userRole: UserRole.organizer,
+        urlUserPhoto: null,
+      },
+    ],
+  },
+  {
+    eventId: 'e4',
+    userId: 'user-123',
+    eventName: 'Товарищеский матч на Красной площади',
+    eventType: 'Футбол',
+    eventStatus: EventStatus.PLANNED,
+    eventStartDate: '2026-06-15T19:00:00Z',
+    eventEndDate: '2026-06-15T21:00:00Z',
+    countUsers: 10,
+    eventDescription:
+      'Центрее не бывает! Играем прямо у Кремля. Берем с собой хорошее настроение.',
+    eventPhoto: 'https://picsum.photos',
+    eventLocation: 'Красная площадь, Москва',
+    coordinates: { latitude: 55.7522, longitude: 37.6156 }, // Координаты центра Москвы
+    userRole: true,
+    users: [
+      {
+        userId: 'user-123',
+        nickName: '@Ivanov',
+        userRole: UserRole.organizer,
+        urlUserPhoto: null,
+      },
+    ],
+  },
+  {
+    eventId: 'e5',
+    userId: 'user-123',
+    eventName: 'Мини-футбол у Патриарших прудов',
+    eventType: 'Футбол',
+    eventStatus: EventStatus.PLANNED,
+    eventStartDate: '2026-06-18T18:30:00Z',
+    eventEndDate: '2026-06-18T20:00:00Z',
+    countUsers: 8,
+    eventDescription:
+      'Небольшой матч 4х4, поле маленькое. После игры можно посидеть у пруда.',
+    eventPhoto: 'https://picsum.photos',
+    eventLocation: 'Патриаршие пруды, Москва',
+    coordinates: { latitude: 55.766, longitude: 37.595 },
+    userRole: true,
+    users: [
+      {
+        userId: 'user-123',
+        nickName: '@Ivanov',
+        userRole: UserRole.organizer,
+        urlUserPhoto: null,
+      },
+    ],
+  },
+];
 
+let notifications: INotification[] = [
+  {
+    messageId: 'n1',
+    eventId: 'e1',
+    eventName: 'Футбол 5х5',
+    eventType: 'Футбол',
+    eventUrl: '/events/e1',
+    userRole: UserRole.participant,
+    createdAtNotif: new Date().toISOString(),
+    statusNotif: StatusNotification.new,
+    titleNotif: 'Вас пригласили',
+    bodyNotif: 'Приходите играть!',
+  },
+];
+
+// --- HANDLERS ---
 export const handlers = [
-  http.get('/user-service/api/v1/users/me', () => {
-    console.log('[MSW] Mock: GET /user-service/api/v1/users/me');
-    return HttpResponse.json(currentProfile);
+  // ПОИСК СОБЫТИЙ (POST)
+  http.post(ApiEndpoints.EVENTS_SEARCH, async ({ request }) => {
+    const filters = (await request.json()) as EventSearchRequest;
+    await delay(500);
+
+    let filtered = [...mockEvents];
+
+    if (filters.eventTypes?.length) {
+      filtered = filtered.filter((e) =>
+        filters.eventTypes?.includes(e.eventType),
+      );
+    }
+    if (filters.eventStatuses?.length) {
+      filtered = filtered.filter((e) =>
+        filters.eventStatuses.includes(e.eventStatus),
+      );
+    }
+    if (filters.scope === EventScope.ORGANIZER) {
+      filtered = filtered.filter((e) => e.userId === currentProfile.id);
+    }
+
+    return HttpResponse.json(filtered);
   }),
 
-  http.patch(
-    '/user-service/api/v1/users/update-profile-text',
-    async ({ request }) => {
-      console.log(
-        '[MSW] Mock: PATCH /user-service/api/v1/users/update-profile-text',
-      );
-
-      try {
-        const updatedFields = (await request.json()) as Partial<IUserProfile>;
-        console.log('[MSW] Received JSON data for text update:', updatedFields);
-
-        currentProfile = {
-          ...currentProfile,
-          ...updatedFields,
-          profilePicture: currentProfile.profilePicture,
-        };
-
-        console.log('[MSW] Profile text updated:', {
-          ...currentProfile,
-          profilePicture: currentProfile.profilePicture
-            ? 'Data URL (preserved)'
-            : null,
-        });
-
-        return HttpResponse.json(currentProfile);
-      } catch (error) {
-        console.error(
-          '[MSW] Error in PATCH /user-service/api/v1/users/update-profile-text:',
-          error,
-        );
-
-        return HttpResponse.json(
-          {
-            message: 'Invalid request body',
-            timestamp: new Date().toISOString(),
-          },
-          { status: 400 },
-        );
-      }
-    },
-  ),
-
-  http.patch(
-    '/user-service/api/v1/users/update-profile-avatar',
-    async ({ request }) => {
-      console.log(
-        '[MSW] Mock: PATCH /user-service/api/v1/users/update-profile-avatar',
-      );
-
-      try {
-        const formData = await request.formData();
-        const profilePicture = formData.get('profilePicture');
-
-        console.log(
-          '[MSW] Profile picture field for avatar update:',
-          profilePicture,
-        );
-
-        if (profilePicture instanceof File && profilePicture.size > 0) {
-          try {
-            console.log(
-              `[MSW] Processing profile picture file: ${profilePicture.name}, ${profilePicture.size} bytes`,
-            );
-            currentProfile.profilePicture = await fileToDataURL(profilePicture);
-            console.log('[MSW] Profile picture converted to Data URL');
-          } catch (error) {
-            console.error(
-              '[MSW] Error processing profile picture file:',
-              error,
-            );
-            return HttpResponse.json(
-              {
-                message: 'Error processing profile picture file',
-                timestamp: new Date().toISOString(),
-              },
-              { status: 400 },
-            );
-          }
-        } else if (profilePicture === '') {
-          console.log('[MSW] Profile picture removed (explicit empty string)');
-          currentProfile.profilePicture = null;
-        } else {
-          console.log('[MSW] No changes to profile picture');
-        }
-
-        console.log('[MSW] Profile avatar updated:', {
-          ...currentProfile,
-          profilePicture: currentProfile.profilePicture
-            ? 'Data URL (updated)'
-            : null,
-        });
-
-        return HttpResponse.json(currentProfile);
-      } catch (error) {
-        console.error(
-          '[MSW] Error in PATCH /user-service/api/v1/users/update-profile-avatar:',
-          error,
-        );
-
-        return HttpResponse.json(
-          {
-            message: 'Invalid request body',
-            timestamp: new Date().toISOString(),
-          },
-          { status: 400 },
-        );
-      }
-    },
-  ),
-
-  http.patch(
-    '/user-service/api/v1/users/updateMyProfile',
-    async ({ request }) => {
-      console.log(
-        '[MSW] Mock: PATCH /user-service/api/v1/users/updateMyProfile (legacy)',
-      );
-
-      try {
-        const contentType = request.headers.get('content-type') || '';
-
-        if (contentType.includes('multipart/form-data')) {
-          const formData = await request.formData();
-          const updatedFields: Partial<IUserProfile> = {};
-
-          const stringFields = [
-            'nickname',
-            'dateOfBirth',
-            'city',
-            'biography',
-            'email',
-          ] as const;
-
-          stringFields.forEach((field) => {
-            const value = formData.get(field);
-            if (typeof value === 'string') {
-              updatedFields[field] = value;
-            }
-          });
-
-          const gender = formData.get('gender');
-          if (
-            typeof gender === 'string' &&
-            Object.values(GenderVariant).includes(gender as GenderVariant)
-          ) {
-            updatedFields.gender = gender as GenderVariant;
-          }
-
-          const interests = formData.get('interests');
-          if (typeof interests === 'string') {
-            updatedFields.interests = interests
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean);
-          }
-
-          const profilePicture = formData.get('profilePicture');
-
-          if (profilePicture instanceof File && profilePicture.size > 0) {
-            updatedFields.profilePicture = await fileToDataURL(profilePicture);
-          } else if (profilePicture === '') {
-            updatedFields.profilePicture = null;
-          }
-
-          currentProfile = {
-            ...currentProfile,
-            ...updatedFields,
-          };
-        } else {
-          const updatedFields = (await request.json()) as Partial<IUserProfile>;
-          currentProfile = {
-            ...currentProfile,
-            ...updatedFields,
-          };
-        }
-
-        return HttpResponse.json(currentProfile);
-      } catch (error) {
-        console.error(
-          '[MSW] Error in legacy PATCH /user-service/api/v1/users/updateMyProfile:',
-          error,
-        );
-
-        return HttpResponse.json(
-          {
-            message: 'Invalid request body',
-            timestamp: new Date().toISOString(),
-          },
-          { status: 400 },
-        );
-      }
-    },
-  ),
-
-  http.get('/user-service/api/v1/auth/check', () => {
-    return HttpResponse.json({ authenticated: true });
-  }),
-
-  http.get('*/api/v1/events/types', async () => {
-    console.log('[MSW] Mock: /api/v1/events/types');
-    const mockSportTypes: IEventType[] = [
+  // ТИПЫ СОБЫТИЙ
+  http.get(ApiEndpoints.EVENTS_TYPES, () => {
+    return HttpResponse.json([
       { typeId: 1, typeName: 'Футбол' },
       { typeId: 2, typeName: 'Баскетбол' },
       { typeId: 3, typeName: 'Теннис' },
       { typeId: 4, typeName: 'Бег' },
-      { typeId: 5, typeName: 'Плавание' },
-      { typeId: 6, typeName: 'Велоспорт' },
-      { typeId: 7, typeName: 'Волейбол' },
-      { typeId: 8, typeName: 'Хоккей' },
-      { typeId: 9, typeName: 'Йога' },
-      { typeId: 10, typeName: 'Бокс' },
-      { typeId: 11, typeName: 'Скалолазание' },
-    ];
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return HttpResponse.json(mockSportTypes);
+      { typeId: 5, typeName: 'Скейтбординг' },
+      { typeId: 6, typeName: 'BMX' },
+      { typeId: 7, typeName: 'Роллер-спорт' },
+      { typeId: 8, typeName: 'Велоспорт' },
+      { typeId: 9, typeName: 'Сноубординг' },
+    ]);
+  }),
+
+  // СОБЫТИЯ ПОЛЬЗОВАТЕЛЯ
+  http.get(ApiEndpoints.USER_EVENTS, () => {
+    const myEvents = mockEvents.filter((e) => e.userId === currentProfile.id);
+    return HttpResponse.json(myEvents);
+  }),
+
+  // СОБЫТИЕ ПО ID
+  http.get(`${ApiEndpoints.EVENT_BY_ID}/:id`, ({ params }) => {
+    const event = mockEvents.find((e) => e.eventId === params.id);
+    return event
+      ? HttpResponse.json(event)
+      : new HttpResponse(null, { status: 404 });
+  }),
+
+  // ПРОФИЛЬ (Используем API_PATHS.USER_SERVICE из твоих констант)
+  http.get(ApiEndpoints.GET_MY_USER, () => {
+    return HttpResponse.json(currentProfile);
+  }),
+
+  // УВЕДОМЛЕНИЯ: СПИСОК
+  http.patch(ApiEndpoints.GET_NOTIFICATIONS, () => {
+    return HttpResponse.json(notifications);
+  }),
+
+  // УВЕДОМЛЕНИЯ: СЧЕТЧИК
+  http.get(ApiEndpoints.GET_COUNT_NOTIFICATIONS, () => {
+    const unread = notifications.filter(
+      (n) => n.statusNotif === StatusNotification.new,
+    ).length;
+    return HttpResponse.json({
+      countAllActualMessages: notifications.length,
+      countReadMessages: notifications.length - unread,
+    });
+  }),
+
+  // УВЕДОМЛЕНИЯ: ПРОЧИТАТЬ
+  http.post(ApiEndpoints.MARK_AS_READ_NOTIFICATIONS, async ({ request }) => {
+    const { messageIds } = (await request.json()) as { messageIds: string[] };
+    notifications = notifications.map((n) =>
+      messageIds.includes(n.messageId)
+        ? { ...n, statusNotif: StatusNotification.read }
+        : n,
+    );
+    return new HttpResponse(null, { status: 200 });
+  }),
+
+  // ЧАТЫ
+  http.get(ApiEndpoints.USER_CHATS, () => {
+    return HttpResponse.json([]);
   }),
 ];
