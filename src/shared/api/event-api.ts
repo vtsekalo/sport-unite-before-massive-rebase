@@ -25,7 +25,7 @@ export const eventApi = baseApi.injectEndpoints({
     }),
     getEventById: builder.query<IEvent, string>({
       query: (eventId) => ({
-        url: `${ApiEndpoints.EVENT_BY_ID}${eventId}`,
+        url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}`,
         method: 'GET',
       }),
       providesTags: ['EventById'],

@@ -1,8 +1,10 @@
+import checkFile from 'eslint-plugin-check-file';
 import jsdoc from 'eslint-plugin-jsdoc';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
 import js from '@eslint/js';
 
 export default tseslint.config(
@@ -18,6 +20,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       jsdoc: jsdoc,
+      'check-file': checkFile,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -31,6 +34,21 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': [
         'error',
         { 'additionalHooks': 'useMyCustomHook' },
+      ],
+      'check-file/filename-naming-convention': [
+        'error',
+        {
+          'src/**/*.{ts,tsx}': 'KEBAB_CASE',
+        },
+        {
+          ignoreMiddleExtensions: true,
+        },
+      ],
+      'check-file/folder-naming-convention': [
+        'error',
+        {
+          'src/**/': 'KEBAB_CASE',
+        },
       ],
     },
   },

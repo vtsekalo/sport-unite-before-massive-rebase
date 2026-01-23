@@ -1,4 +1,3 @@
-// src/entities/query-info/ui/QueryInfo.tsx
 import { FC } from 'react';
 
 import { Box, CircularProgress, Typography } from '@mui/material';

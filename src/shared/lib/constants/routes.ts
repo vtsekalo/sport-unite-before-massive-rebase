@@ -19,9 +19,12 @@ export const ROUTES = {
     EDIT: '/profile/edit',
     DELETED: '/profile/deleted',
     MY_EVENTS: '/profile/my-events',
+    DETAIL: (id: string | number) => `/profile/${id}`,
   },
 
   EVENT: {
     DETAIL: (id: string | number) => `/events/${id}`,
   },
+
+  NOT_FOUND: '*',
 } as const;

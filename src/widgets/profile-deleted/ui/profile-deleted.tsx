@@ -1,13 +1,23 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Button, Typography } from '@mui/material';
 
-import { ROUTES, useProfileDeletionGuard } from '@shared/lib';
+import { ROUTES, profileDeletionStorage } from '@shared/lib';
 
 export const ProfileDeleted: FC = () => {
-  useProfileDeletionGuard();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      profileDeletionStorage.clear();
+    };
+  }, []);
+
+  const handleGoHome = () => {
+    profileDeletionStorage.clear();
+    navigate(ROUTES.HOME, { replace: true });
+  };
   return (
     <Box
       display='flex'
@@ -21,11 +31,7 @@ export const ProfileDeleted: FC = () => {
       <Typography fontWeight={700} fontSize={{ xs: '14px', md: '24px' }}>
         Ваш профиль удалён.
       </Typography>
-      <Button
-        size='mediumFixed'
-        variant='contained'
-        onClick={() => navigate(ROUTES.HOME)}
-      >
+      <Button size='mediumFixed' variant='contained' onClick={handleGoHome}>
         Перейти на главную страницу
       </Button>
     </Box>

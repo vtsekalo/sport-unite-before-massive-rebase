@@ -34,7 +34,7 @@
       "@shared/*": ["src/shared/*"]
     }
   },
-  "include": ["src", "src/shared/ui/icons/logo", "src/shared/ui/icons/index.ts"],
+  "include": ["src/**/*"],
 
 }
 

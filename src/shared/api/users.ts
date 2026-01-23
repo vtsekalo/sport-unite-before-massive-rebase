@@ -1,20 +1,27 @@
 import { API_PATHS, type IUserProfile } from '@shared/lib';
 import { WithMeta } from '@shared/lib/types/general';
 
+import { ApiEndpoints } from './api-endpoints';
 import { baseApi } from './base-api';
 
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query<IUserProfile, string>({
-      query: (userId) => `${API_PATHS.USER_SERVICE}/users/${userId}`,
-      providesTags: ['Profile'],
+    getUserById: builder.query<IUserProfile, string>({
+      query: (userId) => ({
+        url: `${API_PATHS.USER_SERVICE}/users/${userId}`,
+        method: 'GET',
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'Profile', id }],
     }),
     getMyProfile: builder.query<IUserProfile, WithMeta<object>>({
-      query: () => `${API_PATHS.USER_SERVICE}/users/me`,
+      query: () => ({
+        url: ApiEndpoints.GET_MY_USER,
+        method: 'GET',
+      }),
       providesTags: [{ type: 'MyProfile', id: 'me' }],
       serializeQueryArgs: () => 'getMyProfile',
     }),
   }),
 });
 
-export const { useGetProfileQuery, useGetMyProfileQuery } = usersApi;
+export const { useGetMyProfileQuery, useGetUserByIdQuery } = usersApi;
