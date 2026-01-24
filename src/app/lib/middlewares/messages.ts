@@ -8,8 +8,13 @@ export enum StatusCodes {
 }
 
 export const StatusMessages = {
+  400: 'Некорректный запрос',
   401: 'Вы не авторизованы',
   403: 'У вас нет доступа к этому ресурсу',
+  404: 'Ресурс не найден',
+  409: 'Конфликт данных',
+  500: 'Внутренняя ошибка сервера',
+  503: 'Сервис временно недоступен',
 };
 
 export const EndPointsMessages = {
@@ -26,5 +31,13 @@ export const EndPointsMessages = {
   getUserChats: {
     500: 'Наш сервис временно не доступен',
     404: 'У вас нет доступных чатов',
+  },
+  deleteMyProfile: {
+    400: 'Некорректный запрос',
+    404: 'Профиль не найден',
+    500: 'Внутренняя ошибка сервиса',
+  },
+  updateMyProfile: {
+    409: 'Конфликт данных',
   },
 } as const satisfies Record<string, Partial<Record<number, string>>>;

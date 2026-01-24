@@ -1,9 +1,11 @@
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
+import { ModalWrapper } from '@entities/modal-wrapper';
 import { useGetUserChatsQuery } from '@shared/api';
+import { ROUTES } from '@shared/lib';
 import { ChatsList } from '@widgets/chats-list';
 
 export const Chats: FC = () => {
@@ -12,12 +14,12 @@ export const Chats: FC = () => {
 
   useEffect(() => {
     if (error && 'status' in error && error?.status === 401) {
-      navigate('/auth');
+      navigate(ROUTES.AUTH);
     }
   }, [error, navigate]);
 
   return (
-    <Box
+    <ModalWrapper
       paddingY={2}
       paddingX={1}
       display='flex'
@@ -35,6 +37,6 @@ export const Chats: FC = () => {
         Сообщения
       </Typography>
       <ChatsList chats={data ?? []} loading={isLoading} />
-    </Box>
+    </ModalWrapper>
   );
 };

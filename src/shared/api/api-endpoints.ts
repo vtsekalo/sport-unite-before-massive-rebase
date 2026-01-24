@@ -1,0 +1,17 @@
+import { API_PATHS } from '@shared/lib';
+
+export const ApiEndpoints = {
+  GET_MY_USER: `/${API_PATHS.USER_SERVICE}/users/me`,
+  CREATE_USER: `/${API_PATHS.USER_SERVICE}/users`,
+  EVENTS_SEARCH: `/${API_PATHS.EVENT_SERVICE}/events/search`,
+  EVENTS_TYPES: `/${API_PATHS.EVENT_SERVICE}/events/types`,
+  EVENTS_JOININ: '/event-service/api/v1/events/{eventId}/join',
+  EVENT_BY_ID: `/${API_PATHS.EVENT_SERVICE}/events`,
+  USER_CHATS: `/${API_PATHS.CHAT_SERVICE}/chat-rooms/my`,
+  CHAT_MESSAGES: `/${API_PATHS.CHAT_SERVICE}/chat-rooms`,
+  USER_EVENTS: `/${API_PATHS.EVENT_SERVICE}/events/user`,
+  GET_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp`,
+  GET_COUNT_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/count`,
+  MARK_AS_READ_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/read`,
+  DELETE_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/delete`,
+} as const;
