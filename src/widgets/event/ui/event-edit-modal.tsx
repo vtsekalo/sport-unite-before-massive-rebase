@@ -40,7 +40,6 @@ type EventEditModalProps = {
 export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
 
-
   const { eventId } = useParams<{ eventId: string }>();
   const {
     data: eventData,
@@ -360,7 +359,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
             disabled={!hasFreeSlots}
             onClick={handleJoinEvent}
             loading={isJoining}
-            loadingIndicator={<Styled.ButtonLabel></Styled.ButtonLabel>}
+            loadingIndicator={<Typography></Typography>}
           >
             <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
             <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
