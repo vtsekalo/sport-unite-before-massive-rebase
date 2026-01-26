@@ -40,6 +40,7 @@ type EventEditModalProps = {
 export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
 
+
   const { eventId } = useParams<{ eventId: string }>();
   const {
     data: eventData,
@@ -50,7 +51,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const [joinEvent] = useGetJoinInEventsMutation();
+  const [joinEvent, { isLoading: isJoining }] = useGetJoinInEventsMutation();
   const { profile, isLoading: isProfileLoading } = useProfile();
   const isAuthenticated = !!profile;
 
@@ -94,7 +95,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       navigate(-1);
     }
   };
-
 
   const handleJoinEvent = async () => {
     if (!eventId) return;
@@ -359,6 +359,8 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
             variant='fullWidthAction'
             disabled={!hasFreeSlots}
             onClick={handleJoinEvent}
+            loading={isJoining}
+            loadingIndicator={<Styled.ButtonLabel></Styled.ButtonLabel>}
           >
             <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
             <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
