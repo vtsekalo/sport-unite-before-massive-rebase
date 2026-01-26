@@ -40,4 +40,10 @@ export const EndPointsMessages = {
   updateMyProfile: {
     409: 'Конфликт данных',
   },
+
+  joinEvent: {
+    400: 'Некорректный запрос на участие',
+    403: 'Нет доступа к событию',
+    500: 'Внутренняя ошибка сервиса',
+  },
 } as const satisfies Record<string, Partial<Record<number, string>>>;

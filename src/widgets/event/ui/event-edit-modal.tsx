@@ -95,15 +95,12 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
+
   const handleJoinEvent = async () => {
     if (!eventId) return;
-    console.error('Ошибка:');
-    try {
-      await joinEvent(eventId).unwrap();
-    } catch (error) {
-      console.error('Ошибка:', error);
-    }
+    await joinEvent(eventId);
   };
+
   if (isProfileLoading) {
     return (
       <Box
