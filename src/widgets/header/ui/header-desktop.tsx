@@ -8,7 +8,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InputIcon from '@mui/icons-material/Input';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
 import { useGetMyProfileQuery } from '@shared/api';
@@ -99,16 +99,16 @@ export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
               display='flex'
               alignItems='center'
               bgcolor={'rgba(54, 119, 255, 0.3)'}
-              padding={2}
+              px={2}
+              py={1}
               gap={2}
               borderRadius={2}
               onClick={() => handleNavigate(ROUTES.PROFILE.INDEX)}
             >
               {profile?.profilePicture ? (
-                <img
-                  width={20}
-                  height={20}
-                  src={`${profile.profilePicture}?v=${Math.random()}`}
+                <Avatar
+                  src={`${profile.profilePicture?.replace('http://194.85.218.83:9000', '') || ''}?v=${Math.random()}`}
+                  // src={`${profile.profilePicture}?v=${Math.random()}`}
                 />
               ) : (
                 <AccountCircleIcon fontSize='medium' />

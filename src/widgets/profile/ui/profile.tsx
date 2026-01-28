@@ -125,7 +125,8 @@ export const Profile: FC = () => {
     return {
       avatarNode: profile.profilePicture ? (
         <StyledAvatarImage
-          src={`${profile.profilePicture}?v=${Math.random()}`}
+          src={`${profile.profilePicture?.replace('http://194.85.218.83:9000', '') || ''}?v=${Math.random()}`}
+          // src={`${profile.profilePicture}?v=${Math.random()}`}
           alt='Avatar'
         />
       ) : (
