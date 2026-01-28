@@ -6,26 +6,24 @@ import { AlertColor } from '@mui/material';
 import { Styled } from './show-snackbar.style';
 
 const CONTAINER_ID = 'snackbar-stack';
+const INNER_CONTAINER_ID = 'snackbar-stack-inner';
 
-const createContainer = () => {
-  let container = document.getElementById(CONTAINER_ID);
+const outerContainer = document.createElement('div');
+outerContainer.id = CONTAINER_ID;
+document.body.appendChild(outerContainer);
 
-  if (!container) {
-    container = document.createElement('div');
-    container.id = CONTAINER_ID;
-    document.body.appendChild(container);
-    const root = ReactDOM.createRoot(container);
-    root.render(<Styled.StackContainer id={`${CONTAINER_ID}-inner`} />);
-  }
+const stackRoot = ReactDOM.createRoot(outerContainer);
+stackRoot.render(<Styled.StackContainer id={INNER_CONTAINER_ID} />);
 
-  return document.getElementById(`${CONTAINER_ID}-inner`) || container;
+const getContainer = () => {
+  return document.getElementById(INNER_CONTAINER_ID) || outerContainer;
 };
 
 export const showSnackbar = (
   message: string,
   severity: AlertColor = 'error',
 ) => {
-  const container = createContainer();
+  const container = getContainer();
   const mountPoint = document.createElement('div');
   container.appendChild(mountPoint);
 
