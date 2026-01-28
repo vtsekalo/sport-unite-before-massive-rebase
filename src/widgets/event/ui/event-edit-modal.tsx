@@ -1,7 +1,6 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import CancelIcon from '@mui/icons-material/Cancel';
 import Cross from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CreateIcon from '@mui/icons-material/Create';
@@ -22,6 +21,7 @@ import {
 import { EventInfo, Styled } from '@entities/event-card';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { QueryInfo } from '@entities/query-info';
+import { CancelEventButton } from '@features/cancel-event';
 import { useGetEventByIdQuery } from '@shared/api';
 import { Run } from '@shared/assets';
 import {
@@ -32,6 +32,7 @@ import {
   useProfile,
 } from '@shared/lib';
 import { formatDate } from '@shared/lib';
+import { UserRole } from '@shared/lib/types';
 
 type EventEditModalProps = {
   onClose?: () => void;
@@ -86,6 +87,15 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     };
   }, [eventData]);
 
+  const isCreator = useMemo(() => {
+    if (!isAuthenticated || !profile || !event?.users) return false;
+
+    const organizer = event.users.find(
+      (user) => user.userRole === UserRole.organizer,
+    );
+    return organizer?.userId === profile.id;
+  }, [isAuthenticated, profile, event?.users]);
+
   const handleClose = () => {
     if (onClose) {
       onClose();
@@ -93,21 +103,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       navigate(-1);
     }
   };
-
-  if (isProfileLoading) {
-    return (
-      <Box
-        position='relative'
-        display='flex'
-        flex={1}
-        flexDirection='column'
-        justifyContent='center'
-        alignItems='center'
-      >
-        <Skeleton variant='rectangular' width={200} height={200} />
-      </Box>
-    );
-  }
 
   if (isError) {
     return (
@@ -216,7 +211,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     const maxUsers = event.countUsers || 0;
     const hasFreeSlots = maxUsers > usersCount;
 
-    const isCreator = isAuthenticated && profile && event.userId === profile.id;
     const isParticipant =
       isAuthenticated &&
       profile &&
@@ -339,10 +333,10 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         )}
 
         {isCreator ? (
-          <Button variant='fullWidthAction'>
-            <Styled.CategoryMuiIcon as={CancelIcon} />
-            <Styled.ButtonLabel>ОТМЕНИТЬ СОБЫТИЕ</Styled.ButtonLabel>
-          </Button>
+          <CancelEventButton
+            eventId={eventId}
+            onCanceled={() => navigate('/')}
+          />
         ) : isParticipant ? (
           <Button variant='fullWidthAction'>
             <Styled.CategoryMuiIcon as={LogoutIcon} />
