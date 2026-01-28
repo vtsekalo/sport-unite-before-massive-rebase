@@ -2,7 +2,7 @@
  * Константы для работы с картой 2GIS
  */
 
-export const MAP_API_KEY = '5b4bb0de-e668-4d76-b383-e5134c3a4ac7';
+export const MAP_API_KEY = '4f2a8681-9eb5-4652-af0e-7c11db1e3189';
 export const DEFAULT_MAP_CENTER: [number, number] = [37.620001, 55.754167];
 export const DEFAULT_MAP_ZOOM = 14;
 

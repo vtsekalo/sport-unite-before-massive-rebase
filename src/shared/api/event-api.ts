@@ -30,6 +30,13 @@ export const eventApi = baseApi.injectEndpoints({
       }),
       providesTags: ['EventById'],
     }),
+    deleteEvent: builder.mutation<void, string>({
+      query: (eventId) => ({
+        url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}/delete`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Events', 'EventById'],
+    }),
   }),
 });
 
@@ -38,5 +45,6 @@ export const {
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
+  useDeleteEventMutation,
   useGetUserEventsQuery,
 } = eventApi;
