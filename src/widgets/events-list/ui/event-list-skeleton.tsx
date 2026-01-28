@@ -38,13 +38,13 @@ export const EventListSkeleton: FC<EventListSkeletonProps> = ({
             />
           }
           titleNode={
-            <Skeleton height={42} width={isMobile ? '150px' : '193px'} />
+            <Skeleton height={42} width={isMobile ? '150px' : '184px'} />
           }
           addressNode={
-            <Skeleton height={18} width={isMobile ? '150px' : '193px'} />
+            <Skeleton height={18} width={isMobile ? '150px' : '184px'} />
           }
           eventTimeNode={
-            <Skeleton height={16} width={isMobile ? '150px' : '193px'} />
+            <Skeleton height={16} width={isMobile ? '150px' : '110px'} />
           }
           avatarEventNode={
             <Skeleton
@@ -55,10 +55,10 @@ export const EventListSkeleton: FC<EventListSkeletonProps> = ({
             />
           }
           textNode={
-            <Skeleton height={42} width={isMobile ? '100%' : '313px'} />
+            <Skeleton height={42} width={isMobile ? '100%' : '304px'} />
           }
           buttonNode={
-            <Skeleton height={40} width={isMobile ? '100%' : '313px'} />
+            <Skeleton height={40} width={isMobile ? '100%' : '304px'} />
           }
         />
       ))}

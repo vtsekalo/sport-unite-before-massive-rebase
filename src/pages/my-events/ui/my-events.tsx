@@ -123,7 +123,11 @@ export const MyEvents: FC = () => {
               lineHeight='24px'
               letterSpacing='0.4px'
             >
-              Вы приняли участие в {organizers} событиях.
+              {eventsIsLoading ? (
+                <Skeleton height={30} width={257} />
+              ) : (
+                `Вы приняли участие в ${organizers} событиях.`
+              )}
             </Typography>
             <Typography
               component='h3'
@@ -132,7 +136,11 @@ export const MyEvents: FC = () => {
               lineHeight='24px'
               letterSpacing='0.4px'
             >
-              Организовали {participants} события.
+              {eventsIsLoading ? (
+                <Skeleton height={30} width={188} />
+              ) : (
+                `Организовали ${participants} события.`
+              )}
             </Typography>
           </Box>
           <Box

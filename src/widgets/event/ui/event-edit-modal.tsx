@@ -34,6 +34,8 @@ import {
 import { formatDate } from '@shared/lib';
 import { UserRole } from '@shared/lib/types';
 
+import { Styled2 } from './event-edit-modal.styled';
+
 type EventEditModalProps = {
   onClose?: () => void;
 };
@@ -77,7 +79,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       eventStartDateTime: startDateTime,
       eventStartDate: startDateTime,
       eventEndDate: endDate.toISOString(),
-      countUsers: eventData.users.length,
+      countUsers: eventData.countUsers,
       eventDescription: eventData.eventDescription,
       eventPhoto: eventData.eventPhoto,
       eventLocation: eventData.eventLocation,
@@ -312,12 +314,16 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         <Typography variant='body2' color='text.disabled' fontSize='12px'>
           Участники: ({usersCount}/{maxUsers})
         </Typography>
-        <AvatarGroup max={3}>
+        <AvatarGroup max={event.countUsers}>
           {(event.users || []).map((user: IUserParticipant) => (
-            <Avatar
+            <Styled2.UserAvatar
               key={user.userId}
               alt={user.nickName}
               src={user.urlUserPhoto || undefined}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(ROUTES.PROFILE.DETAIL(user.userId));
+              }}
             />
           ))}
         </AvatarGroup>

@@ -1,20 +1,20 @@
-import React from 'react';
+import { FC, ReactNode } from 'react';
 
 import { Box, Typography } from '@mui/material';
 
 import { Styled } from './styled';
 
 type EventInfoProps = {
-  headerNode: React.ReactNode;
-  titleNode: React.ReactNode;
-  dateNode: React.ReactNode;
-  locationNode: React.ReactNode;
-  descriptionNode: React.ReactNode;
-  participantsNode: React.ReactNode;
-  footerActionsNode: React.ReactNode;
+  headerNode: ReactNode;
+  titleNode: ReactNode;
+  dateNode: ReactNode;
+  locationNode: ReactNode;
+  descriptionNode: ReactNode;
+  participantsNode: ReactNode;
+  footerActionsNode: ReactNode;
 };
 
-export const EventInfo: React.FC<EventInfoProps> = ({
+export const EventInfo: FC<EventInfoProps> = ({
   headerNode,
   titleNode,
   dateNode,

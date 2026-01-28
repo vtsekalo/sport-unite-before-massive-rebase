@@ -74,7 +74,7 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
               pr='23px'
             >
               {loading ? (
-                <EventListSkeleton count={5} />
+                <EventListSkeleton count={3} />
               ) : column.data.length > 0 ? (
                 column.data.map((event) => (
                   <EventCardEntity
@@ -145,6 +145,8 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
                           width={80}
                           borderRadius='10px'
                           $status={event.eventStatus}
+                          src={event.eventPhoto || undefined}
+                          alt={event.eventName}
                         />
                       </ImageWrapper>
                     }

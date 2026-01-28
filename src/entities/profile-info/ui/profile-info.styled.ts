@@ -14,7 +14,6 @@ export const StyledGridContainer = styled(Box)`
   max-width: 329px;
   height: 100%;
   max-height: 716px;
-  padding: 0px;
   border-radius: 10px;
   font-family: '"Roboto", sans-serif';
   overflow-y: auto;
@@ -28,7 +27,6 @@ export const StyledGridContainer = styled(Box)`
     grid-template-rows: 1fr auto auto;
     overflow-y: hidden;
     max-width: 1191px;
-    padding: 0px 80px 40px 80px;
   }
 `;
 
