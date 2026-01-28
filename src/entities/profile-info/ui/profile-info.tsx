@@ -68,6 +68,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           alignItems='center'
           textAlign='center'
           gap={isMobile ? spacing(2) : spacing(1)}
+          width='100%'
         >
           {personalNode}
         </Box>

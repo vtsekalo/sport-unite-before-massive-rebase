@@ -34,13 +34,6 @@ export default defineConfig(() => {
         port: 5173,
         protocol: 'wss',
       },
-      proxy: {
-        '/sport-unite-dev': {
-        target: 'http://194.85.218.83:9000',
-        secure: false,
-        changeOrigin: true,
-        },
-      },
     },
   }
 })

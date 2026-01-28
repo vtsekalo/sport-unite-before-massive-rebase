@@ -7,8 +7,8 @@ import { baseApi } from './base-api';
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserById: builder.query<IUserProfile, string>({
-      query: (userId) => ({
-        url: `${API_PATHS.USER_SERVICE}/users/${userId}`,
+      query: (id) => ({
+        url: `${API_PATHS.USER_SERVICE}/users/${id}`,
         method: 'GET',
       }),
       providesTags: (_result, _error, id) => [{ type: 'Profile', id }],
