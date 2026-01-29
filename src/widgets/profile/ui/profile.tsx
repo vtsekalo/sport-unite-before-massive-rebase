@@ -18,13 +18,9 @@ import {
 import { ProfileInfo } from '@entities/profile-info';
 import { QueryInfo } from '@entities/query-info';
 import { LogoutConfirmationModal } from '@features/logout';
-import { ROUTES, UserStatusVariant, useProfile } from '@shared/lib';
+import { ROUTES, useProfile } from '@shared/lib';
 
-import {
-  StyledAvatarImage,
-  StyledMenu,
-  StyledPhotoCameraFrontIcon,
-} from './profile.styled';
+import { Styled } from './profile.styled';
 
 export const Profile: FC = () => {
   const [contactsAnchorEl, setContactsAnchorEl] = useState<null | HTMLElement>(
@@ -107,7 +103,6 @@ export const Profile: FC = () => {
           <>
             <Skeleton width={isMobile ? 131 : 180} height={24} />
             <Skeleton width={100} height={20} />
-            <Skeleton width={80} height={20} />
             <Skeleton width='70%' height={20} />
             <Skeleton width='100%' height={32} variant='rectangular' />
           </>
@@ -124,13 +119,12 @@ export const Profile: FC = () => {
 
     return {
       avatarNode: profile.profilePicture ? (
-        <StyledAvatarImage
-          src={`${profile.profilePicture?.replace('http://194.85.218.83:9000', '') || ''}?v=${Math.random()}`}
-          // src={`${profile.profilePicture}?v=${Math.random()}`}
+        <Styled.AvatarImage
+          src={`${profile.profilePicture}?v=${Math.random()}`}
           alt='Avatar'
         />
       ) : (
-        <StyledPhotoCameraFrontIcon color='primary' />
+        <Styled.StyledPhotoCameraFrontIcon color='primary' />
       ),
       mobileNicknameNode: (
         <Typography fontWeight={700} fontSize='18px'>
@@ -145,12 +139,14 @@ export const Profile: FC = () => {
           <Typography fontSize='14px'>
             {new Date(profile.dateOfBirth).toLocaleDateString('ru-RU')}
           </Typography>
-          <Typography fontSize='14px' color='text.disabled'>
-            {profile.userStatus === UserStatusVariant.ACTIVE
-              ? 'В сети'
-              : 'Не в сети'}
-          </Typography>
-          <Typography fontSize='14px'>{profile.biography}</Typography>
+          <Styled.TypographyBiography
+            fontSize='14px'
+            width='100%'
+            maxWidth='100%'
+            whiteSpace='pre-line'
+          >
+            {profile.biography}
+          </Styled.TypographyBiography>
           <Box display='flex' alignItems='center'>
             <LocationOnIcon fontSize='small' color='primary' />
             <Typography fontSize='12px'>{profile.city}</Typography>
@@ -174,7 +170,7 @@ export const Profile: FC = () => {
         </>
       ),
       contactsMenuNode: contactsAnchorEl ? (
-        <StyledMenu
+        <Styled.StyledMenu
           anchorEl={contactsAnchorEl}
           open={Boolean(contactsAnchorEl)}
           onClose={() => setContactsAnchorEl(null)}
@@ -188,7 +184,7 @@ export const Profile: FC = () => {
           }}
         >
           {renderMenuItem(`Email: ${profile.email}`, true)}
-        </StyledMenu>
+        </Styled.StyledMenu>
       ) : null,
     };
   };

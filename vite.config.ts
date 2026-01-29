@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: '/',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -33,13 +33,6 @@ export default defineConfig(() => {
         host: 'front.dev.sport-unite.it-mentor.space',
         port: 5173,
         protocol: 'wss',
-      },
-      proxy: {
-        '/sport-unite-dev': {
-        target: 'http://194.85.218.83:9000',
-        secure: false,
-        changeOrigin: true,
-        },
       },
     },
   }

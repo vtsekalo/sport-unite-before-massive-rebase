@@ -19,6 +19,7 @@ import { Profile } from '@widgets/profile';
 import { ProfileDeleted } from '@widgets/profile-deleted';
 import { ProfileEdit } from '@widgets/profile-edit';
 import { SendEmail } from '@widgets/send-email';
+import { UserProfile } from '@widgets/user-profile';
 
 export const Routers: FC = () => {
   return (
@@ -44,9 +45,12 @@ export const Routers: FC = () => {
           <Route element={<DeletionGuard />}>
             <Route path={ROUTES.PROFILE.DELETED} element={<ProfileDeleted />} />
           </Route>
+          <Route
+            path={ROUTES.PROFILE.DETAIL(':id')}
+            element={<UserProfile />}
+          />
         </Route>
         <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEvents />} />
-        <Route path={ROUTES.PROFILE.DETAIL(':id')} element={<ProfilePage />} />
         <Route
           path={ROUTES.EVENT.DETAIL(':eventId')}
           element={<EventEditModal />}
