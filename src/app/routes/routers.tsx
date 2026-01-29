@@ -7,6 +7,7 @@ import { ModalWrapper } from '@entities/modal-wrapper';
 import { AuthPage } from '@pages/auth';
 import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
+import { CreateEventPage } from '@pages/create-event';
 import { MyEvents } from '@pages/my-events';
 import { NotFoundPage } from '@pages/not-found-page';
 import { Notifications } from '@pages/notifications';
@@ -27,10 +28,7 @@ export const Routers: FC = () => {
       <Route path={ROUTES.HOME} element={<Layout />}>
         <Route path={ROUTES.CHATS.INDEX} element={<Chats />} />
         <Route path={ROUTES.CHATS.DETAIL(':id')} element={<Chat />} />
-        <Route
-          path={ROUTES.ADD_EVENT}
-          element={<ModalWrapper>Добавить ивент</ModalWrapper>}
-        />
+        <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
         <Route
           path={ROUTES.NOTIFICATIONS}
           element={
@@ -62,6 +60,7 @@ export const Routers: FC = () => {
         <Route path={ROUTES.AUTH} element={<AuthPage />} />
         <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
         <Route path={ROUTES.SEND_EMAIL} element={<SendEmail />} />
+        <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
       </Route>
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
       <Route path={ROUTES.TEST_PAGE} element={<TestPage />} />

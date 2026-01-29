@@ -219,9 +219,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       event.users?.some((user) => user.userId === profile.id);
 
     const eventPhoto =
-      event?.eventPhoto !== 'string' || !event?.eventPhoto
-        ? undefined
-        : event.eventPhoto;
+      typeof event?.eventPhoto === 'string' ? event.eventPhoto : undefined;
 
     const headerContent = (
       <>

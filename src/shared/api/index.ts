@@ -4,3 +4,4 @@ export * from './users';
 export * from './notification';
 export * from './event-api';
 export * from './chat-api';
+export * from './geo-api';

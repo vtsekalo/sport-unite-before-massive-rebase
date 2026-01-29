@@ -51,9 +51,14 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiButton: {
+        defaultProps: {
+          variant: 'contained',
+          size: 'medium',
+        },
         styleOverrides: {
           root: {
-            borderRadius: 10,
+            width: '100%',
+            borderRadius: 4,
           },
         },
         variants: [
@@ -125,6 +130,7 @@ export const theme = (isMobile: boolean) =>
 
       MuiTextField: {
         defaultProps: {
+          variant: 'outlined',
           size: isMobile ? 'small' : 'medium',
         },
       },

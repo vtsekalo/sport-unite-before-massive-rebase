@@ -13,4 +13,8 @@ export const ApiEndpoints = {
   GET_COUNT_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/count`,
   MARK_AS_READ_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/read`,
   DELETE_NOTIFICATIONS: `/${API_PATHS.NOTIFICATION_SERVICE}/inapp/delete`,
+  CREATE_EVENT: `/${API_PATHS.EVENT_SERVICE}/events`,
+  UPLOAD_PHOTO: `/${API_PATHS.IMAGE_SERVICE}/resources/images`,
 } as const;
+
+export const TWO_GIS_API_BASE_URL = 'https://catalog.api.2gis.com/3.0';
