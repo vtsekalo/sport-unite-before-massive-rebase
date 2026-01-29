@@ -3,8 +3,9 @@ import { Outlet, useNavigate, useOutlet } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
-import { FilterEventsModal } from '@features/filter-events/ui/filter-events-modal';
-import { ROUTES } from '@shared/lib';
+import { CreateEventFab } from '@features/create-event/ui/create-event-fab';
+import { FilterEventsModal } from '@features/filter-events';
+import { ROUTES } from '@shared/lib/constants';
 import { PageModal } from '@shared/ui/modal';
 import { HeaderDesktop, HeaderMobile } from '@widgets/header';
 import { EventsMap } from '@widgets/map';
@@ -25,6 +26,8 @@ export const Layout = () => {
   const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
     setAnchorEl(node);
   }, []);
+
+  const showFab = location.pathname === ROUTES.HOME;
 
   return (
     <Box
@@ -50,6 +53,8 @@ export const Layout = () => {
       </PageModal>
 
       <NavBar />
+
+      {showFab && <CreateEventFab />}
     </Box>
   );
 };
