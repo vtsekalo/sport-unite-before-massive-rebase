@@ -32,6 +32,10 @@ export const EndPointsMessages = {
     500: 'Наш сервис временно не доступен',
     404: 'У вас нет доступных чатов',
   },
+  createEvent: {
+    400: 'Некорректные данные события. Проверьте все поля',
+    500: 'Не удалось создать событие. Попробуйте позже',
+  },
   deleteMyProfile: {
     400: 'Некорректный запрос',
     404: 'Профиль не найден',
@@ -39,5 +43,8 @@ export const EndPointsMessages = {
   },
   updateMyProfile: {
     409: 'Конфликт данных',
+  },
+  uploadPhoto: {
+    413: 'Событие создано, но ошибка при загрузке фото',
   },
 } as const satisfies Record<string, Partial<Record<number, string>>>;
