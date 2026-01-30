@@ -266,6 +266,8 @@ export const CreateEventPage: React.FC = () => {
                 startIcon={<ImageIcon />}
                 disabled={isUploadingPhoto}
                 onClick={handlePhotoClick}
+                variant='contained'
+                fullWidth
               >
                 {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
               </Button>
