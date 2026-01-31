@@ -16,6 +16,10 @@ import { Styled } from './sport-icon.styled';
 
 interface SportIconProps {
   type: string;
+  sizeBox?: number;
+  sizeIcon?: number;
+  color?: string;
+  invert?: boolean;
 }
 
 const Sport: Record<string, string> = {
@@ -29,15 +33,22 @@ const Sport: Record<string, string> = {
   'Велоспорт': Bike,
   'Сноубординг': Snowboard,
 };
-export const SportIcon = ({ type }: SportIconProps) => {
+
+export const SportIcon = ({
+  type,
+  sizeBox = 24,
+  sizeIcon = 16,
+  color = '#FFFFFF',
+  invert = true,
+}: SportIconProps) => {
   const IconComponent = Sport[type];
   return (
     <Box
       bgcolor='#3677FF'
-      width={24}
-      height={24}
+      width={sizeBox}
+      height={sizeBox}
       borderRadius={12}
-      color='#FFFFFF'
+      color={color}
       display='flex'
       alignItems='center'
       justifyContent='center'
@@ -46,9 +57,10 @@ export const SportIcon = ({ type }: SportIconProps) => {
         <Styled.Icon
           component='img'
           src={IconComponent}
-          width={16}
-          height={16}
+          width={sizeIcon}
+          height={sizeIcon}
           alt={type}
+          {...(invert ? { invert } : {})}
         />
       )}
     </Box>

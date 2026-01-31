@@ -46,7 +46,6 @@ export interface IEventResponse {
   eventLocation: string;
   eventDescription: string;
   eventPhoto: string;
-  userRole: boolean;
   coordinates: Coordinates;
   users: IUserParticipant[];
   countUsers: number;
@@ -77,7 +76,6 @@ export interface IEvent {
   eventEndDate: string;
   countUsers: number;
   eventDescription: string;
-  userRole?: boolean;
   eventPhoto: string;
   coordinates: Coordinates;
   users: IUserParticipant[];
@@ -134,7 +132,6 @@ export interface IEventDetailed {
   eventLocation?: string;
   eventPhoto: string | null;
   coordinates: ICoordinate;
-  userRole?: boolean;
   users: IUserParticipant[];
 }
 
