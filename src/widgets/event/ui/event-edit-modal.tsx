@@ -50,7 +50,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const [joinEvent, { isLoading: isJoining }] = useGetJoinInEventsMutation();
+  const [joinEvent, { isLoading: isLoadingJoin  }] = useGetJoinInEventsMutation();
   const { profile, isLoading: isProfileLoading } = useProfile();
   const isAuthenticated = !!profile;
 
@@ -95,9 +95,9 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
-  const handleJoinEvent = async () => {
+  const handleJoinEvent = () => {
     if (!eventId) return;
-    await joinEvent(eventId);
+    joinEvent(eventId);
   };
 
   if (isProfileLoading) {
@@ -358,11 +358,14 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
             variant='fullWidthAction'
             disabled={!hasFreeSlots}
             onClick={handleJoinEvent}
-            loading={isJoining}
-            loadingIndicator={<Typography></Typography>}
+            loading={isLoadingJoin}
           >
-            <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
-            <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
+            {!isLoadingJoin ? (
+              <>
+                <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
+                <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
+              </>
+            ) : null}
           </Button>
         )}
 
