@@ -5,6 +5,8 @@ export interface RouteConfig {
   justifyContent?: string;
   pointerEvents?: string;
   backdropFilter?: string;
+  height?: string | { xs: string; md: string };
+  width?: string;
 }
 
 export const ROUTE_SETTINGS: Record<string, RouteConfig> = {
@@ -13,5 +15,7 @@ export const ROUTE_SETTINGS: Record<string, RouteConfig> = {
     justifyContent: 'start',
     pointerEvents: 'none',
     backdropFilter: 'none',
+    width: 'auto',
+    height: { xs: '100%', md: 'auto' },
   },
 };

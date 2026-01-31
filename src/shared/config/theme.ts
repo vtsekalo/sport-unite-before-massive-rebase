@@ -90,6 +90,10 @@ export const theme = (isMobile: boolean) =>
               minHeight: theme.spacing(5),
               maxWidth: theme.spacing(5),
               maxHeight: theme.spacing(5),
+              '&.Mui-disabled': {
+                backgroundColor: theme.palette.grey[400],
+                color: theme.palette.text.disabled,
+              },
             }),
           },
           {

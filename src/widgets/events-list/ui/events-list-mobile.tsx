@@ -1,11 +1,12 @@
 import dayjs from 'dayjs';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Box, Tab, Typography } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
 import { CrownIcon } from '@shared/assets';
-import { EventStatus, IEvent } from '@shared/lib';
+import { EventStatus, IEvent, ROUTES } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
@@ -20,9 +21,16 @@ interface EventsListProps {
 
 export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
   const [value, setValue] = useState(0);
+  const navigate = useNavigate();
 
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
 
+  const handleOpenCard = useCallback(
+    (eventId: string) => {
+      navigate(ROUTES.EVENT.DETAIL(eventId));
+    },
+    [navigate],
+  );
   const handleChange = (_event: unknown, newValue: number) => {
     setValue(newValue);
   };
@@ -146,7 +154,11 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
                 </Styled.EventTypography>
               }
               buttonNode={
-                <Styled.StyledButton variant='contained' color='primary'>
+                <Styled.StyledButton
+                  variant='contained'
+                  color='primary'
+                  onClick={() => handleOpenCard(event.eventId)}
+                >
                   Подробнее
                 </Styled.StyledButton>
               }
