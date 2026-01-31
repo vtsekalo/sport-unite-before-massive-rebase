@@ -17,4 +17,4 @@ export const ApiEndpoints = {
   UPLOAD_PHOTO: `/${API_PATHS.IMAGE_SERVICE}/resources/images`,
 } as const;
 
-export const TWO_GIS_API_BASE_URL = 'https://catalog.api.2gis.com/3.0';
+export const TWO_GIS_API_BASE_URL = 'https://catalog.api.2gis.com/3.0/suggests';

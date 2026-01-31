@@ -55,12 +55,6 @@ export const theme = (isMobile: boolean) =>
           variant: 'contained',
           size: 'medium',
         },
-        styleOverrides: {
-          root: {
-            width: '100%',
-            borderRadius: 4,
-          },
-        },
         variants: [
           {
             props: { size: 'medium' },
