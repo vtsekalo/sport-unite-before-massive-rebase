@@ -1,7 +1,6 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import CancelIcon from '@mui/icons-material/Cancel';
 import Cross from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CreateIcon from '@mui/icons-material/Create';
@@ -13,8 +12,8 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { AvatarGroup, Box, Button, Skeleton, Typography } from '@mui/material';
 
 import { EventInfo } from '@entities/event-card';
-import { ModalWrapper } from '@entities/modal-wrapper';
 import { QueryInfo } from '@entities/query-info';
+import { CancelEventButton } from '@features/cancel-event';
 import { useGetEventByIdQuery } from '@shared/api';
 import {
   EventStatus,
@@ -28,7 +27,7 @@ import {
 import { formatDate } from '@shared/lib';
 import { SportIcon } from '@shared/ui/sport-icons';
 
-import { Styled } from './event-edit-modal.styled.ts';
+import { Styled } from './event-edit-modal.styled';
 
 type EventEditModalProps = {
   onClose?: () => void;
@@ -69,7 +68,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       userId: eventData.userId || '',
       eventName: eventData.eventName,
       eventType: eventData.eventType,
-      eventStatus: EventStatus.PLANNED,
+      eventStatus: eventData.eventStatus,
       eventStartDateTime: startDateTime,
       eventStartDate: startDateTime,
       eventEndDate: endDate.toISOString(),
@@ -82,7 +81,8 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     };
   }, [eventData]);
 
-  const [isOrganization, organizer] = useIsEventOrganizer(event, profile?.id);
+  const isEventPlanned = event?.eventStatus === EventStatus.PLANNED;
+  const [isOrganizer, organizer] = useIsEventOrganizer(event, profile?.id);
   const { isParticipant, usersParticipant } = useEventParticipantData(
     event,
     profile?.id,
@@ -128,17 +128,16 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       const titleNode = (
         <>
           <Skeleton variant='circular' width={48} height={48} />
-          <Box flex={1} alignSelf='center'>
+          <Box flex={1} alignSelf='center' pr={4}>
             <Skeleton height={20} />
           </Box>
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
         </>
       );
 
       const dateNode = (
         <>
-          <Skeleton height={20} width={120} />
-          <Skeleton height={20} width={140} />
+          <Skeleton height={20} width={70} />
+          <Skeleton height={20} width={90} />
         </>
       );
 
@@ -182,9 +181,17 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
       const footerActionsNode = (
         <>
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
-          <Styled.RoundedSkeleton variant='rounded' height={40} width='60%' />
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
+          <Box width={40} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
+
+          <Box flex={1} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
+
+          <Box width={40} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
         </>
       );
 
@@ -273,7 +280,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
           {event.eventName}
         </Typography>
 
-        {isOrganization && (
+        {isOrganizer && (
           <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={CreateIcon} />
           </Button>
@@ -313,7 +320,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
           fontSize='12px'
           minWidth={96}
         >
-          Огранизатор:
+          Организатор:
         </Typography>
         <AvatarGroup max={3}>
           <Styled.EventAvatar
@@ -339,45 +346,59 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
               key={user.userId}
               alt={user.nickName}
               src={user.urlUserPhoto || undefined}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(ROUTES.PROFILE.DETAIL(user.userId));
+              }}
             />
           ))}
         </AvatarGroup>
       </>
     );
 
+    const renderActionButton = () => {
+      if (!isEventPlanned) {
+        return <Box flex={1} />;
+      }
+
+      if (isOrganizer) {
+        return (
+          <CancelEventButton
+            eventId={eventId}
+            onCanceled={() => navigate('/')}
+          />
+        );
+      }
+
+      if (isParticipant) {
+        return (
+          <Button variant='fullWidthAction'>
+            <Styled.CategoryMuiIcon as={LogoutIcon} />
+            <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
+          </Button>
+        );
+      }
+
+      return (
+        <Button variant='fullWidthAction' disabled={!hasFreeSlots}>
+          <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
+          <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
+        </Button>
+      );
+    };
+
     const footerActionsNode = (
       <>
-        {isOrganization && (
+        {isOrganizer && (
           <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={ContentCopyIcon} />
           </Button>
         )}
 
-        {isOrganization ? (
-          <Button variant='fullWidthAction'>
-            <Styled.CategoryMuiIcon as={CancelIcon} />
-            <Styled.ButtonLabel>ОТМЕНИТЬ СОБЫТИЕ</Styled.ButtonLabel>
-          </Button>
-        ) : isParticipant ? (
-          <Button variant='fullWidthAction'>
-            <Styled.CategoryMuiIcon as={LogoutIcon} />
-            <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
-          </Button>
-        ) : (
-          <>
-            <Button variant='fullWidthAction' disabled={!hasFreeSlots}>
-              <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
-              <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
-            </Button>
-          </>
-        )}
+        {renderActionButton()}
 
-        {isOrganization || isParticipant ? (
-          <Button variant='classicWidthAction' disabled={false}>
-            <Styled.CategoryMuiIcon as={MailIcon} />
-          </Button>
-        ) : (
-          <Button variant='classicWidthAction' disabled={true}>
+        {(isOrganizer || isParticipant) && (
+          <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={MailIcon} />
           </Button>
         )}
@@ -403,7 +424,10 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   }
 
   return (
-    <ModalWrapper>
+    <Styled.AnimatedModalWrapper
+      maxWidth={{ xs: '361px', md: '440px' }}
+      maxHeight={{ xs: '100%', md: '714px' }}
+    >
       <EventInfo
         headerNode={content.headerNode}
         titleNode={content.titleNode}
@@ -414,6 +438,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         participantsNode={content.participantsNode}
         footerActionsNode={content.footerActionsNode}
       />
-    </ModalWrapper>
+    </Styled.AnimatedModalWrapper>
   );
 };

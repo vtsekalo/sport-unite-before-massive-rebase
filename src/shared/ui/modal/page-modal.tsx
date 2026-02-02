@@ -29,6 +29,7 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
   const justifyContent = config?.justifyContent || 'center';
   const pointerEvents = config?.pointerEvents || 'default';
   const backdropFilter = config?.pointerEvents || 'blur(4px)';
+  const alignItems = config?.alignItems || 'center';
   const height = config?.height || '100%';
   const width = config?.width || '100%';
 
@@ -38,7 +39,7 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
       top={0}
       zIndex={10}
       display='flex'
-      alignItems='center'
+      alignItems={{ xs: 'center', md: alignItems }}
       justifyContent={{ xs: 'center', md: justifyContent }}
       bgcolor={bgcolor}
       left={{
