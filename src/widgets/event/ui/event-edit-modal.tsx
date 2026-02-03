@@ -13,8 +13,8 @@ import { AvatarGroup, Box, Button, Skeleton, Typography } from '@mui/material';
 
 import { EventInfo } from '@entities/event-card';
 import { QueryInfo } from '@entities/query-info';
-import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import { CancelEventButton } from '@features/cancel-event';
+import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import {
   EventStatus,
   IEventResponse,
@@ -26,6 +26,7 @@ import {
 } from '@shared/lib';
 import { formatDate } from '@shared/lib';
 import { SportIcon } from '@shared/ui/sport-icons';
+
 import { Styled } from './event-edit-modal.styled';
 
 type EventEditModalProps = {
@@ -45,7 +46,8 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const [joinEvent, { isLoading: isLoadingJoin  }] = useGetJoinInEventsMutation();
+  const [joinEvent, { isLoading: isLoadingJoin }] =
+    useGetJoinInEventsMutation();
   const { profile, isLoading: isProfileLoading } = useProfile();
   const isAuthenticated = !!profile;
 
@@ -406,8 +408,8 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
           onClick={handleJoinEvent}
           loading={isLoadingJoin}
         >
-              <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
-              <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
+          <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
+          <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
         </Button>
       );
     };
