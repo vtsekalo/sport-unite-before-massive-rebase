@@ -3,10 +3,17 @@ import { Theme, createTheme } from '@mui/material';
 declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
+    veryBig: true;
   }
   interface ButtonPropsVariantOverrides {
     classicWidthAction: true;
     fullWidthAction: true;
+    lightBlue: true;
+  }
+}
+declare module '@mui/material/Skeleton' {
+  interface SkeletonPropsVariantOverrides {
+    button: true;
   }
 }
 
@@ -49,10 +56,9 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 10,
-          },
+        defaultProps: {
+          variant: 'contained',
+          size: 'medium',
         },
         variants: [
           {
@@ -74,6 +80,12 @@ export const theme = (isMobile: boolean) =>
             },
           },
           {
+            props: { size: 'veryBig' },
+            style: {
+              minHeight: isMobile ? 40 : 64,
+            },
+          },
+          {
             props: { variant: 'classicWidthAction' },
             style: ({ theme }) => ({
               ...getActionButtonCommonStyles(theme),
@@ -83,6 +95,10 @@ export const theme = (isMobile: boolean) =>
               minHeight: theme.spacing(5),
               maxWidth: theme.spacing(5),
               maxHeight: theme.spacing(5),
+              '&.Mui-disabled': {
+                backgroundColor: theme.palette.grey[400],
+                color: theme.palette.text.disabled,
+              },
             }),
           },
           {
@@ -101,11 +117,23 @@ export const theme = (isMobile: boolean) =>
               },
             }),
           },
+          {
+            props: { variant: 'lightBlue' },
+            style: {
+              backgroundColor: '#EBF2FF',
+              color: '#000000',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: '#D0E2FF',
+              },
+            },
+          },
         ],
       },
 
       MuiTextField: {
         defaultProps: {
+          variant: 'outlined',
           size: isMobile ? 'small' : 'medium',
         },
       },
@@ -113,6 +141,16 @@ export const theme = (isMobile: boolean) =>
         defaultProps: {
           size: isMobile ? 'small' : 'medium',
         },
+      },
+      MuiSkeleton: {
+        variants: [
+          {
+            props: { variant: 'button' },
+            style: {
+              borderRadius: 12,
+            },
+          },
+        ],
       },
     },
   });

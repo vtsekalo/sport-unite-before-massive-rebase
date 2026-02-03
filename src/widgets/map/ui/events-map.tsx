@@ -30,6 +30,9 @@ import { BaseMap } from '@shared/ui';
 import { getMarkerIcon } from '../lib';
 import { MapWrapper } from './events-map.styled';
 
+const MAP_CENTER_STORAGE_KEY = 'mapCenter';
+const MAP_ZOOM_STORAGE_KEY = 'mapZoom';
+
 interface MapProps {
   center?: CoordinatesTuple;
   zoom?: number;
@@ -40,8 +43,38 @@ export const EventsMap = ({
   zoom = DEFAULT_MAP_ZOOM,
 }: MapProps) => {
   const dispatch = useDispatch();
-  const [mapCenter, setMapCenter] = useState<[number, number]>(center);
-  const [mapZoom, setMapZoom] = useState<number>(zoom);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(() => {
+    const saved = sessionStorage.getItem(MAP_CENTER_STORAGE_KEY);
+    if (!saved) {
+      return center;
+    }
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (
+        Array.isArray(parsed) &&
+        parsed.length === 2 &&
+        typeof parsed[0] === 'number' &&
+        typeof parsed[1] === 'number'
+      ) {
+        return parsed as [number, number];
+      }
+    } catch {
+      return center;
+    }
+
+    return center;
+  });
+  const [mapZoom, setMapZoom] = useState<number>(() => {
+    const saved = sessionStorage.getItem(MAP_ZOOM_STORAGE_KEY);
+    if (saved) {
+      const parsed = parseFloat(saved);
+      if (!isNaN(parsed)) {
+        return parsed;
+      }
+    }
+    return zoom;
+  });
 
   const navigate = useNavigate();
 
@@ -75,6 +108,14 @@ export const EventsMap = ({
       dispatch(setFilterRange({ range: radiusFromZoom, fromUser: false }));
     }
   }, [radiusFromZoom, useCustomRange, dispatch]);
+
+  useEffect(() => {
+    sessionStorage.setItem(MAP_CENTER_STORAGE_KEY, JSON.stringify(mapCenter));
+  }, [mapCenter]);
+
+  useEffect(() => {
+    sessionStorage.setItem(MAP_ZOOM_STORAGE_KEY, mapZoom.toString());
+  }, [mapZoom]);
 
   const { data: eventsData, isError } = useGetFilteredEventsQuery(filters, {
     refetchOnMountOrArgChange: true,

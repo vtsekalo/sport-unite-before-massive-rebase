@@ -46,7 +46,6 @@ const mockEvents: IEvent[] = [
     eventPhoto: 'https://picsum.photos',
     eventLocation: 'ул. Льва Яшина, 5, Москва',
     coordinates: { latitude: 55.7915, longitude: 37.5598 },
-    userRole: true,
     users: [
       {
         userId: 'user-123',
@@ -69,7 +68,6 @@ const mockEvents: IEvent[] = [
     eventPhoto: 'https://picsum.photos',
     eventLocation: 'Парк Горького, центральный вход',
     coordinates: { latitude: 55.728, longitude: 37.601 },
-    userRole: false,
     users: [
       {
         userId: 'user-456',
@@ -92,7 +90,6 @@ const mockEvents: IEvent[] = [
     eventPhoto: 'https://picsum.photos',
     eventLocation: 'Скейт-парк Садовники',
     coordinates: { latitude: 55.662, longitude: 37.658 },
-    userRole: false,
     users: [
       {
         userId: 'user-789',
@@ -115,8 +112,7 @@ const mockEvents: IEvent[] = [
       'Центрее не бывает! Играем прямо у Кремля. Берем с собой хорошее настроение.',
     eventPhoto: 'https://picsum.photos',
     eventLocation: 'Красная площадь, Москва',
-    coordinates: { latitude: 55.7522, longitude: 37.6156 }, // Координаты центра Москвы
-    userRole: true,
+    coordinates: { latitude: 55.7522, longitude: 37.6156 },
     users: [
       {
         userId: 'user-123',
@@ -140,7 +136,6 @@ const mockEvents: IEvent[] = [
     eventPhoto: 'https://picsum.photos',
     eventLocation: 'Патриаршие пруды, Москва',
     coordinates: { latitude: 55.766, longitude: 37.595 },
-    userRole: true,
     users: [
       {
         userId: 'user-123',

@@ -171,6 +171,7 @@ export const ProfileEdit: FC = () => {
   if (!profile) {
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
   }
+
   const avatarSrc = `${updateImageData?.photoUrl || profile.profilePicture || avatarPreview}?v=${updateImageData?.fileName}${updateImageData?.fileSize}_${Math.random()}`;
 
   return (

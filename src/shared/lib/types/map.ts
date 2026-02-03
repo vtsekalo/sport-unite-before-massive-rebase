@@ -28,3 +28,44 @@ export interface MapMarker {
   icon: string;
   onClick?: () => void;
 }
+
+/**
+ * 2GIS API Types
+ */
+
+/**
+ * Элемент ответа от 2GIS API (внутренний тип)
+ */
+export interface TwoGisApiItem {
+  id: string;
+  name?: string;
+  full_name?: string;
+  address_name?: string;
+  point?: {
+    lat: number;
+    lon: number;
+  };
+}
+
+/**
+ * Ответ от 2GIS API (внутренний тип)
+ */
+export interface TwoGisApiResponse {
+  result?: {
+    items?: TwoGisApiItem[];
+  };
+}
+
+/**
+ * Элемент подсказки для автокомплита адресов
+ */
+export interface SuggestionItem {
+  id: string;
+  name: string;
+  full_name: string;
+  address_name: string;
+  point: {
+    lat: number;
+    lon: number;
+  };
+}

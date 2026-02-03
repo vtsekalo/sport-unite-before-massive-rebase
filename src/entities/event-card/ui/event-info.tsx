@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, Typography } from '@mui/material';
 
-import { Styled } from './styled';
+import { Styled } from './event-info.styled.ts';
 
 type EventInfoProps = {
   headerNode: React.ReactNode;
@@ -10,6 +10,7 @@ type EventInfoProps = {
   dateNode: React.ReactNode;
   locationNode: React.ReactNode;
   descriptionNode: React.ReactNode;
+  organizerNode: React.ReactNode;
   participantsNode: React.ReactNode;
   footerActionsNode: React.ReactNode;
 };
@@ -20,6 +21,7 @@ export const EventInfo: React.FC<EventInfoProps> = ({
   dateNode,
   locationNode,
   descriptionNode,
+  organizerNode,
   participantsNode,
   footerActionsNode,
 }) => {
@@ -27,8 +29,8 @@ export const EventInfo: React.FC<EventInfoProps> = ({
     <Styled.EventCardContainer>
       {headerNode}
       <Box
-        paddingLeft={2}
-        paddingRight={2}
+        paddingLeft={{ xs: 2, md: 4 }}
+        paddingRight={{ xs: 2, md: 4 }}
         display='flex'
         flexDirection='column'
         gap={2}
@@ -49,16 +51,22 @@ export const EventInfo: React.FC<EventInfoProps> = ({
 
         <Box fontSize='14px'>{descriptionNode}</Box>
 
-        <Box display='flex' alignItems='center' gap={2}>
-          {participantsNode}
+        <Box display='flex' flexDirection='column' alignItems='start' gap={2}>
+          <Box display='flex' alignItems='center' gap={2}>
+            {organizerNode}
+          </Box>
+
+          <Box display='flex' alignItems='center' gap={2}>
+            {participantsNode}
+          </Box>
         </Box>
 
         <Box
-          marginTop='auto'
-          paddingBottom={3}
+          mt={{ xs: 'auto', md: 0 }}
+          pb={3}
           display='flex'
           justifyContent='center'
-          gap={{ xs: 1.2, md: 1.2 }}
+          gap={1.2}
         >
           {footerActionsNode}
         </Box>

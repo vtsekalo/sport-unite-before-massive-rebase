@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { baseApi, chatApi, eventApi } from '@shared/api';
+import { baseApi } from '@shared/api';
 import { filtersReducer, mapReducer } from '@shared/store';
 import { chatReducer } from '@widgets/chat-messages';
 import { registrationApi } from '@widgets/registration';
@@ -17,10 +17,8 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(chatApi.middleware)
       .concat(baseApi.middleware)
       .concat(registrationApi.middleware)
-      .concat(rtkQuerySnackbarMiddleware)
-      .concat(eventApi.middleware),
+      .concat(rtkQuerySnackbarMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
 });

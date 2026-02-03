@@ -1,7 +1,6 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import CancelIcon from '@mui/icons-material/Cancel';
 import Cross from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CreateIcon from '@mui/icons-material/Create';
@@ -10,28 +9,24 @@ import MailIcon from '@mui/icons-material/Mail';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  Button,
-  Skeleton,
-  Typography,
-} from '@mui/material';
+import { AvatarGroup, Box, Button, Skeleton, Typography } from '@mui/material';
 
-import { EventInfo, Styled } from '@entities/event-card';
-import { ModalWrapper } from '@entities/modal-wrapper';
+import { EventInfo } from '@entities/event-card';
 import { QueryInfo } from '@entities/query-info';
 import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
-import { Run } from '@shared/assets';
+import { CancelEventButton } from '@features/cancel-event';
 import {
   EventStatus,
   IEventResponse,
   IUserParticipant,
   ROUTES,
+  useEventParticipantData,
+  useIsEventOrganizer,
   useProfile,
 } from '@shared/lib';
 import { formatDate } from '@shared/lib';
+import { SportIcon } from '@shared/ui/sport-icons';
+import { Styled } from './event-edit-modal.styled';
 
 type EventEditModalProps = {
   onClose?: () => void;
@@ -73,7 +68,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       userId: eventData.userId || '',
       eventName: eventData.eventName,
       eventType: eventData.eventType,
-      eventStatus: EventStatus.PLANNED,
+      eventStatus: eventData.eventStatus,
       eventStartDateTime: startDateTime,
       eventStartDate: startDateTime,
       eventEndDate: endDate.toISOString(),
@@ -81,17 +76,22 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       eventDescription: eventData.eventDescription,
       eventPhoto: eventData.eventPhoto,
       eventLocation: eventData.eventLocation,
-      userRole: eventData.userRole ?? false,
       coordinates: eventData.coordinates,
       users: eventData.users,
     };
   }, [eventData]);
 
+  const isEventPlanned = event?.eventStatus === EventStatus.PLANNED;
+  const [isOrganizer, organizer] = useIsEventOrganizer(event, profile?.id);
+  const { isParticipant, usersParticipant } = useEventParticipantData(
+    event,
+    profile?.id,
+  );
   const handleClose = () => {
     if (onClose) {
       onClose();
     } else {
-      navigate(-1);
+      navigate(ROUTES.HOME);
     }
   };
 
@@ -132,32 +132,32 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       </Box>
     );
   }
+
   const renderContent = () => {
     if (isLoading) {
       const headerNode = (
-        <Styled.EventHeader>
+        <Styled.Header>
           <Styled.AbsoluteSkeleton
             variant='rectangular'
             width='100%'
             height='100%'
           />
-        </Styled.EventHeader>
+        </Styled.Header>
       );
 
       const titleNode = (
         <>
           <Skeleton variant='circular' width={48} height={48} />
-          <Box flex={1} alignSelf='center'>
+          <Box flex={1} alignSelf='center' pr={4}>
             <Skeleton height={20} />
           </Box>
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
         </>
       );
 
       const dateNode = (
         <>
-          <Skeleton height={20} width={120} />
-          <Skeleton height={20} width={140} />
+          <Skeleton height={20} width={70} />
+          <Skeleton height={20} width={90} />
         </>
       );
 
@@ -175,16 +175,25 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         </>
       );
 
+      const organizerNode = (
+        <>
+          <Typography variant='body2' color='text.disabled' fontSize='12px'>
+            <Skeleton height={20} width={100} />
+          </Typography>
+          <Skeleton variant='circular' width={32} height={32} />
+        </>
+      );
+
       const participantsNode = (
         <>
           <Typography variant='body2' color='text.disabled' fontSize='12px'>
             <Skeleton height={20} width={120} />
           </Typography>
-          <AvatarGroup max={3}>
-            {[1, 2, 3].map((i) => (
-              <Avatar key={i}>
-                <Skeleton variant='circular' width={40} height={40} />
-              </Avatar>
+          <AvatarGroup max={4}>
+            {[1, 2, 3, 4].map((i) => (
+              <Styled.EventAvatar key={i}>
+                <Skeleton variant='circular' />
+              </Styled.EventAvatar>
             ))}
           </AvatarGroup>
         </>
@@ -192,9 +201,17 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
       const footerActionsNode = (
         <>
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
-          <Styled.RoundedSkeleton variant='rounded' height={40} width='60%' />
-          <Styled.ButtonSkeleton variant='rectangular' width={40} height={40} />
+          <Box width={40} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
+
+          <Box flex={1} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
+
+          <Box width={40} height={40}>
+            <Skeleton variant='button' width='100%' height='100%' />
+          </Box>
         </>
       );
 
@@ -204,6 +221,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         dateNode,
         locationNode,
         descriptionNode,
+        organizerNode,
         participantsNode,
         footerActionsNode,
       };
@@ -218,19 +236,10 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       ? formatDate(event.eventEndDate)
       : ['', ''];
     const usersCount = event.users?.length || 0;
-    const maxUsers = event.countUsers || 0;
+    const maxUsers = event.countUsers;
     const hasFreeSlots = maxUsers > usersCount;
 
-    const isCreator = isAuthenticated && profile && event.userId === profile.id;
-    const isParticipant =
-      isAuthenticated &&
-      profile &&
-      event.users?.some((user) => user.userId === profile.id);
-
-    const eventPhoto =
-      event?.eventPhoto !== 'string' || !event?.eventPhoto
-        ? undefined
-        : event.eventPhoto;
+    const eventPhoto = event.eventPhoto || undefined;
 
     const headerContent = (
       <>
@@ -245,7 +254,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     );
 
     const headerNode = (
-      <Styled.EventHeader {...(eventPhoto ? { $image: eventPhoto } : {})}>
+      <Styled.Header {...(eventPhoto ? { $image: eventPhoto } : {})}>
         {!eventPhoto && (
           <Box
             width='100%'
@@ -258,21 +267,26 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
             <Styled.CategoryMuiIcon
               as={NoPhotographyIcon}
               sx={{
-                width: '100%',
-                height: '100%',
+                width: '60%',
+                height: '60%',
               }}
             />
           </Box>
         )}
         {headerContent}
-      </Styled.EventHeader>
+      </Styled.Header>
     );
 
     const titleNode = (
       <>
         <Styled.CategoryIconOuter>
           <Styled.CategoryIconInner>
-            <Styled.CategoryIconImage src={Run} alt={event.eventType} />
+            <SportIcon
+              type={event.eventType}
+              sizeBox={0}
+              sizeIcon={26}
+              invert={false}
+            />
           </Styled.CategoryIconInner>
         </Styled.CategoryIconOuter>
 
@@ -286,7 +300,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
           {event.eventName}
         </Typography>
 
-        {isCreator && (
+        {isOrganizer && (
           <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={CreateIcon} />
           </Button>
@@ -318,58 +332,97 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       </>
     );
 
-    const participantsNode = (
+    const organizerNode = (
       <>
-        <Typography variant='body2' color='text.disabled' fontSize='12px'>
-          Участники: ({usersCount}/{maxUsers})
+        <Typography
+          variant='body2'
+          color='text.disabled'
+          fontSize='12px'
+          minWidth={96}
+        >
+          Организатор:
         </Typography>
         <AvatarGroup max={3}>
-          {(event.users || []).map((user: IUserParticipant) => (
-            <Avatar
+          <Styled.EventAvatar
+            alt={organizer?.nickName}
+            src={organizer?.urlUserPhoto || ''}
+          />
+        </AvatarGroup>
+      </>
+    );
+    const participantsNode = (
+      <>
+        <Typography
+          variant='body2'
+          color='text.disabled'
+          fontSize='12px'
+          minWidth={96}
+        >
+          Участники: ({usersCount}/{maxUsers})
+        </Typography>
+        <AvatarGroup max={4}>
+          {usersParticipant.map((user: IUserParticipant) => (
+            <Styled.EventAvatar
               key={user.userId}
               alt={user.nickName}
               src={user.urlUserPhoto || undefined}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(ROUTES.PROFILE.DETAIL(user.userId));
+              }}
             />
           ))}
         </AvatarGroup>
       </>
     );
 
+    const renderActionButton = () => {
+      if (!isEventPlanned) {
+        return <Box flex={1} />;
+      }
+
+      if (isOrganizer) {
+        return (
+          <CancelEventButton
+            eventId={eventId}
+            onCanceled={() => navigate('/')}
+          />
+        );
+      }
+
+      if (isParticipant) {
+        return (
+          <Button variant='fullWidthAction'>
+            <Styled.CategoryMuiIcon as={LogoutIcon} />
+            <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
+          </Button>
+        );
+      }
+
+      return (
+        <Button
+          variant='fullWidthAction'
+          disabled={!hasFreeSlots}
+          onClick={handleJoinEvent}
+          loading={isLoadingJoin}
+        >
+              <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
+              <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
+        </Button>
+      );
+    };
+
     const footerActionsNode = (
       <>
-        {isCreator && (
+        {isOrganizer && (
           <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={ContentCopyIcon} />
           </Button>
         )}
 
-        {isCreator ? (
-          <Button variant='fullWidthAction'>
-            <Styled.CategoryMuiIcon as={CancelIcon} />
-            <Styled.ButtonLabel>ОТМЕНИТЬ СОБЫТИЕ</Styled.ButtonLabel>
-          </Button>
-        ) : isParticipant ? (
-          <Button variant='fullWidthAction'>
-            <Styled.CategoryMuiIcon as={LogoutIcon} />
-            <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
-          </Button>
-        ) : (
-          <Button
-            variant='fullWidthAction'
-            disabled={!hasFreeSlots}
-            onClick={handleJoinEvent}
-            loading={isLoadingJoin}
-          >
-            {!isLoadingJoin ? (
-              <>
-                <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
-                <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
-              </>
-            ) : null}
-          </Button>
-        )}
+        {renderActionButton()}
 
-        {(isCreator || isParticipant) && (
+        {(isOrganizer || isParticipant) && (
           <Button variant='classicWidthAction'>
             <Styled.CategoryMuiIcon as={MailIcon} />
           </Button>
@@ -383,6 +436,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       dateNode,
       locationNode,
       descriptionNode,
+      organizerNode,
       participantsNode,
       footerActionsNode,
     };
@@ -395,16 +449,20 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   }
 
   return (
-    <ModalWrapper width='auto'>
+    <Styled.AnimatedModalWrapper
+      maxWidth={{ xs: '361px', md: '440px' }}
+      maxHeight={{ xs: '100%', md: '714px' }}
+    >
       <EventInfo
         headerNode={content.headerNode}
         titleNode={content.titleNode}
         dateNode={content.dateNode}
         locationNode={content.locationNode}
         descriptionNode={content.descriptionNode}
+        organizerNode={content.organizerNode}
         participantsNode={content.participantsNode}
         footerActionsNode={content.footerActionsNode}
       />
-    </ModalWrapper>
+    </Styled.AnimatedModalWrapper>
   );
 };
