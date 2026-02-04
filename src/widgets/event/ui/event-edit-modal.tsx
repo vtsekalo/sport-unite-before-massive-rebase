@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Cross from '@mui/icons-material/Close';
@@ -35,7 +35,7 @@ type EventEditModalProps = {
 
 export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
-
+  const [isJoining, setIsJoining] = useState(false);
   const { eventId } = useParams<{ eventId: string }>();
   const {
     data: eventData,
@@ -97,9 +97,21 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
-  const handleJoinEvent = () => {
-    if (!eventId) return;
-    joinEvent(eventId);
+  useEffect(() => {
+    if (isParticipant) {
+      setIsJoining(false);
+    }
+  }, [isParticipant]);
+
+  const handleJoinEvent = async () => {
+    if (!eventId || isJoining) return;
+
+    setIsJoining(true);
+    try {
+      await joinEvent(eventId).unwrap();
+    } catch {
+      setIsJoining(false);
+    }
   };
 
   if (isProfileLoading) {
@@ -394,7 +406,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
       if (isParticipant) {
         return (
-          <Button variant='fullWidthAction'>
+          <Button variant='fullWidthAction' >
             <Styled.CategoryMuiIcon as={LogoutIcon} />
             <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
           </Button>
@@ -404,7 +416,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       return (
         <Button
           variant='fullWidthAction'
-          disabled={!hasFreeSlots}
+          disabled={!hasFreeSlots || isJoining || isLoadingJoin}
           onClick={handleJoinEvent}
           loading={isLoadingJoin}
         >
