@@ -114,21 +114,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
-  if (isProfileLoading) {
-    return (
-      <Box
-        position='relative'
-        display='flex'
-        flex={1}
-        flexDirection='column'
-        justifyContent='center'
-        alignItems='center'
-      >
-        <Skeleton variant='rectangular' width={200} height={200} />
-      </Box>
-    );
-  }
-
   if (isError) {
     return (
       <Box
@@ -406,7 +391,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
       if (isParticipant) {
         return (
-          <Button variant='fullWidthAction' >
+          <Button variant='fullWidthAction'>
             <Styled.CategoryMuiIcon as={LogoutIcon} />
             <Styled.ButtonLabel>Покинуть событие</Styled.ButtonLabel>
           </Button>
