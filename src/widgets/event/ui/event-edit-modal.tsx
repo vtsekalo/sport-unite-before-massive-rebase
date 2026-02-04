@@ -97,12 +97,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     }
   };
 
-  useEffect(() => {
-    if (isParticipant) {
-      setIsJoining(false);
-    }
-  }, [isParticipant]);
-
   const handleJoinEvent = async () => {
     if (!eventId || isJoining) return;
 
