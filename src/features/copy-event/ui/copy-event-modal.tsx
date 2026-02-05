@@ -35,12 +35,12 @@ import {
   useCreateEventMutation,
   useUploadPhotoMutation,
 } from '@pages/create-event';
-import { PhotoPreview } from './copy-event-modal.styled';
 import { useGetTypeEventsQuery } from '@shared/api';
 import { ROUTES } from '@shared/lib';
 import { showSnackbar } from '@shared/lib/show-snackbar';
 
 import { CopyEventModalProps } from '../api/types';
+import { PhotoPreview } from './copy-event-modal.styled';
 
 export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   event,
