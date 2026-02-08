@@ -29,22 +29,25 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
   const justifyContent = config?.justifyContent || 'center';
   const pointerEvents = config?.pointerEvents || 'default';
   const backdropFilter = config?.pointerEvents || 'blur(4px)';
+  const alignItems = config?.alignItems || 'center';
+  const height = config?.height || '100%';
+  const width = config?.width || '100%';
 
   return (
     <Box
       position='absolute'
       top={0}
-      left={0}
-      width='100%'
-      height='100%'
       zIndex={10}
       display='flex'
-      alignItems='center'
+      alignItems={{ xs: 'center', md: alignItems }}
       justifyContent={{ xs: 'center', md: justifyContent }}
       bgcolor={bgcolor}
+      left={{
+        xs: 'none',
+        md: 0,
+      }}
       px={{
-        xs: '16px',
-        md: '100px',
+        md: '80px',
       }}
       pt={{
         xs: '88px',
@@ -60,6 +63,8 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
           pointerEvents: 'auto',
         },
         backdropFilter: backdropFilter,
+        width: width,
+        height: height,
         WebkitBackdropFilter: backdropFilter,
       }}
     >

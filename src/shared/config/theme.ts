@@ -11,6 +11,11 @@ declare module '@mui/material/Button' {
     lightBlue: true;
   }
 }
+declare module '@mui/material/Skeleton' {
+  interface SkeletonPropsVariantOverrides {
+    button: true;
+  }
+}
 
 const getActionButtonCommonStyles = (theme: Theme) => ({
   borderRadius: theme.shape.borderRadius * 3,
@@ -90,6 +95,10 @@ export const theme = (isMobile: boolean) =>
               minHeight: theme.spacing(5),
               maxWidth: theme.spacing(5),
               maxHeight: theme.spacing(5),
+              '&.Mui-disabled': {
+                backgroundColor: theme.palette.grey[400],
+                color: theme.palette.text.disabled,
+              },
             }),
           },
           {
@@ -132,6 +141,16 @@ export const theme = (isMobile: boolean) =>
         defaultProps: {
           size: isMobile ? 'small' : 'medium',
         },
+      },
+      MuiSkeleton: {
+        variants: [
+          {
+            props: { variant: 'button' },
+            style: {
+              borderRadius: 12,
+            },
+          },
+        ],
       },
     },
   });

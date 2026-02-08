@@ -12,6 +12,7 @@ export const eventApi = baseApi.injectEndpoints({
       }),
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
+
     getTypeEvents: builder.query<IEventType[], void>({
       query: () => ({
         url: ApiEndpoints.EVENTS_TYPES,
