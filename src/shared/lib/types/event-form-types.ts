@@ -1,17 +1,4 @@
-import { ICoordinate } from '@shared/lib';
-
-export interface UploadPhotoRequest {
-  id: string;
-  photoType: 'USER' | 'EVENT';
-  file: File;
-}
-
-export interface UploadPhotoResponse {
-  photoUrl: string;
-  filename: string;
-  filesize: number;
-  contentType: string;
-}
+import { ICoordinate } from '../types';
 
 export interface CreateEventFormData {
   eventType: string;

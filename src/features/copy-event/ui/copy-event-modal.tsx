@@ -23,50 +23,44 @@ import {
   Select,
   TextField,
   Typography,
-  useMediaQuery,
   useTheme,
 } from '@mui/material';
 
+import { EventFormEntity } from '@entities/event-form';
+import { PhotoPreview } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import {
-  CreateEventFormData,
-  LocationAutocomplete,
-  createEventSchema,
-  useCreateEventMutation,
+import { 
+  useCreateEventMutation, 
   useUploadPhotoMutation,
-} from '@pages/create-event';
-import { useGetTypeEventsQuery } from '@shared/api';
-import { ROUTES } from '@shared/lib';
+  useGetTypeEventsQuery 
+} from '@shared/api';
+import { ROUTES, createEventSchema, CreateEventFormData } from '@shared/lib';
 import { showSnackbar } from '@shared/lib/show-snackbar';
-
+import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 import { CopyEventModalProps } from '../api/types';
-import { PhotoPreview } from './copy-event-modal.styled';
 
 export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   event,
   onClose,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const [photoPreview, setPhotoPreview] = useState<string | null>(
-    event.eventPhoto || null,
-  );
+  event.eventPhoto || null,
+);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { data: eventTypes, isLoading: isLoadingTypes } =
     useGetTypeEventsQuery();
-
   const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
-  const defaultValues = useMemo<CreateEventFormData>(
-    () => ({
+  const defaultValues = useMemo(() => {
+    return {
       eventType: event.eventType,
       eventName: event.eventName,
-      eventLocation: event.eventLocation || '',
+      eventLocation: event.eventLocation,
       eventStartDate: '',
       eventStartTime: '',
       eventEndDate: '',
@@ -75,14 +69,13 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
       eventDescription: event.eventDescription,
       eventPhoto: null,
       coordinates: event.coordinates,
-    }),
-    [event],
-  );
+    };
+  }, [event]);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     setValue,
     watch,
   } = useForm<CreateEventFormData>({
@@ -98,8 +91,8 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   };
 
   const handlePhotoChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
       if (!file) return;
 
       if (file.size > 5 * 1024 * 1024) {
@@ -107,14 +100,14 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         return;
       }
 
-      const allowedTypes = [
+      const supportedFormats = [
         'image/jpg',
         'image/jpeg',
         'image/png',
         'image/webp',
       ];
 
-      if (!allowedTypes.includes(file.type)) {
+      if (!supportedFormats.includes(file.type)) {
         showSnackbar(
           'Поддерживаются только изображения (jpg, jpeg, png, webp)',
           'error',
@@ -125,7 +118,9 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
       setValue('eventPhoto', file, { shouldValidate: true });
 
       const reader = new FileReader();
-      reader.onloadend = () => setPhotoPreview(reader.result as string);
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
       reader.readAsDataURL(file);
     },
     [setValue],
@@ -134,7 +129,9 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const handleRemovePhoto = useCallback(() => {
     setValue('eventPhoto', null, { shouldValidate: true });
     setPhotoPreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   }, [setValue]);
 
   const handleLocationChange = useCallback(
@@ -160,12 +157,15 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
       try {
-        const createdEvent = await createEvent({
+        const eventStartDate = `${data.eventStartDate}T${data.eventStartTime}:00`;
+        const eventEndDate = `${data.eventEndDate}T${data.eventEndTime}:00`;
+
+        const eventData = {
           eventType: data.eventType,
           eventName: data.eventName,
           eventLocation: data.eventLocation,
-          eventStartDate: `${data.eventStartDate}T${data.eventStartTime}:00`,
-          eventEndDate: `${data.eventEndDate}T${data.eventEndTime}:00`,
+          eventStartDate,
+          eventEndDate,
           eventDescription: data.eventDescription,
           countUsers: Number(data.countUsers),
           eventPhoto: '',
@@ -173,7 +173,9 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
             latitude: Number(data.coordinates.latitude),
             longitude: Number(data.coordinates.longitude),
           },
-        }).unwrap();
+        };
+
+        const createdEvent = await createEvent(eventData).unwrap();
 
         if (data.eventPhoto && createdEvent.eventId) {
           await uploadPhoto({
@@ -184,382 +186,385 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         }
 
         onClose();
-        navigate(ROUTES.ADD_EVENT);
-      } catch (e) {
-        console.error('Error copying event:', e);
+        navigate(`${ROUTES.EVENT}/${createdEvent.eventId}`);
+      } catch (error) {
+        console.error('Error creating event:', error);
+        showSnackbar('Ошибка при создании события', 'error');
       }
     },
     [createEvent, uploadPhoto, navigate, onClose],
   );
 
-  const isFormDisabled = !isValid || isCreating || isUploadingPhoto;
+  const handleClose = () => {
+    onClose();
+  };
 
-  const sortedEventTypes = useMemo(
-    () =>
-      eventTypes
-        ? [...eventTypes].sort((a, b) =>
-            a.typeName.localeCompare(b.typeName, 'ru'),
-          )
-        : [],
-    [eventTypes],
+  const isFormDisabled = !isValid || !isDirty || isCreating || isUploadingPhoto;
+
+  const sortedEventTypes = useMemo(() => {
+    if (!eventTypes) return [];
+    return [...eventTypes].sort((a, b) =>
+      a.typeName.localeCompare(b.typeName, 'ru'),
+    );
+  }, [eventTypes]);
+
+  const headerNode = (
+    <Box display='flex' alignItems='center' justifyContent='space-between'>
+      <Typography
+        variant='h5'
+        fontFamily='Roboto'
+        fontWeight={700}
+        fontSize='20px'
+        textAlign='center'
+        color='textSecondary'
+        flex={1}
+      >
+        Копирование события
+      </Typography>
+      <IconButton onClick={handleClose} size='small'>
+        <CloseIcon />
+      </IconButton>
+    </Box>
   );
 
-  return (
-    <ModalWrapper
-      maxWidth={{ xs: 361, md: 480 }}
-      height='auto'
-      maxHeight='100%'
-    >
+  const photoNode = (
+    <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
+      <input
+        ref={fileInputRef}
+        type='file'
+        hidden
+        accept='image/jpeg,image/jpg,image/png,image/webp'
+        onChange={handlePhotoChange}
+        disabled={isUploadingPhoto}
+      />
+
       <Box
+        height={232}
+        overflow='hidden'
+        position='relative'
+        borderRadius='10px'
+        bgcolor='grey.200'
         display='flex'
-        flexDirection='column'
-        width='100%'
-        maxWidth={1200}
-        margin='0 auto'
-        padding={isMobile ? theme.spacing(2) : theme.spacing(3)}
-        gap={isMobile ? theme.spacing(2) : theme.spacing(3)}
+        alignItems='center'
+        justifyContent='center'
       >
-        <Box display='flex' alignItems='center' justifyContent='space-between'>
-          <Typography
-            variant='h5'
-            fontFamily='Roboto'
-            fontWeight={700}
-            fontSize='20px'
-            textAlign='center'
-            color='textSecondary'
-            flex={1}
-          >
-            Копирование события
-          </Typography>
-          <IconButton onClick={onClose} size='small'>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-
-        <Box
-          component='form'
-          onSubmit={handleSubmit(onSubmit)}
-          display='flex'
-          flexDirection='column'
-          width='100%'
-          maxWidth={isMobile ? 360 : 480}
-          margin='0 auto'
-          gap={isMobile ? theme.spacing(2) : theme.spacing(3)}
-        >
-          <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
-            <input
-              ref={fileInputRef}
-              type='file'
-              hidden
-              accept='image/jpeg,image/jpg,image/png,image/webp'
-              onChange={handlePhotoChange}
-              disabled={isUploadingPhoto}
-            />
-
-            <Box
-              height={232}
-              overflow='hidden'
-              position='relative'
-              borderRadius='10px'
-              bgcolor='grey.200'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-            >
-              {photoPreview ? (
-                <PhotoPreview src={photoPreview} alt='Event preview' />
-              ) : (
-                <Box
-                  display='flex'
-                  flexDirection='column'
-                  alignItems='center'
-                  gap={1}
-                >
-                  <ImageIcon />
-                  <Typography color='grey.600' variant='body2'>
-                    Добавить фото
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-
-            <Box display='flex' gap={theme.spacing(2)}>
-              <Button
-                startIcon={<ImageIcon />}
-                disabled={isUploadingPhoto}
-                onClick={handlePhotoClick}
-                variant='contained'
-                fullWidth
-              >
-                {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
-              </Button>
-
-              {photoPreview && (
-                <Button
-                  variant='classicWidthAction'
-                  onClick={handleRemovePhoto}
-                >
-                  <DeleteIcon />
-                </Button>
-              )}
-            </Box>
-          </Box>
-
+        {photoPreview ? (
+          <PhotoPreview src={photoPreview} alt='Event preview' />
+          ) : (
           <Box
             display='flex'
             flexDirection='column'
-            flex={1}
-            gap={theme.spacing(2.5)}
+            alignItems='center'
+            gap={1}
           >
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Тип события
-              </Typography>
-              <FormControl error={Boolean(errors.eventType)}>
-                <Controller
-                  name='eventType'
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} displayEmpty disabled={isLoadingTypes}>
-                      <MenuItem value='' disabled>
-                        Выберите тип события
-                      </MenuItem>
-                      {isLoadingTypes ? (
-                        <MenuItem value=''>
-                          <CircularProgress size={20} />
-                        </MenuItem>
-                      ) : (
-                        sortedEventTypes.map((type) => (
-                          <MenuItem key={type.typeId} value={type.typeName}>
-                            {type.typeName}
-                          </MenuItem>
-                        ))
-                      )}
-                    </Select>
-                  )}
-                />
-                {errors.eventType && (
-                  <Typography variant='caption' color='error'>
-                    {errors.eventType.message}
-                  </Typography>
-                )}
-              </FormControl>
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Название события
-              </Typography>
-              <Controller
-                name='eventName'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    placeholder='Введите название события'
-                    error={Boolean(errors.eventName)}
-                  />
-                )}
-              />
-              {errors.eventName && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventName.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Место проведения
-              </Typography>
-              <LocationAutocomplete
-                value={eventLocation ?? ''}
-                onChange={handleLocationChange}
-                onCoordinatesChange={handleCoordinatesChange}
-                error={Boolean(errors.eventLocation)}
-                helperText={errors.eventLocation?.message}
-                placeholder='Начните вводить адрес или название места'
-              />
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Дата начала мероприятия
-              </Typography>
-              <Controller
-                name='eventStartDate'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='date'
-                    error={Boolean(errors.eventStartDate)}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                Событие должно начаться минимум через 1 час
-              </Typography>
-              {errors.eventStartDate && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventStartDate.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Время начала события
-              </Typography>
-              <Controller
-                name='eventStartTime'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='time'
-                    error={Boolean(errors.eventStartTime)}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                Событие должно начаться минимум через 1 час
-              </Typography>
-              {errors.eventStartTime && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventStartTime.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Дата окончания события
-              </Typography>
-              <Controller
-                name='eventEndDate'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='date'
-                    error={Boolean(errors.eventEndDate)}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                Должна быть после даты начала
-              </Typography>
-              {errors.eventEndDate && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventEndDate.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Время окончания события
-              </Typography>
-              <Controller
-                name='eventEndTime'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='time'
-                    error={Boolean(errors.eventEndTime)}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                Должно быть после времени начала
-              </Typography>
-              {errors.eventEndTime && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventEndTime.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Количество участников
-              </Typography>
-              <Controller
-                name='countUsers'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='number'
-                    error={Boolean(errors.countUsers)}
-                    inputProps={{ min: 2, max: 1000 }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                От 2 до 1000 участников
-              </Typography>
-              {errors.countUsers && (
-                <Typography variant='caption' color='error'>
-                  {errors.countUsers.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Описание
-              </Typography>
-              <Controller
-                name='eventDescription'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    placeholder='Опишите событие подробнее'
-                    error={Boolean(errors.eventDescription)}
-                    multiline
-                    rows={6}
-                  />
-                )}
-              />
-              {errors.eventDescription && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventDescription.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Button
-              type='submit'
-              disabled={isFormDisabled}
-              variant='contained'
-              fullWidth
-              startIcon={
-                isCreating || isUploadingPhoto ? null : (
-                  <CheckCircleOutlineIcon />
-                )
-              }
-            >
-              {isCreating || isUploadingPhoto ? (
-                <CircularProgress size={24} color='inherit' />
-              ) : (
-                'СОХРАНИТЬ'
-              )}
-            </Button>
-
-            <Button variant='outlined' fullWidth onClick={onClose}>
-              ОТМЕНА
-            </Button>
+          <ImageIcon />
+          <Typography color='grey.600' variant='body2'>
+              Добавить фото
+            </Typography>
           </Box>
-        </Box>
+      )}
       </Box>
+
+      <Box display='flex' gap={1}>
+        <Button
+          variant='contained'
+          fullWidth
+          startIcon={<ImageIcon />}
+          onClick={handlePhotoClick}
+          disabled={isUploadingPhoto}
+        >
+          {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
+        </Button>
+
+        {photoPreview && (
+          <Button
+            variant='classicWidthAction'
+            onClick={handleRemovePhoto}
+          >
+            <DeleteIcon />
+          </Button>
+      )}
+    </Box>
+  </Box>
+  );
+
+  const formFieldsNode = (
+    <Box
+      component='form'
+      onSubmit={handleSubmit(onSubmit)}
+      display='flex'
+      flexDirection='column'
+      gap={theme.spacing(2.5)}
+    >
+      {/* Тип события */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Тип события
+        </Typography>
+        <FormControl error={Boolean(errors.eventType)}>
+          <Controller
+            name='eventType'
+            control={control}
+            render={({ field }) => (
+              <Select {...field} displayEmpty disabled={isLoadingTypes}>
+                <MenuItem value='' disabled>
+                  Выберите тип события
+                </MenuItem>
+                {isLoadingTypes ? (
+                  <MenuItem value=''>
+                    <CircularProgress size={20} />
+                  </MenuItem>
+                ) : (
+                  sortedEventTypes.map((type) => (
+                    <MenuItem key={type.typeId} value={type.typeName}>
+                      {type.typeName}
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            )}
+          />
+          {errors.eventType && (
+            <Typography variant='caption' color='error'>
+              {errors.eventType.message}
+            </Typography>
+          )}
+        </FormControl>
+      </Box>
+
+      {/* Название события */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Название события
+        </Typography>
+        <Controller
+          name='eventName'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder='Введите название события'
+              error={Boolean(errors.eventName)}
+            />
+          )}
+        />
+        {errors.eventName && (
+          <Typography variant='caption' color='error'>
+            {errors.eventName.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Место проведения */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Место проведения
+        </Typography>
+        <LocationAutocomplete
+          value={eventLocation ?? ''}
+          onChange={handleLocationChange}
+          onCoordinatesChange={handleCoordinatesChange}
+          error={Boolean(errors.eventLocation)}
+          helperText={errors.eventLocation?.message}
+          placeholder='Начните вводить адрес или название места'
+        />
+      </Box>
+
+      {/* Дата начала */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Дата начала мероприятия
+        </Typography>
+        <Controller
+          name='eventStartDate'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type='date'
+              error={Boolean(errors.eventStartDate)}
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+        />
+        <Typography variant='caption' color='textSecondary'>
+          Событие должно начаться минимум через 1 час
+        </Typography>
+        {errors.eventStartDate && (
+          <Typography variant='caption' color='error'>
+            {errors.eventStartDate.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Время начала */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Время начала события
+        </Typography>
+        <Controller
+          name='eventStartTime'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type='time'
+              error={Boolean(errors.eventStartTime)}
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+        />
+        <Typography variant='caption' color='textSecondary'>
+          Событие должно начаться минимум через 1 час
+        </Typography>
+        {errors.eventStartTime && (
+          <Typography variant='caption' color='error'>
+            {errors.eventStartTime.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Дата окончания */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Дата окончания события
+        </Typography>
+        <Controller
+          name='eventEndDate'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type='date'
+              error={Boolean(errors.eventEndDate)}
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+        />
+        <Typography variant='caption' color='textSecondary'>
+          Должна быть после даты начала
+        </Typography>
+        {errors.eventEndDate && (
+          <Typography variant='caption' color='error'>
+            {errors.eventEndDate.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Время окончания */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Время окончания события
+        </Typography>
+        <Controller
+          name='eventEndTime'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type='time'
+              error={Boolean(errors.eventEndTime)}
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+        />
+        <Typography variant='caption' color='textSecondary'>
+          Должно быть после времени начала
+        </Typography>
+        {errors.eventEndTime && (
+          <Typography variant='caption' color='error'>
+            {errors.eventEndTime.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Количество участников */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Количество участников
+        </Typography>
+        <Controller
+          name='countUsers'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type='number'
+              error={Boolean(errors.countUsers)}
+              inputProps={{ min: 2, max: 1000 }}
+            />
+          )}
+        />
+        <Typography variant='caption' color='textSecondary'>
+          От 2 до 1000 участников
+        </Typography>
+        {errors.countUsers && (
+          <Typography variant='caption' color='error'>
+            {errors.countUsers.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Описание */}
+      <Box display='flex' flexDirection='column' gap='4px'>
+        <Typography variant='body2' color='textSecondary'>
+          Описание
+        </Typography>
+        <Controller
+          name='eventDescription'
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder='Опишите событие подробнее'
+              error={Boolean(errors.eventDescription)}
+              multiline
+              rows={6}
+            />
+          )}
+        />
+        {errors.eventDescription && (
+          <Typography variant='caption' color='error'>
+            {errors.eventDescription.message}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Кнопки */}
+      <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
+        <Button
+          type='submit'
+          variant='contained'
+          disabled={isFormDisabled}
+          fullWidth
+          startIcon={
+            isCreating || isUploadingPhoto ? null : <CheckCircleOutlineIcon />
+          }
+        >
+          {isCreating || isUploadingPhoto ? (
+            <CircularProgress size={24} color='inherit' />
+          ) : (
+            'СОХРАНИТЬ'
+          )}
+        </Button>
+
+        <Button variant='outlined' fullWidth onClick={handleClose}>
+          ОТМЕНА
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  const actionsNode = null;
+
+  return (
+    <ModalWrapper maxWidth={{ xs: 361, md: 480 }} height='auto' maxHeight='100%'>
+      <EventFormEntity
+        headerNode={headerNode}
+        photoNode={photoNode}
+        formFieldsNode={formFieldsNode}
+        actionsNode={actionsNode}
+      />
     </ModalWrapper>
   );
 };

@@ -1,6 +1,32 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { EventSearchRequest, IEvent, IEventType } from '@shared/lib';
+import { EventSearchRequest, IEvent, IEventType, IEventDetailed } from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
+
+// Типы для API событий
+export interface UploadPhotoRequest {
+  id: string;
+  photoType: 'EVENT' | 'USER';
+  file: File;
+}
+
+export interface UploadPhotoResponse {
+  url: string;
+}
+
+export interface CreateEventRequest {
+  eventType: string;
+  eventName: string;
+  eventLocation: string;
+  eventStartDate: string;
+  eventEndDate: string;
+  eventDescription: string;
+  countUsers: number;
+  eventPhoto: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+}
 
 export const eventApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -51,6 +77,32 @@ export const eventApi = baseApi.injectEndpoints({
         { type: 'EventById', id: eventId },
       ],
     }),
+    createEvent: builder.mutation<IEventDetailed, CreateEventRequest>({
+      query: (eventData) => ({
+        url: ApiEndpoints.CREATE_EVENT,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: eventData,
+      }),
+      invalidatesTags: ['Events'],
+    }),
+    uploadPhoto: builder.mutation<UploadPhotoResponse, UploadPhotoRequest>({
+      query: ({ id, photoType, file }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return {
+          url: `${ApiEndpoints.UPLOAD_PHOTO}/${id}?photoType=${photoType}`,
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        };
+      },
+      invalidatesTags: ['UploadImage'],
+    }),
   }),
 });
 
@@ -61,5 +113,11 @@ export const {
   useLazyGetFilteredEventsQuery,
   useDeleteEventMutation,
   useGetUserEventsQuery,
+<<<<<<< HEAD
   useGetJoinInEventsMutation,
 } = eventApi;
+=======
+  useCreateEventMutation,
+  useUploadPhotoMutation,
+} = eventApi;
+>>>>>>> 143c424 (свитч криейтивента и копиивента на энтитис)
