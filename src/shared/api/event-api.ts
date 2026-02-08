@@ -7,7 +7,6 @@ import {
 } from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
 
-// Типы для API событий
 export interface UploadPhotoRequest {
   id: string;
   photoType: 'EVENT' | 'USER';
