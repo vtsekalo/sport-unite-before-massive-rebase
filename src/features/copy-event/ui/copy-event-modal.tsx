@@ -29,14 +29,15 @@ import {
 import { EventFormEntity } from '@entities/event-form';
 import { PhotoPreview } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { 
-  useCreateEventMutation, 
+import {
+  useCreateEventMutation,
+  useGetTypeEventsQuery,
   useUploadPhotoMutation,
-  useGetTypeEventsQuery 
 } from '@shared/api';
-import { ROUTES, createEventSchema, CreateEventFormData } from '@shared/lib';
+import { CreateEventFormData, ROUTES, createEventSchema } from '@shared/lib';
 import { showSnackbar } from '@shared/lib/show-snackbar';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
+
 import { CopyEventModalProps } from '../api/types';
 
 export const CopyEventModal: React.FC<CopyEventModalProps> = ({
@@ -46,8 +47,8 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const theme = useTheme();
   const navigate = useNavigate();
   const [photoPreview, setPhotoPreview] = useState<string | null>(
-  event.eventPhoto || null,
-);
+    event.eventPhoto || null,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { data: eventTypes, isLoading: isLoadingTypes } =
@@ -250,19 +251,19 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
       >
         {photoPreview ? (
           <PhotoPreview src={photoPreview} alt='Event preview' />
-          ) : (
+        ) : (
           <Box
             display='flex'
             flexDirection='column'
             alignItems='center'
             gap={1}
           >
-          <ImageIcon />
-          <Typography color='grey.600' variant='body2'>
+            <ImageIcon />
+            <Typography color='grey.600' variant='body2'>
               Добавить фото
             </Typography>
           </Box>
-      )}
+        )}
       </Box>
 
       <Box display='flex' gap={1}>
@@ -277,15 +278,12 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         </Button>
 
         {photoPreview && (
-          <Button
-            variant='classicWidthAction'
-            onClick={handleRemovePhoto}
-          >
+          <Button variant='classicWidthAction' onClick={handleRemovePhoto}>
             <DeleteIcon />
           </Button>
-      )}
+        )}
+      </Box>
     </Box>
-  </Box>
   );
 
   const formFieldsNode = (
@@ -558,7 +556,11 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const actionsNode = null;
 
   return (
-    <ModalWrapper maxWidth={{ xs: 361, md: 480 }} height='auto' maxHeight='100%'>
+    <ModalWrapper
+      maxWidth={{ xs: 361, md: 480 }}
+      height='auto'
+      maxHeight='100%'
+    >
       <EventFormEntity
         headerNode={headerNode}
         photoNode={photoNode}

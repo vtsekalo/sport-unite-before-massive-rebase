@@ -1,5 +1,10 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { EventSearchRequest, IEvent, IEventType, IEventDetailed } from '@shared/lib';
+import {
+  EventSearchRequest,
+  IEvent,
+  IEventDetailed,
+  IEventType,
+} from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
 
 // Типы для API событий
@@ -120,4 +125,7 @@ export const {
   useCreateEventMutation,
   useUploadPhotoMutation,
 } = eventApi;
+<<<<<<< HEAD
 >>>>>>> 143c424 (свитч криейтивента и копиивента на энтитис)
+=======
+>>>>>>> 6cca676 (свитч криейтивента и копиивента на энтитис)

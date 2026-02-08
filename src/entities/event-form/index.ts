@@ -1,2 +1,2 @@
-export { EventFormEntity } from "./ui/event-form";
-export { PhotoPreview } from "./ui/create-form.styled";
+export { EventFormEntity } from './ui/event-form';
+export { PhotoPreview } from './ui/create-form.styled';
