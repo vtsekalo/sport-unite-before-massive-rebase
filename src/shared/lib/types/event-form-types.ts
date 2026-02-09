@@ -37,4 +37,3 @@ export interface CreateEventRequest {
     longitude: number;
   };
 }
-

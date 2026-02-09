@@ -1,12 +1,12 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
 import {
+  CreateEventRequest,
   EventSearchRequest,
   IEvent,
   IEventDetailed,
   IEventType,
-  CreateEventRequest,
+  UploadPhotoRequest,
   UploadPhotoResponse,
-  UploadPhotoRequest
 } from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
 
