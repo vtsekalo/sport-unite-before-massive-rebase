@@ -103,7 +103,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
   const handleCopyModalClose = () => {
     setIsCopyModalOpen(false);
-  }
+  };
 
   if (isError) {
     return (
@@ -400,7 +400,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     const footerActionsNode = (
       <>
         {isOrganizer && (
-          <Button variant='classicWidthAction' onClick ={handleCopyClick}>
+          <Button variant='classicWidthAction' onClick={handleCopyClick}>
             <Styled.CategoryMuiIcon as={ContentCopyIcon} />
           </Button>
         )}
@@ -459,17 +459,3 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     </>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
