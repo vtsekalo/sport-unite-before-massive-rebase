@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useOutlet } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
@@ -9,15 +9,14 @@ import { ROUTES } from '@shared/lib/constants';
 import { PageModal } from '@shared/ui/modal';
 import { HeaderDesktop, HeaderMobile } from '@widgets/header';
 import { EventsMap } from '@widgets/map';
+import { MapControls } from '@widgets/map-controls';
 import { NavBar } from '@widgets/navbar';
 
 export const Layout = () => {
   const navigate = useNavigate();
-
   const hasOutlet = useOutlet();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const memoizedMap = useMemo(() => <EventsMap />, []);
 
   const handleCloseModal = () => {
     navigate(ROUTES.HOME);
@@ -40,7 +39,7 @@ export const Layout = () => {
       alignItems={'center'}
       gap={2}
     >
-      {memoizedMap}
+      <EventsMap />
 
       {isMobile ? (
         <HeaderMobile buttonRef={buttonRefCallback} />
@@ -48,6 +47,7 @@ export const Layout = () => {
         <HeaderDesktop buttonRef={buttonRefCallback} />
       )}
       <FilterEventsModal buttonRef={anchorEl} />
+      <MapControls />
       <PageModal open={Boolean(hasOutlet)} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>

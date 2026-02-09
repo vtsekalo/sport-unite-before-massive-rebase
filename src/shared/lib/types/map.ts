@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 /**
  * @prop latitude - Широта
  * @prop longitude - Долгота
@@ -25,8 +27,9 @@ export type CoordinatesTuple = [longitude: number, latitude: number];
 export interface MapMarker {
   id: string;
   coordinates: CoordinatesTuple;
-  icon: string;
+  icon: ReactNode;
   onClick?: () => void;
+  zIndex: number;
 }
 
 /**

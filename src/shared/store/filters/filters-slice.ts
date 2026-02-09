@@ -1,11 +1,13 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
+import { BASE_RADIUS, DEFAULT_MAP_CENTER } from '@shared/config';
 import { EventScope, EventSearchRequest, EventStatus } from '@shared/lib';
 
 interface FiltersState {
   latitude: number;
   longitude: number;
-  range: number | undefined;
+  range: number;
+  calculateRange: number;
   eventTypes?: string[];
   eventStatuses: EventStatus[];
   eventStartDateTime?: string;
@@ -14,13 +16,14 @@ interface FiltersState {
 }
 
 const initialState: FiltersState = {
-  latitude: 55.754167,
-  longitude: 37.620001,
-  range: undefined,
-  eventStatuses: [EventStatus.PLANNED, EventStatus.IN_PROCESS],
-  scope: EventScope.ALL,
+  latitude: DEFAULT_MAP_CENTER[1],
+  longitude: DEFAULT_MAP_CENTER[0],
+  range: BASE_RADIUS,
+  calculateRange: BASE_RADIUS,
   eventTypes: undefined,
+  eventStatuses: [EventStatus.PLANNED, EventStatus.IN_PROCESS],
   eventStartDateTime: undefined,
+  scope: EventScope.ALL,
   useCustomRange: false,
 };
 
@@ -38,11 +41,13 @@ const filtersSlice = createSlice({
 
     setFilterRange: (
       state,
-      action: PayloadAction<{ range: number | undefined; fromUser?: boolean }>,
+      action: PayloadAction<{ range: number; fromUser?: boolean }>,
     ) => {
       state.range = action.payload.range;
       if (action.payload.fromUser) {
         state.useCustomRange = true;
+      } else {
+        state.calculateRange = action.payload.range;
       }
     },
 
@@ -123,14 +128,13 @@ const filtersSlice = createSlice({
       state.eventStatuses = initialState.eventStatuses;
       state.eventStartDateTime = initialState.eventStartDateTime;
       state.scope = initialState.scope;
-      state.range = undefined;
-      state.latitude = initialState.latitude;
-      state.longitude = initialState.longitude;
+      state.range = state.calculateRange;
       state.useCustomRange = false;
     },
 
     resetCustomRange: (state) => {
       state.useCustomRange = false;
+      state.range = state.calculateRange;
     },
   },
 });
@@ -171,7 +175,7 @@ export const selectEventSearchRequest = createSelector(
     coordinateFilterDto: {
       latitude: filters.latitude,
       longitude: filters.longitude,
-      range: filters.range ?? 50000000,
+      range: filters.range,
     },
   }),
 );

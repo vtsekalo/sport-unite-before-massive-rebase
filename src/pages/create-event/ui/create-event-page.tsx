@@ -511,7 +511,7 @@ export const CreateEventPage: React.FC = () => {
               )}
             </Box>
 
-            <Button type='submit' disabled={isFormDisabled}>
+            <Button type='submit' variant='contained' disabled={isFormDisabled}>
               СОЗДАТЬ СОБЫТИЕ
             </Button>
 

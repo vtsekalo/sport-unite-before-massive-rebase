@@ -3,10 +3,6 @@ import { Box, Button, Skeleton } from '@mui/material';
 
 import { ModalWrapper } from '@entities/modal-wrapper';
 
-const UserAvatar = styled(Avatar)`
-  cursor: pointer;
-`;
-
 const AnimatedModalWrapper = styled(ModalWrapper)`
   animation: zoomSoft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -56,34 +52,6 @@ const CloseButton = styled(Button)(({ theme }) => ({
   right: theme.spacing(2),
 }));
 
-const CategoryIconOuter = styled(Box)(({ theme }) => ({
-  width: theme.spacing(6),
-  height: theme.spacing(6),
-  borderRadius: '50%',
-  backgroundColor: theme.palette.primary.main,
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexShrink: 0,
-  boxSizing: 'border-box',
-}));
-
-const CategoryIconInner = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: theme.spacing(5.25),
-  height: theme.spacing(5.25),
-  borderRadius: '50%',
-  backgroundColor: theme.palette.common.white,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  boxSizing: 'border-box',
-}));
-
 const CategoryIconImage = styled('img')(({ theme }) => ({
   display: 'block',
   width: theme.spacing(3),
@@ -122,14 +90,13 @@ const ButtonSkeleton = styled(Skeleton)(({ theme }) => ({
 const EventAvatar = styled(Avatar)(() => ({
   width: 32,
   height: 32,
+  cursor: 'pointer',
 }));
 
 export const Styled = {
   Header,
   FavoriteButton,
   CloseButton,
-  CategoryIconOuter,
-  CategoryIconInner,
   CategoryIconImage,
   CategoryMuiIcon,
   ButtonLabel,
@@ -137,6 +104,5 @@ export const Styled = {
   RoundedSkeleton,
   ButtonSkeleton,
   EventAvatar,
-  UserAvatar,
   AnimatedModalWrapper,
 };

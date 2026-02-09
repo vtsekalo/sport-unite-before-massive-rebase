@@ -1,4 +1,2 @@
-export { default as crown } from './crown.svg';
-export { default as CrownIcon } from './crown.svg';
-export { default as FootballIcon } from './football.svg';
-export { default as RunIcon } from './running-shoes.svg';
+export { default as Crown } from './crown.svg';
+export { default as Logo } from './logo.svg';
