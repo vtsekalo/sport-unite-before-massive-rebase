@@ -1,17 +1,17 @@
+import styled from 'styled-components';
+
 import { Box, BoxProps } from '@mui/material';
-import { styled } from '@mui/material/styles';
 
 type IconProps = BoxProps & {
   src?: string;
   alt?: string;
-  invert?: boolean;
+  $filter: boolean;
 };
 
-const Icon = styled(Box)<IconProps>(({ invert }) => ({
-  ...(invert && {
-    filter: 'brightness(0) invert(1)',
-  }),
-}));
+const Icon = styled(Box)<IconProps>`
+  filter: ${(props) => (props.$filter ? 'brightness(0) invert(1)' : 'none')};
+  user-select: none;
+`;
 
 export const Styled = {
   Icon,

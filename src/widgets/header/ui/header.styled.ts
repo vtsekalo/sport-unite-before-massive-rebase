@@ -1,6 +1,6 @@
-import { Box, styled } from '@mui/material';
+import { Box, BoxProps, styled } from '@mui/material';
 
-export const HeaderWrapper = styled(Box)(({ theme }) => ({
+const HeaderWrapper = styled(Box)(({ theme }) => ({
   zIndex: 20,
   alignItems: 'center',
   display: 'flex',
@@ -20,6 +20,21 @@ export const HeaderWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
+type LogoProps = BoxProps & {
+  src?: string;
+  alt?: string;
+};
+
+const LogoWrapper = styled(Box)<LogoProps>(() => ({
+  cursor: 'pointer',
+}));
+
+const ProfileButton = styled(Box)(() => ({
+  cursor: 'pointer',
+}));
+
 export const Styled = {
   HeaderWrapper,
+  LogoWrapper,
+  ProfileButton,
 };

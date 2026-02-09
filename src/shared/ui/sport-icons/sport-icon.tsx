@@ -1,66 +1,44 @@
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
-import {
-  Basket,
-  Bike,
-  Bmx,
-  Roller,
-  Run,
-  Skateboarding,
-  Snowboard,
-  Soccer,
-  Tennis,
-} from '@shared/assets';
+import { Sport } from '@shared/lib';
 
 import { Styled } from './sport-icon.styled';
 
-interface SportIconProps {
+interface SportIconProps extends BoxProps {
   type: string;
-  sizeBox?: number;
-  sizeIcon?: number;
-  color?: string;
-  invert?: boolean;
+  widthIcon?: string;
+  heightIcon?: string;
+  filter?: boolean;
 }
-
-const Sport: Record<string, string> = {
-  'Футбол': Soccer,
-  'Баскетбол': Basket,
-  'Теннис': Tennis,
-  'Бег': Run,
-  'Скейтбординг': Skateboarding,
-  'BMX': Bmx,
-  'Роллер-спорт': Roller,
-  'Велоспорт': Bike,
-  'Сноубординг': Snowboard,
-};
 
 export const SportIcon = ({
   type,
-  sizeBox = 24,
-  sizeIcon = 16,
-  color = '#FFFFFF',
-  invert = true,
+  widthIcon = '16px',
+  heightIcon = '16px',
+  filter = true,
+  ...props
 }: SportIconProps) => {
   const IconComponent = Sport[type];
   return (
     <Box
       bgcolor='#3677FF'
-      width={sizeBox}
-      height={sizeBox}
-      borderRadius={12}
-      color={color}
+      width='24px'
+      height='24px'
+      borderRadius='50%'
       display='flex'
       alignItems='center'
       justifyContent='center'
+      {...props}
     >
       {IconComponent && (
         <Styled.Icon
           component='img'
           src={IconComponent}
-          width={sizeIcon}
-          height={sizeIcon}
+          width={widthIcon}
+          height={heightIcon}
           alt={type}
-          {...(invert ? { invert } : {})}
+          color='white'
+          $filter={filter}
         />
       )}
     </Box>

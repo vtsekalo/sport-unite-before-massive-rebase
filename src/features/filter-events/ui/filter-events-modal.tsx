@@ -13,8 +13,9 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import { IEventType, useEventSearch, useEventTypes } from '@shared/lib';
-import { setFilterRange } from '@shared/store';
+import { useGetTypeEventsQuery } from '@shared/api';
+import { IEventType, useEventSearch } from '@shared/lib';
+import { resetCustomRange, setFilterRange } from '@shared/store';
 
 import { Styled } from './filter-events-modal.styled';
 
@@ -29,7 +30,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
   const eventsByFilter = useEventSearch();
-  const { eventTypes } = useEventTypes();
+  const { data: eventTypes = [] } = useGetTypeEventsQuery();
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [sportAnchorEl, setSportAnchorEl] = useState<HTMLElement | null>(null);
@@ -121,7 +122,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   }, [radius, dispatch]);
 
   const handleResetLocation = useCallback(() => {
-    dispatch(setFilterRange({ range: undefined, fromUser: false }));
+    dispatch(resetCustomRange());
     setRadius(5);
     closeLocation();
     closeMain();

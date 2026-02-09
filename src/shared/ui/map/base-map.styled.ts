@@ -5,3 +5,13 @@ export const MapContainer = styled('div')({
   height: '100%',
   position: 'relative',
 });
+
+export const MarkerContainer = styled('div')({
+  cursor: 'pointer',
+  transform: 'translateZ(0)',
+});
+
+export const Styled = {
+  MapContainer,
+  MarkerContainer,
+};

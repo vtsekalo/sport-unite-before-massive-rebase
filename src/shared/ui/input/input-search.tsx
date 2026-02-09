@@ -9,7 +9,7 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { Logo } from '@shared/ui/icons';
+import { Logo } from '@shared/assets';
 
 import { StyledInput, StyledInputAdornment } from './input-search.styled';
 

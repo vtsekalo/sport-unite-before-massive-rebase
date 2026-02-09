@@ -4,7 +4,7 @@ import { FC, Fragment, useMemo } from 'react';
 import { Box, Divider, Icon, Tooltip, Typography } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
-import { CrownIcon } from '@shared/assets';
+import { Crown } from '@shared/assets';
 import { EventStatus, IEvent, UserRole } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
@@ -90,12 +90,7 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
                     }
                     roleNode={
                       <Icon>
-                        <img
-                          width={24}
-                          height={24}
-                          src={CrownIcon}
-                          alt='role'
-                        />
+                        <img width={24} height={24} src={Crown} alt='role' />
                       </Icon>
                     }
                     titleNode={

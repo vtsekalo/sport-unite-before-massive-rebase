@@ -29,14 +29,7 @@ export const Routers: FC = () => {
         <Route path={ROUTES.CHATS.INDEX} element={<Chats />} />
         <Route path={ROUTES.CHATS.DETAIL(':id')} element={<Chat />} />
         <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
-        <Route
-          path={ROUTES.NOTIFICATIONS}
-          element={
-            <ModalWrapper>
-              <Notifications />
-            </ModalWrapper>
-          }
-        />
+        <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
         <Route path={ROUTES.PROFILE.INDEX} element={<ProfilePage />}>
           <Route index element={<Profile />} />
           <Route path={ROUTES.PROFILE.EDIT} element={<ProfileEdit />} />

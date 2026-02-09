@@ -10,10 +10,10 @@ import { StyledFab } from './create-event-fab.styled';
 
 export const CreateEventFab: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, isAuthError } = useProfile();
+  const { isAuthenticated } = useProfile({ __meta: { toast: false } });
 
   const handleClick = () => {
-    if (!profile || isAuthError) {
+    if (!isAuthenticated) {
       navigate(ROUTES.AUTH);
       return;
     }
