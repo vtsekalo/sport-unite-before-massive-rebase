@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Cross from '@mui/icons-material/Close';
@@ -14,6 +14,7 @@ import { AvatarGroup, Box, Button, Skeleton, Typography } from '@mui/material';
 import { EventInfo } from '@entities/event-card';
 import { QueryInfo } from '@entities/query-info';
 import { CancelEventButton } from '@features/cancel-event';
+import { CopyEventModal } from '@features/copy-event';
 import { useGetEventByIdQuery } from '@shared/api';
 import {
   EventStatus,
@@ -35,6 +36,7 @@ type EventEditModalProps = {
 
 export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
   const { eventId } = useParams<{ eventId: string }>();
   const {
@@ -94,6 +96,14 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       navigate(ROUTES.HOME);
     }
   };
+
+  const handleCopyClick = () => {
+    setIsCopyModalOpen(true);
+  };
+
+  const handleCopyModalClose = () => {
+    setIsCopyModalOpen(false);
+  }
 
   if (isError) {
     return (
@@ -390,7 +400,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     const footerActionsNode = (
       <>
         {isOrganizer && (
-          <Button variant='classicWidthAction'>
+          <Button variant='classicWidthAction' onClick ={handleCopyClick}>
             <Styled.CategoryMuiIcon as={ContentCopyIcon} />
           </Button>
         )}
@@ -424,20 +434,42 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   }
 
   return (
-    <Styled.AnimatedModalWrapper
-      maxWidth={{ xs: '361px', md: '440px' }}
-      maxHeight={{ xs: '100%', md: '714px' }}
-    >
-      <EventInfo
-        headerNode={content.headerNode}
-        titleNode={content.titleNode}
-        dateNode={content.dateNode}
-        locationNode={content.locationNode}
-        descriptionNode={content.descriptionNode}
-        organizerNode={content.organizerNode}
-        participantsNode={content.participantsNode}
-        footerActionsNode={content.footerActionsNode}
-      />
-    </Styled.AnimatedModalWrapper>
+    <>
+      {!isCopyModalOpen && (
+        <Styled.AnimatedModalWrapper
+          maxWidth={{ xs: '361px', md: '440px' }}
+          maxHeight={{ xs: '100%', md: '714px' }}
+        >
+          <EventInfo
+            headerNode={content.headerNode}
+            titleNode={content.titleNode}
+            dateNode={content.dateNode}
+            locationNode={content.locationNode}
+            descriptionNode={content.descriptionNode}
+            organizerNode={content.organizerNode}
+            participantsNode={content.participantsNode}
+            footerActionsNode={content.footerActionsNode}
+          />
+        </Styled.AnimatedModalWrapper>
+      )}
+
+      {isCopyModalOpen && event && (
+        <CopyEventModal event={event} onClose={handleCopyModalClose} />
+      )}
+    </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
