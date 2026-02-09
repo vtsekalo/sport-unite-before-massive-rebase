@@ -4,33 +4,11 @@ import {
   IEvent,
   IEventDetailed,
   IEventType,
+  CreateEventRequest,
+  UploadPhotoResponse,
+  UploadPhotoRequest
 } from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
-
-export interface UploadPhotoRequest {
-  id: string;
-  photoType: 'EVENT' | 'USER';
-  file: File;
-}
-
-export interface UploadPhotoResponse {
-  url: string;
-}
-
-export interface CreateEventRequest {
-  eventType: string;
-  eventName: string;
-  eventLocation: string;
-  eventStartDate: string;
-  eventEndDate: string;
-  eventDescription: string;
-  countUsers: number;
-  eventPhoto: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
 
 export const eventApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
