@@ -1,9 +1,9 @@
 import { Skeleton, Typography } from '@mui/material';
 
 import { NotificationCard } from '@entities/notification-card';
-import basketbolIcon from '@shared/assets/sport-icon/sports_basketball.svg';
 import { formatToTime } from '@shared/lib';
 import { INotification, StatusNotification, UserRole } from '@shared/lib';
+import { SportIcon } from '@shared/ui';
 
 export function RowContent({
   isLoading,
@@ -37,7 +37,7 @@ export function RowContent({
           {time}
         </Typography>
       }
-      iconNode={<img width={24} height={24} src={basketbolIcon} alt='icon' />}
+      iconNode={<SportIcon type={item.eventType} />}
       eventNameNode={<Typography>{item.eventName}</Typography>}
       isMyEvent={item.userRole === UserRole.organizer}
       isRead={isRead}

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Tab, Typography } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
-import { CrownIcon } from '@shared/assets';
+import { Crown } from '@shared/assets';
 import { EventStatus, IEvent, ROUTES } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
@@ -91,9 +91,7 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
                   <SportIcon type={event.eventType} />
                 </Styled.EventIcon>
               }
-              roleNode={
-                <img width={24} height={24} src={CrownIcon} alt='icon' />
-              }
+              roleNode={<img width={24} height={24} src={Crown} alt='icon' />}
               titleNode={
                 <Styled.EventTypography
                   fontWeight={600}

@@ -11,9 +11,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
-import { useGetMyProfileQuery } from '@shared/api';
-import { ROUTES } from '@shared/lib';
-import { Logo } from '@shared/ui/icons';
+import { Logo } from '@shared/assets';
+import { ROUTES, useProfile } from '@shared/lib';
 import { InputSearch } from '@shared/ui/input';
 
 import { Styled } from './header.styled';
@@ -25,7 +24,7 @@ interface HeaderDesktopProps {
 export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: profile, isLoading } = useGetMyProfileQuery({
+  const { profile, isLoading } = useProfile({
     __meta: { toast: false },
   });
 
@@ -54,7 +53,7 @@ export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
           maxWidth={600}
           flex={1}
         >
-          <Box
+          <Styled.LogoWrapper
             component='img'
             src={Logo}
             alt='Logo'
@@ -73,7 +72,7 @@ export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
             <FormatListBulletedIcon fontSize='medium' />
           </IconButton>
         </Stack>
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={2} alignItems='center'>
           <Box display='flex' alignItems='center'>
             <IconButton color='primary'>
               <LocationOnIcon fontSize='medium' />
@@ -82,20 +81,24 @@ export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
               <u>{profile?.city}</u>
             </Typography>
           </Box>
-          <IconButton loading={isLoading} disabled={!profile} color='primary'>
-            <NotificationsIcon
-              fontSize='medium'
-              onClick={() => handleNavigate(ROUTES.NOTIFICATIONS)}
-            />
+          <IconButton
+            loading={isLoading}
+            disabled={!profile}
+            color='primary'
+            onClick={() => handleNavigate(ROUTES.NOTIFICATIONS)}
+          >
+            <NotificationsIcon fontSize='medium' />
           </IconButton>
-          <IconButton loading={isLoading} disabled={!profile} color='primary'>
-            <EmailIcon
-              fontSize='medium'
-              onClick={() => handleNavigate(ROUTES.CHATS.INDEX)}
-            />
+          <IconButton
+            loading={isLoading}
+            disabled={!profile}
+            color='primary'
+            onClick={() => handleNavigate(ROUTES.CHATS.INDEX)}
+          >
+            <EmailIcon fontSize='medium' />
           </IconButton>
           {profile ? (
-            <Box
+            <Styled.ProfileButton
               display='flex'
               alignItems='center'
               bgcolor={'rgba(54, 119, 255, 0.3)'}
@@ -106,15 +109,12 @@ export const HeaderDesktop: FC<HeaderDesktopProps> = ({ buttonRef }) => {
               onClick={() => handleNavigate(ROUTES.PROFILE.INDEX)}
             >
               {profile?.profilePicture ? (
-                <Avatar
-                  src={`${profile.profilePicture?.replace('http://194.85.218.83:9000', '') || ''}?v=${Math.random()}`}
-                  // src={`${profile.profilePicture}?v=${Math.random()}`}
-                />
+                <Avatar src={`${profile.profilePicture}?v=${Math.random()}`} />
               ) : (
                 <AccountCircleIcon fontSize='medium' />
               )}
               <Typography color='primary'>{profile.nickname}</Typography>
-            </Box>
+            </Styled.ProfileButton>
           ) : (
             <IconButton onClick={() => navigate(ROUTES.AUTH)}>
               <InputIcon color='info' fontSize='medium' />

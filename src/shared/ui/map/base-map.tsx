@@ -1,118 +1,136 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import { load } from '@2gis/mapgl';
-import { Map, Marker } from '@2gis/mapgl/types';
+import * as mapgl from '@2gis/mapgl/types';
 
-import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from '@shared/config/map';
 import { CoordinatesTuple, MapMarker } from '@shared/lib';
 
-import { MapContainer } from './base-map.styled';
+import { Styled } from './base-map.styled';
+import { MarkerPortal } from './marker-portal';
 
 interface BaseMapProps {
-  center?: CoordinatesTuple;
-  zoom?: number;
+  center: CoordinatesTuple;
+  zoom: number;
   apiKey: string;
   markers?: MapMarker[];
-  showZoomControl?: boolean;
-  onZoomChange?: (zoom: number) => void;
-  onCenterChange?: (center: CoordinatesTuple) => void;
-  onMoveStart?: () => void;
-  onMapReady?: (mapInstance: Map) => void;
+  onCameraChange?: (center: CoordinatesTuple, zoom: number) => void;
+  onMapReady?: (map: mapgl.Map) => void;
 }
 
-export const BaseMap = ({
-  center = DEFAULT_MAP_CENTER,
-  zoom = DEFAULT_MAP_ZOOM,
-  apiKey,
-  markers = [],
-  showZoomControl = false,
-  onZoomChange,
-  onCenterChange,
-  onMoveStart,
-  onMapReady,
-}: BaseMapProps) => {
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<Map | null>(null);
-  const markersRef = useRef<Marker[]>([]);
+export const BaseMap = memo(
+  ({
+    center,
+    zoom,
+    apiKey,
+    markers = [],
+    onCameraChange,
+    onMapReady,
+  }: BaseMapProps) => {
+    const mapRef = useRef<HTMLDivElement>(null);
+    const [instance, setInstance] = useState<{
+      map: mapgl.Map;
+      api: typeof mapgl;
+    } | null>(null);
 
-  const createMarkers = useCallback(async (markersData: MapMarker[]) => {
-    if (!mapInstanceRef.current) return;
+    const onCameraChangeRef = useRef(onCameraChange);
+    onCameraChangeRef.current = onCameraChange;
 
-    markersRef.current.forEach((marker) => marker.destroy());
-    markersRef.current = [];
+    const lastCenterRef = useRef<CoordinatesTuple>(center);
+    const lastZoomRef = useRef<number>(zoom);
 
-    const mapglAPI = await load();
+    useEffect(() => {
+      let map: mapgl.Map | null = null;
 
-    markersRef.current = markersData.map((markerData) => {
-      const marker = new mapglAPI.Marker(mapInstanceRef.current!, {
-        coordinates: markerData.coordinates,
-        icon: markerData.icon,
-      });
+      load().then((api) => {
+        if (!mapRef.current) return;
 
-      if (markerData.onClick) {
-        marker.on('click', markerData.onClick);
-      }
-
-      return marker;
-    });
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const initMap = async () => {
-      try {
-        const mapglAPI = await load();
-        if (!isMounted || !mapRef.current) return;
-
-        const mapInstance = new mapglAPI.Map(mapRef.current, {
+        map = new api.Map(mapRef.current, {
           center,
           zoom,
           key: apiKey,
-          zoomControl: showZoomControl,
+          zoomControl: false,
         });
-        mapInstanceRef.current = mapInstance;
 
-        onMapReady?.(mapInstance);
+        map.invalidateSize();
 
-        createMarkers(markers);
+        lastCenterRef.current = center;
+        lastZoomRef.current = zoom;
 
-        if (onZoomChange) {
-          mapInstance.on('zoomend', () => onZoomChange(mapInstance.getZoom()));
-        }
+        const handleMove = () => {
+          if (!map) return;
 
-        if (onCenterChange) {
-          mapInstance.on('moveend', () => {
-            const newCenter = mapInstance.getCenter();
-            onCenterChange([newCenter[0], newCenter[1]]);
-          });
-        }
+          const [lng, lat] = map.getCenter();
+          const currentZoom = map.getZoom();
 
-        if (onMoveStart) {
-          mapInstance.on('movestart', onMoveStart);
-        }
-      } catch {
-        // Ошибка инициализации карты проигнорирована
-      }
-    };
+          lastCenterRef.current = [lng, lat];
+          lastZoomRef.current = currentZoom;
 
-    initMap();
+          onCameraChangeRef.current?.([lng, lat], currentZoom);
+        };
 
-    return () => {
-      isMounted = false;
+        map.on('moveend', handleMove);
+        map.on('zoomend', handleMove);
 
-      markersRef.current.forEach((m) => m.destroy());
-      markersRef.current = [];
-      mapInstanceRef.current?.destroy();
-      mapInstanceRef.current = null;
-    };
+        setInstance({ map, api });
+        onMapReady?.(map);
+      });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      return () => {
+        map?.destroy();
+        setInstance(null);
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [apiKey]);
 
-  useEffect(() => {
-    createMarkers(markers);
-  }, [markers, createMarkers]);
+    useEffect(() => {
+      if (!instance) return;
 
-  return <MapContainer ref={mapRef} />;
-};
+      const handleResize = () => {
+        instance.map.invalidateSize();
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, [instance]);
+
+    useEffect(() => {
+      if (!instance) return;
+
+      const [lng, lat] = center;
+      const [lastLng, lastLat] = lastCenterRef.current;
+
+      const changed = lng !== lastLng || lat !== lastLat;
+      if (!changed) return;
+
+      instance.map.setCenter(center, { animate: false });
+      lastCenterRef.current = center;
+    }, [center, instance]);
+
+    useEffect(() => {
+      if (!instance) return;
+
+      if (zoom === lastZoomRef.current) return;
+
+      instance.map.setZoom(zoom, { animate: false });
+      lastZoomRef.current = zoom;
+    }, [zoom, instance]);
+
+    return (
+      <>
+        <Styled.MapContainer ref={mapRef} />
+        {instance &&
+          markers.map((m) => (
+            <MarkerPortal
+              key={m.id}
+              map={instance.map}
+              api={instance.api}
+              data={m}
+            />
+          ))}
+      </>
+    );
+  },
+);

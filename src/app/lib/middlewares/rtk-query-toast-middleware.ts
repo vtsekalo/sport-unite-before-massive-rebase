@@ -82,9 +82,8 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       status === StatusCodes.Forbidden
     ) {
       const message = StatusMessages[status];
-
       if (message) {
-        showSnackbar(StatusMessages[status], 'error');
+        showSnackbar(message, 'error');
       }
 
       return next(action);

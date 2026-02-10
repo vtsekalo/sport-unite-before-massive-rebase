@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 
 import { Box } from '@mui/material';
 
-import { crown } from '@shared/assets';
+import { Crown } from '@shared/assets';
 import { defaultBoxShadow } from '@shared/lib';
 
 interface NotificationCardProps {
@@ -43,7 +43,7 @@ export const NotificationCard: FC<NotificationCardProps> = ({
         >
           {iconNode}
           {isMyEvent && (
-            <img width={20} height={18} alt='my event' src={crown} />
+            <img width={20} height={18} alt='my event' src={Crown} />
           )}
         </Box>
         <Box display='flex' gap='4px' flexDirection='column'>

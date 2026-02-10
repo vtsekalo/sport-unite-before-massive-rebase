@@ -67,7 +67,6 @@ export const CreateEventPage: React.FC = () => {
       eventLocation: '',
       eventStartDate: '',
       eventStartTime: '',
-      eventEndDate: '',
       eventEndTime: '',
       countUsers: 10,
       eventDescription: '',
@@ -152,7 +151,7 @@ export const CreateEventPage: React.FC = () => {
     async (data: CreateEventFormData) => {
       try {
         const eventStartDate = `${data.eventStartDate}T${data.eventStartTime}:00`;
-        const eventEndDate = `${data.eventEndDate}T${data.eventEndTime}:00`;
+        const eventEndDate = `${data.eventStartDate}T${data.eventEndTime}:00`;
 
         const eventData = {
           eventType: data.eventType,
@@ -413,32 +412,6 @@ export const CreateEventPage: React.FC = () => {
 
             <Box display='flex' flexDirection='column' gap='4px'>
               <Typography variant='body2' color='textSecondary'>
-                Дата окончания события
-              </Typography>
-              <Controller
-                name='eventEndDate'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type='date'
-                    error={Boolean(errors.eventEndDate)}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                )}
-              />
-              <Typography variant='caption' color='textSecondary'>
-                Должна быть после даты начала
-              </Typography>
-              {errors.eventEndDate && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventEndDate.message}
-                </Typography>
-              )}
-            </Box>
-
-            <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
                 Время окончания события
               </Typography>
               <Controller
@@ -511,7 +484,7 @@ export const CreateEventPage: React.FC = () => {
               )}
             </Box>
 
-            <Button type='submit' disabled={isFormDisabled}>
+            <Button type='submit' variant='contained' disabled={isFormDisabled}>
               СОЗДАТЬ СОБЫТИЕ
             </Button>
 

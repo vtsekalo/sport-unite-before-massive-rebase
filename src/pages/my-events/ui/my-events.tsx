@@ -1,10 +1,8 @@
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Box,
-  IconButton,
   Skeleton,
   Typography,
   useMediaQuery,
@@ -14,6 +12,7 @@ import {
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useGetMyProfileQuery } from '@shared/api';
 import { useGetUserEventsQuery } from '@shared/api';
+import { ROUTES, UserRole } from '@shared/lib';
 import { EventsListDesktop, EventsListMobile } from '@widgets/events-list';
 
 export const MyEvents: FC = () => {
@@ -31,20 +30,21 @@ export const MyEvents: FC = () => {
 
   const organizers = eventsData?.reduce(
     (sum, event) =>
-      sum + event.users.filter((u) => u.userRole === 'ORGANIZER').length,
+      sum + event.users.filter((u) => u.userRole === UserRole.organizer).length,
     0,
   );
 
   const participants = eventsData?.reduce(
     (sum, event) =>
-      sum + event.users.filter((u) => u.userRole === 'PARTICIPANT').length,
+      sum +
+      event.users.filter((u) => u.userRole === UserRole.participant).length,
     0,
   );
 
   const navigate = useNavigate();
   useEffect(() => {
     if (error && 'status' in error && error?.status === 401) {
-      navigate('/auth');
+      navigate(ROUTES.AUTH);
     }
   }, [error, navigate]);
 
@@ -59,7 +59,7 @@ export const MyEvents: FC = () => {
   );
 
   return (
-    <ModalWrapper>
+    <ModalWrapper showBackButton>
       <Box
         position='relative'
         display='flex'
@@ -70,19 +70,6 @@ export const MyEvents: FC = () => {
         gap={{ xs: 1, md: 3 }}
         p={{ xs: 2, md: 5 }}
       >
-        <Box
-          position='absolute'
-          top={{ xs: 16, md: 40 }}
-          left={{ xs: 16, md: 40 }}
-        >
-          <IconButton>
-            <ArrowBackIcon
-              onClick={() => navigate('/profile')}
-              color='primary'
-            />
-          </IconButton>
-        </Box>
-
         <Typography
           component='h3'
           fontWeight={700}

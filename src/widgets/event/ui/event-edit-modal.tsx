@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -24,7 +25,6 @@ import {
   useIsEventOrganizer,
   useProfile,
 } from '@shared/lib';
-import { formatDate } from '@shared/lib';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { Styled } from './event-edit-modal.styled';
@@ -35,35 +35,37 @@ type EventEditModalProps = {
 
 export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
-  const [isJoining, setIsJoining] = useState(false);
+
   const { eventId } = useParams<{ eventId: string }>();
+
+  const {
+    profile,
+    isLoading: isProfileLoading,
+    isAuthenticated,
+  } = useProfile({
+    __meta: { toast: false },
+  });
+
   const {
     data: eventData,
     isLoading,
     isError,
   } = useGetEventByIdQuery(eventId || '', {
-    skip: !eventId,
+    skip: !eventId || !profile,
     refetchOnMountOrArgChange: true,
   });
 
   const [joinEvent, { isLoading: isLoadingJoin }] =
     useGetJoinInEventsMutation();
-  const { profile, isLoading: isProfileLoading } = useProfile();
-  const isAuthenticated = !!profile;
 
   useEffect(() => {
     if (!isProfileLoading && !isAuthenticated) {
-      navigate(ROUTES.PROFILE.INDEX);
+      navigate(ROUTES.AUTH);
     }
   }, [isAuthenticated, isProfileLoading, navigate]);
 
   const event: IEventResponse | null = useMemo(() => {
     if (!eventData) return null;
-
-    const startDateTime = eventData.eventStartDate;
-    const startDate = new Date(startDateTime);
-    const endDate = new Date(startDate);
-    endDate.setHours(endDate.getHours() + 2);
 
     return {
       eventId: eventData.eventId,
@@ -71,9 +73,14 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       eventName: eventData.eventName,
       eventType: eventData.eventType,
       eventStatus: eventData.eventStatus,
-      eventStartDateTime: startDateTime,
-      eventStartDate: startDateTime,
-      eventEndDate: endDate.toISOString(),
+      eventStartDateTime:
+        eventData.eventStartDate &&
+        dayjs(eventData.eventStartDate).format('HH:mm'),
+      eventStartDate:
+        eventData.eventStartDate &&
+        dayjs(eventData.eventStartDate).format('DD.MM.YYYY'),
+      eventEndDate:
+        eventData.eventEndDate && dayjs(eventData.eventEndDate).format('HH:mm'),
       countUsers: eventData.countUsers,
       eventDescription: eventData.eventDescription,
       eventPhoto: eventData.eventPhoto,
@@ -96,17 +103,20 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       navigate(ROUTES.HOME);
     }
   };
+  const [isWaitingForParticipant, setIsWaitingForParticipant] = useState(false);
 
   const handleJoinEvent = async () => {
-    if (!eventId || isJoining) return;
+    if (!eventId || isWaitingForParticipant) return;
 
-    setIsJoining(true);
-    try {
-      await joinEvent(eventId).unwrap();
-    } catch {
-      setIsJoining(false);
-    }
+    setIsWaitingForParticipant(true);
+    await joinEvent(eventId);
   };
+
+  useEffect(() => {
+    if (isParticipant) {
+      setIsWaitingForParticipant(false);
+    }
+  }, [isParticipant]);
 
   if (isError) {
     return (
@@ -224,10 +234,6 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       return null;
     }
 
-    const eventStartDate = formatDate(event.eventStartDate);
-    const eventEndDate = event.eventEndDate
-      ? formatDate(event.eventEndDate)
-      : ['', ''];
     const usersCount = event.users?.length || 0;
     const maxUsers = event.countUsers;
     const hasFreeSlots = maxUsers > usersCount;
@@ -272,16 +278,17 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
 
     const titleNode = (
       <>
-        <Styled.CategoryIconOuter>
-          <Styled.CategoryIconInner>
-            <SportIcon
-              type={event.eventType}
-              sizeBox={0}
-              sizeIcon={26}
-              invert={false}
-            />
-          </Styled.CategoryIconInner>
-        </Styled.CategoryIconOuter>
+        <SportIcon
+          bgcolor='#FFFF'
+          width={48}
+          height={48}
+          border={3}
+          borderColor='#2269FF'
+          type={event.eventType}
+          widthIcon='26px'
+          heightIcon='26px'
+          filter={false}
+        />
 
         <Typography
           variant='h6'
@@ -304,10 +311,10 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     const dateNode = (
       <>
         <Typography variant='body2' color='primary'>
-          {eventStartDate[0]}
+          {event.eventStartDate}
         </Typography>
         <Typography variant='body2' color='primary'>
-          {`${eventStartDate[1]} - ${eventEndDate[1]}`}
+          {`${event.eventStartDateTime} - ${event.eventEndDate}`}
         </Typography>
       </>
     );
@@ -336,10 +343,16 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
           Организатор:
         </Typography>
         <AvatarGroup max={3}>
-          <Styled.EventAvatar
-            alt={organizer?.nickName}
-            src={organizer?.urlUserPhoto || ''}
-          />
+          {organizer && (
+            <Styled.EventAvatar
+              alt={organizer?.nickName}
+              src={organizer?.urlUserPhoto || ''}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
+              }}
+            />
+          )}
         </AvatarGroup>
       </>
     );
@@ -378,7 +391,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
         return (
           <CancelEventButton
             eventId={eventId}
-            onCanceled={() => navigate('/')}
+            onCanceled={() => navigate(ROUTES.HOME)}
           />
         );
       }
@@ -395,7 +408,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       return (
         <Button
           variant='fullWidthAction'
-          disabled={!hasFreeSlots || isJoining || isLoadingJoin}
+          disabled={!hasFreeSlots || isLoading || isWaitingForParticipant}
           onClick={handleJoinEvent}
           loading={isLoadingJoin}
         >
@@ -445,6 +458,7 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     <Styled.AnimatedModalWrapper
       maxWidth={{ xs: '361px', md: '440px' }}
       maxHeight={{ xs: '100%', md: '714px' }}
+      showBackButton
     >
       <EventInfo
         headerNode={content.headerNode}
