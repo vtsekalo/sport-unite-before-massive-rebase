@@ -52,42 +52,6 @@ export const createEventSchema = yup.object({
       },
     ),
 
-  eventEndDate: yup
-    .string()
-    .required('Укажите дату окончания')
-    .test(
-      'after-start',
-      'Дата окончания должна быть после даты начала',
-      function (value) {
-        if (!value) return false;
-        const { eventStartDate, eventStartTime, eventEndTime } = this.parent;
-        if (!eventStartDate || !eventStartTime || !eventEndTime) return true;
-
-        const startDateTime = new Date(
-          `${eventStartDate}T${eventStartTime}:00`,
-        );
-        const endDateTime = new Date(`${value}T${eventEndTime}:00`);
-
-        return endDateTime > startDateTime;
-      },
-    )
-    .test(
-      'not-equal',
-      'Время начала и окончания события не могут совпадать',
-      function (value) {
-        if (!value) return false;
-        const { eventStartDate, eventStartTime, eventEndTime } = this.parent;
-        if (!eventStartDate || !eventStartTime || !eventEndTime) return true;
-
-        const startDateTime = new Date(
-          `${eventStartDate}T${eventStartTime}:00`,
-        );
-        const endDateTime = new Date(`${value}T${eventEndTime}:00`);
-
-        return endDateTime.getTime() !== startDateTime.getTime();
-      },
-    ),
-
   eventEndTime: yup
     .string()
     .required('Укажите время окончания')
@@ -96,13 +60,13 @@ export const createEventSchema = yup.object({
       'Время окончания должно быть после времени начала',
       function (value) {
         if (!value) return false;
-        const { eventStartDate, eventStartTime, eventEndDate } = this.parent;
-        if (!eventStartDate || !eventStartTime || !eventEndDate) return true;
+        const { eventStartDate, eventStartTime } = this.parent;
+        if (!eventStartDate || !eventStartTime) return true;
 
         const startDateTime = new Date(
           `${eventStartDate}T${eventStartTime}:00`,
         );
-        const endDateTime = new Date(`${eventEndDate}T${value}:00`);
+        const endDateTime = new Date(`${eventStartDate}T${value}:00`);
 
         return endDateTime > startDateTime;
       },
@@ -112,13 +76,13 @@ export const createEventSchema = yup.object({
       'Время начала и окончания события не могут совпадать',
       function (value) {
         if (!value) return false;
-        const { eventStartDate, eventStartTime, eventEndDate } = this.parent;
-        if (!eventStartDate || !eventStartTime || !eventEndDate) return true;
+        const { eventStartDate, eventStartTime } = this.parent;
+        if (!eventStartDate || !eventStartTime) return true;
 
         const startDateTime = new Date(
           `${eventStartDate}T${eventStartTime}:00`,
         );
-        const endDateTime = new Date(`${eventEndDate}T${value}:00`);
+        const endDateTime = new Date(`${eventStartDate}T${value}:00`);
 
         return endDateTime.getTime() !== startDateTime.getTime();
       },
