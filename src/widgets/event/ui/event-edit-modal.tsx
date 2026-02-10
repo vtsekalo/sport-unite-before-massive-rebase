@@ -113,10 +113,10 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
   };
 
   useEffect(() => {
-    if (isParticipant) {
+    if (isParticipant || isError || !isLoadingJoin) {
       setIsWaitingForParticipant(false);
     }
-  }, [isParticipant]);
+  }, [isParticipant, isError, isLoadingJoin]);
 
   if (isError) {
     return (
