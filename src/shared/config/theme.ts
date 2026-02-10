@@ -56,7 +56,7 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiButton: {
-          styleOverrides: {
+        styleOverrides: {
           root: {
             borderRadius: 10,
           },
