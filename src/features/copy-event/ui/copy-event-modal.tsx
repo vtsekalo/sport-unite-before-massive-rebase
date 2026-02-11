@@ -210,22 +210,9 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   }, [eventTypes]);
 
   const headerNode = (
-    <Box display='flex' alignItems='center' justifyContent='space-between'>
-      <Typography
-        variant='h5'
-        fontFamily='Roboto'
-        fontWeight={700}
-        fontSize='20px'
-        textAlign='center'
-        color='textSecondary'
-        flex={1}
-      >
-        Копирование события
-      </Typography>
       <IconButton onClick={handleClose} size='small'>
         <CloseIcon />
       </IconButton>
-    </Box>
   );
 
   const photoNode = (
@@ -294,7 +281,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
       flexDirection='column'
       gap={theme.spacing(2.5)}
     >
-      {/* Тип события */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Тип события
@@ -330,7 +316,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         </FormControl>
       </Box>
 
-      {/* Название события */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Название события
@@ -353,7 +338,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Место проведения */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Место проведения
@@ -368,7 +352,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         />
       </Box>
 
-      {/* Дата начала */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Дата начала мероприятия
@@ -395,7 +378,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Время начала */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Время начала события
@@ -422,7 +404,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Дата окончания */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Дата окончания события
@@ -449,7 +430,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Время окончания */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Время окончания события
@@ -476,7 +456,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Количество участников */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Количество участников
@@ -503,7 +482,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Описание */}
       <Box display='flex' flexDirection='column' gap='4px'>
         <Typography variant='body2' color='textSecondary'>
           Описание
@@ -528,7 +506,6 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         )}
       </Box>
 
-      {/* Кнопки */}
       <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
         <Button
           type='submit'
@@ -562,6 +539,7 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
       maxHeight='100%'
     >
       <EventFormEntity
+        title='Копирование события'
         headerNode={headerNode}
         photoNode={photoNode}
         formFieldsNode={formFieldsNode}

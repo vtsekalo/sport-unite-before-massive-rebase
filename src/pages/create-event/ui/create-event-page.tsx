@@ -83,22 +83,9 @@ export const CreateEventPage = () => {
   }, [eventTypes]);
 
   const headerNode = (
-    <Box display='flex' alignItems='center' justifyContent='space-between'>
-      <Typography
-        variant='h5'
-        fontFamily='Roboto'
-        fontWeight={700}
-        fontSize='20px'
-        textAlign='center'
-        color='textSecondary'
-        flex={1}
-      >
-        Создание события
-      </Typography>
       <IconButton onClick={handleClose} size='small'>
         <CloseIcon />
       </IconButton>
-    </Box>
   );
 
   const photoNode = (
@@ -435,6 +422,7 @@ export const CreateEventPage = () => {
     >
       <EventFormEntity
         title='Создание события'
+<<<<<<< HEAD
         defaultValues={defaultValues}
         onSubmit={onSubmit}
         onClose={handleClose}
@@ -442,6 +430,12 @@ export const CreateEventPage = () => {
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
         photoVariant='create'
+=======
+        headerNode={headerNode}
+        photoNode={photoNode}
+        formFieldsNode={formFieldsNode}
+        actionsNode={actionsNode}
+>>>>>>> 198b00d (новое апи, работа с нодами)
       />
     </ModalWrapper>
   );

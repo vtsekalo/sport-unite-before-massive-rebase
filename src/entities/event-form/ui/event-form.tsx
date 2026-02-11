@@ -1,8 +1,9 @@
 import { FC, ReactNode } from 'react';
 
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box, useMediaQuery, useTheme, Typography } from '@mui/material';
 
 interface EventFormEntityProps {
+  title: string;
   headerNode: ReactNode;
   photoNode: ReactNode;
   formFieldsNode: ReactNode;
@@ -10,6 +11,7 @@ interface EventFormEntityProps {
 }
 
 export const EventFormEntity: FC<EventFormEntityProps> = ({
+  title,
   headerNode,
   photoNode,
   formFieldsNode,
@@ -28,7 +30,21 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
       padding={isMobile ? theme.spacing(2) : theme.spacing(3)}
       gap={isMobile ? theme.spacing(2) : theme.spacing(3)}
     >
+      
+      <Box display='flex' alignItems='center' justifyContent='space-between'>
+      <Typography
+        variant='h5'
+        fontFamily='Roboto'
+        fontWeight={700}
+        fontSize='20px'
+        textAlign='center'
+        color='textSecondary'
+        flex={1}
+      >
+        {title}
+      </Typography>
       {headerNode}
+    </Box>
       {photoNode}
       {formFieldsNode}
       {actionsNode}
