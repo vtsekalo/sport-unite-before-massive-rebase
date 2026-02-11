@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import { SuggestionItem, TwoGisApiItem, TwoGisApiResponse } from '@shared/lib';
+
 import { TWO_GIS_API_BASE_URL } from './api-endpoints';
 
 const MAP_API_KEY = import.meta.env.VITE_2GIS_MAP_API_KEY;
@@ -7,7 +9,7 @@ const MAP_API_KEY = import.meta.env.VITE_2GIS_MAP_API_KEY;
 export const geoApi = createApi({
   reducerPath: 'geoApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: TWO_GIS_API_BASE_URL
+    baseUrl: TWO_GIS_API_BASE_URL,
   }),
   endpoints: (builder) => ({
     get2GisSuggestions: builder.query<SuggestionItem[], string>({

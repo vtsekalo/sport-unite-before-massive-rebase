@@ -83,9 +83,9 @@ export const CreateEventPage = () => {
   }, [eventTypes]);
 
   const headerNode = (
-      <IconButton onClick={handleClose} size='small'>
-        <CloseIcon />
-      </IconButton>
+    <IconButton onClick={handleClose} size='small'>
+      <CloseIcon />
+    </IconButton>
   );
 
   const photoNode = (
