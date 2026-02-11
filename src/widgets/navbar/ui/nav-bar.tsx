@@ -22,7 +22,7 @@ import {
 } from './nav-bar.styled';
 
 export const NavBar = () => {
- const { pathname } = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -39,11 +39,12 @@ export const NavBar = () => {
   };
 
   const handleSwitchChange = () => {
-    const nextPath = {
-      [ROUTES.HOME]: ROUTES.LIST,
-      [ROUTES.LIST]: ROUTES.HOME,
-    }[pathname] ?? ROUTES.HOME;
-    
+    const nextPath =
+      {
+        [ROUTES.HOME]: ROUTES.LIST,
+        [ROUTES.LIST]: ROUTES.HOME,
+      }[pathname] ?? ROUTES.HOME;
+
     navigate(nextPath);
   };
 
@@ -151,7 +152,11 @@ export const NavBar = () => {
           color={theme.palette.common.white}
           borderRadius={3}
         >
-          <IconButton color='inherit' size='large' onClick={() => authNavigate(ROUTES.ADD_EVENT)}>
+          <IconButton
+            color='inherit'
+            size='large'
+            onClick={() => authNavigate(ROUTES.ADD_EVENT)}
+          >
             <AddOutlinedIcon fontSize='large' />
           </IconButton>
         </Box>

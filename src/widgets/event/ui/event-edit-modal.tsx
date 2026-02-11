@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Cross from '@mui/icons-material/Close';
@@ -15,7 +15,7 @@ import { AvatarGroup, Box, Button, Skeleton, Typography } from '@mui/material';
 import { EventInfo } from '@entities/event-card';
 import { QueryInfo } from '@entities/query-info';
 import { CancelEventButton } from '@features/cancel-event';
-import { useGetEventByIdQuery } from '@shared/api';
+import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import {
   EventStatus,
   IEventResponse,
@@ -54,6 +54,9 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
     skip: !eventId || !profile,
     refetchOnMountOrArgChange: true,
   });
+
+  const [joinEvent, { isLoading: isLoadingJoin }] =
+    useGetJoinInEventsMutation();
 
   useEffect(() => {
     if (!isProfileLoading && !isAuthenticated) {
@@ -100,6 +103,20 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       navigate(ROUTES.HOME);
     }
   };
+  const [isWaitingForParticipant, setIsWaitingForParticipant] = useState(false);
+
+  const handleJoinEvent = async () => {
+    if (!eventId || isWaitingForParticipant) return;
+
+    setIsWaitingForParticipant(true);
+    await joinEvent(eventId);
+  };
+
+  useEffect(() => {
+    if (isParticipant || isError || !isLoadingJoin) {
+      setIsWaitingForParticipant(false);
+    }
+  }, [isParticipant, isError, isLoadingJoin]);
 
   if (isError) {
     return (
@@ -389,7 +406,12 @@ export const EventEditModal: FC<EventEditModalProps> = ({ onClose }) => {
       }
 
       return (
-        <Button variant='fullWidthAction' disabled={!hasFreeSlots}>
+        <Button
+          variant='fullWidthAction'
+          disabled={!hasFreeSlots || isLoading || isWaitingForParticipant}
+          onClick={handleJoinEvent}
+          loading={isLoadingJoin}
+        >
           <Styled.CategoryMuiIcon as={PlayCircleOutlineIcon} />
           <Styled.ButtonLabel>Присоединиться</Styled.ButtonLabel>
         </Button>
