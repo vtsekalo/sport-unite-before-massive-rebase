@@ -5,3 +5,4 @@ export * from './use-profile';
 export * from './use-is-event-organizer';
 export * from './use-is-event-participant';
 export * from './use-geolocation';
+export * from './use-toggle-navigate';

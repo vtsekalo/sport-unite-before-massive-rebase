@@ -19,8 +19,9 @@ type EventImageProps = BoxProps & {
   alt?: string;
 };
 
-const EventImage = styled(Box)<EventImageProps>(({ $status }) => ({
+const EventImage = styled('img')<EventImageProps>(({ $status }) => ({
   objectFit: 'cover',
+  borderRadius: '10px',
   filter:
     $status === EventStatus.COMPLETED || $status === EventStatus.CANCELLED
       ? 'grayscale(100%)'

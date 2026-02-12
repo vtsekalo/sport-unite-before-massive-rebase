@@ -1,1 +1,1 @@
-export { MyEvents } from './ui/my-events';
+export { MyEventsPage } from './ui/my-events-page.tsx';

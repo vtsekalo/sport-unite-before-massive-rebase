@@ -4,22 +4,22 @@ import { useNavigate } from 'react-router-dom';
 
 import { Box, Tab, Typography } from '@mui/material';
 
-import { EventCardEntity } from '@entities/event-card';
+import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { Crown } from '@shared/assets';
 import { EventStatus, IEvent, ROUTES } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { groupEventsByStatus } from '../lib/group-events-by-status';
-import { EventListSkeleton } from './event-list-skeleton';
-import { Styled } from './event-list.style';
+import { MyEventListSkeleton } from './my-event-list-skeleton';
+import { Styled } from './my-event-list.style';
 
 interface EventsListProps {
   loading?: boolean;
   events?: IEvent[];
 }
 
-export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
+export const MyEventListMobile: FC<EventsListProps> = ({ events, loading }) => {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
         m='-2px'
       >
         {loading ? (
-          <EventListSkeleton isMobile count={5} />
+          <MyEventListSkeleton isMobile count={5} />
         ) : eventsTab.length === 0 ? (
           <Box mt={2}>
             <Typography fontSize={14} fontWeight={400} color='#B5B5B5'>
@@ -82,7 +82,7 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
           </Box>
         ) : (
           eventsTab.map((event) => (
-            <EventCardEntity
+            <MyEventListCardEntity
               key={event.eventId}
               eventStatus={event.eventStatus}
               userRole={event.users?.[0]?.userRole}
@@ -128,13 +128,13 @@ export const EventsListMobile: FC<EventsListProps> = ({ events, loading }) => {
                 </Typography>
               }
               avatarEventNode={
-                <ImageWrapper height={56} width={64} borderRadius='10px'>
+                <ImageWrapper height={56} width={80} src={event.eventPhoto}>
                   <Styled.EventImage
                     height={56}
-                    width={64}
-                    component='img'
-                    borderRadius='10px'
+                    width={80}
                     $status={event.eventStatus}
+                    src={event.eventPhoto}
+                    alt={event.eventName}
                   />
                 </ImageWrapper>
               }

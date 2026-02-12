@@ -15,7 +15,7 @@ export const ProfilePage: FC = () => {
       py={{ xs: 2, md: 5 }}
       px={{ xs: 2, md: 10 }}
       gap={{ xs: 2, md: 3 }}
-      showBackButton
+      showBackEmptyButton
     >
       <Box display='flex' justifyContent='center' alignItems='center'>
         <Typography

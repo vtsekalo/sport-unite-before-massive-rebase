@@ -3,19 +3,19 @@ import { Route, Routes } from 'react-router-dom';
 
 import { Layout } from '@layout/main';
 
-import { ModalWrapper } from '@entities/modal-wrapper';
 import { AuthPage } from '@pages/auth';
 import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
+import { CommonEventListPage } from '@pages/common-event-list';
 import { CreateEventPage } from '@pages/create-event';
-import { MyEvents } from '@pages/my-events';
+import { MyEventsPage } from '@pages/my-events';
 import { NotFoundPage } from '@pages/not-found-page';
 import { Notifications } from '@pages/notifications';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
 import { TestPage } from '@pages/test-page';
 import { DeletionGuard, ROUTES } from '@shared/lib';
-import { EventEditModal } from '@widgets/event';
+import { EventCard } from '@widgets/event-card';
 import { Profile } from '@widgets/profile';
 import { ProfileDeleted } from '@widgets/profile-deleted';
 import { ProfileEdit } from '@widgets/profile-edit';
@@ -41,15 +41,9 @@ export const Routers: FC = () => {
             element={<UserProfile />}
           />
         </Route>
-        <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEvents />} />
-        <Route
-          path={ROUTES.EVENT.DETAIL(':eventId')}
-          element={<EventEditModal />}
-        />
-        <Route
-          path={ROUTES.LIST}
-          element={<ModalWrapper>Список событий</ModalWrapper>}
-        />
+        <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
+        <Route path={ROUTES.EVENT.DETAIL(':eventId')} element={<EventCard />} />
+        <Route path={ROUTES.LIST} element={<CommonEventListPage />} />
         <Route path={ROUTES.AUTH} element={<AuthPage />} />
         <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
         <Route path={ROUTES.SEND_EMAIL} element={<SendEmail />} />

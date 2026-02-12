@@ -167,7 +167,7 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
 }
 
 /**
- * Resolve the main client for the given event.
+ * Resolve the main client for the given common-event-card-list.
  * Client that issues a request doesn't necessarily equal the client
  * that registered the worker. It's with the latter the worker should
  * communicate with during the response resolving phase.
@@ -244,7 +244,7 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
 
   // Bypass initial page load requests (i.e. static assets).
   // The absence of the immediate/parent client in the map of the active clients
-  // means that MSW hasn't dispatched the "MOCK_ACTIVATE" event yet
+  // means that MSW hasn't dispatched the "MOCK_ACTIVATE" common-event-card-list yet
   // and is not ready to handle requests.
   if (!activeClientIds.has(client.id)) {
     return passthrough()

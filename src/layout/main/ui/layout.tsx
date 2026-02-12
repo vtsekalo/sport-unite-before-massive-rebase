@@ -21,6 +21,7 @@ export const Layout = () => {
   const handleCloseModal = () => {
     navigate(ROUTES.HOME);
   };
+
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
     setAnchorEl(node);

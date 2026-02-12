@@ -35,7 +35,6 @@ const currentProfile: IUserProfile = {
 const mockEvents: IEvent[] = [
   {
     eventId: 'e1',
-    userId: 'user-123',
     eventName: 'Турнир по футболу 5х5',
     eventType: 'Футбол',
     eventStatus: EventStatus.PLANNED,
@@ -57,7 +56,6 @@ const mockEvents: IEvent[] = [
   },
   {
     eventId: 'e2',
-    userId: 'user-456',
     eventName: 'Забег в парке',
     eventType: 'Бег',
     eventStatus: EventStatus.PLANNED,
@@ -79,7 +77,6 @@ const mockEvents: IEvent[] = [
   },
   {
     eventId: 'e3',
-    userId: 'user-789',
     eventName: 'Баскетбольный Баскетбол',
     eventType: 'Баскетбол',
     eventStatus: EventStatus.IN_PROCESS,
@@ -101,7 +98,6 @@ const mockEvents: IEvent[] = [
   },
   {
     eventId: 'e4',
-    userId: 'user-123',
     eventName: 'Товарищеский матч на Красной площади',
     eventType: 'Футбол',
     eventStatus: EventStatus.PLANNED,
@@ -124,7 +120,6 @@ const mockEvents: IEvent[] = [
   },
   {
     eventId: 'e5',
-    userId: 'user-123',
     eventName: 'Мини-футбол у Патриарших прудов',
     eventType: 'Футбол',
     eventStatus: EventStatus.PLANNED,
@@ -182,7 +177,9 @@ export const handlers = [
       );
     }
     if (filters.scope === EventScope.ORGANIZER) {
-      filtered = filtered.filter((e) => e.userId === currentProfile.id);
+      filtered = filtered.filter(
+        (e) => e.users[0]?.userId === currentProfile.id,
+      );
     }
 
     return HttpResponse.json(filtered);
@@ -201,12 +198,6 @@ export const handlers = [
       { typeId: 8, typeName: 'Велоспорт' },
       { typeId: 9, typeName: 'Сноубординг' },
     ]);
-  }),
-
-  // СОБЫТИЯ ПОЛЬЗОВАТЕЛЯ
-  http.get(ApiEndpoints.USER_EVENTS, () => {
-    const myEvents = mockEvents.filter((e) => e.userId === currentProfile.id);
-    return HttpResponse.json(myEvents);
   }),
 
   // СОБЫТИЕ ПО ID

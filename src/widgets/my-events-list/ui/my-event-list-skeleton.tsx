@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Skeleton } from '@mui/material';
 
-import { EventCardEntity } from '@entities/event-card';
+import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { EventStatus, UserRole } from '@shared/lib';
 
 interface EventListSkeletonProps {
@@ -10,14 +10,14 @@ interface EventListSkeletonProps {
   isMobile?: boolean;
 }
 
-export const EventListSkeleton: FC<EventListSkeletonProps> = ({
+export const MyEventListSkeleton: FC<EventListSkeletonProps> = ({
   count = 5,
   isMobile,
 }) => {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <EventCardEntity
+        <MyEventListCardEntity
           key={index}
           eventStatus={EventStatus.PLANNED}
           userRole={UserRole.organizer}
@@ -51,7 +51,7 @@ export const EventListSkeleton: FC<EventListSkeletonProps> = ({
               sx={{ borderRadius: '10px' }}
               variant='rectangular'
               height={56}
-              width={isMobile ? 64 : 80}
+              width={80}
             />
           }
           textNode={

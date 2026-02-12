@@ -123,17 +123,11 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       if (endPoint === 'createEvent') {
         showSnackbar('Событие успешно создано!', 'success');
       }
-    }
-
-    if (isFulfilled(action) && endPoint) {
-      if (endPoint === 'registration') {
-        showSnackbar('Регистрация прошла успешно!', 'success');
-      }
-      if (endPoint === 'createEvent') {
-        showSnackbar('Событие успешно создано!', 'success');
-      }
       if (endPoint === 'uploadPhoto') {
         showSnackbar('Фото успешно загружено!', 'success');
+      }
+      if (endPoint === 'registration') {
+        showSnackbar('Регистрация прошла успешно!', 'success');
       }
     }
 

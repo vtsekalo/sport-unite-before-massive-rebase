@@ -9,6 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import ImageIcon from '@mui/icons-material/Image';
@@ -17,6 +18,7 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  FormHelperText,
   MenuItem,
   Select,
   TextField,
@@ -83,6 +85,12 @@ export const CreateEventPage: React.FC = () => {
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
   };
+
+  const today = new Date();
+  const maxDate = new Date();
+  maxDate.setDate(today.getDate() + 30);
+  const formattedToday = today.toISOString().split('T')[0];
+  const formattedMaxDate = maxDate.toISOString().split('T')[0];
 
   const handlePhotoChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -178,9 +186,9 @@ export const CreateEventPage: React.FC = () => {
           }).unwrap();
         }
 
-        navigate(ROUTES.ADD_EVENT);
+        navigate(ROUTES.HOME);
       } catch (error) {
-        console.error('Error creating event:', error);
+        console.error('Error creating common-event-card-list:', error);
       }
     },
     [createEvent, uploadPhoto, navigate],
@@ -200,11 +208,7 @@ export const CreateEventPage: React.FC = () => {
   }, [eventTypes]);
 
   return (
-    <ModalWrapper
-      maxWidth={{ xs: 361, md: 480 }}
-      height='auto'
-      maxHeight='100%'
-    >
+    <ModalWrapper width={{ xs: 361, md: 440 }} height='auto' maxHeight='100%'>
       <Box
         display='flex'
         flexDirection='column'
@@ -212,14 +216,9 @@ export const CreateEventPage: React.FC = () => {
         maxWidth={1200}
         margin='0 auto'
         padding={isMobile ? theme.spacing(2) : theme.spacing(3)}
-        gap={isMobile ? theme.spacing(2) : theme.spacing(3)}
+        gap={theme.spacing(2)}
       >
-        <Typography
-          variant='h5'
-          fontWeight={700}
-          textAlign='center'
-          color='textSecondary'
-        >
+        <Typography fontSize={20} fontWeight={700} textAlign='center'>
           Создание события
         </Typography>
 
@@ -260,15 +259,22 @@ export const CreateEventPage: React.FC = () => {
               )}
             </Box>
 
-            <Box display='flex' gap={theme.spacing(2)}>
+            <Box display='flex' gap={theme.spacing(1)}>
               <Button
                 startIcon={<ImageIcon />}
                 disabled={isUploadingPhoto}
                 onClick={handlePhotoClick}
                 variant='contained'
                 fullWidth
+                size='mediumFixed'
               >
-                {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
+                {isUploadingPhoto ? (
+                  'Загрузка...'
+                ) : (
+                  <Typography variant='button' fontSize={14} fontWeight={600}>
+                    Загрузить фото
+                  </Typography>
+                )}
               </Button>
 
               {photoPreview && (
@@ -286,7 +292,7 @@ export const CreateEventPage: React.FC = () => {
             display='flex'
             flexDirection='column'
             flex={1}
-            gap={theme.spacing(2.5)}
+            gap={theme.spacing(2)}
           >
             <Box display='flex' flexDirection='column' gap='4px'>
               <Typography variant='body2' color='textSecondary'>
@@ -297,7 +303,12 @@ export const CreateEventPage: React.FC = () => {
                   name='eventType'
                   control={control}
                   render={({ field }) => (
-                    <Select {...field} displayEmpty disabled={isLoadingTypes}>
+                    <Select
+                      {...field}
+                      displayEmpty
+                      disabled={isLoadingTypes}
+                      size='small'
+                    >
                       <MenuItem value='' disabled>
                         Выберите тип события
                       </MenuItem>
@@ -315,53 +326,41 @@ export const CreateEventPage: React.FC = () => {
                     </Select>
                   )}
                 />
-                {errors.eventType && (
-                  <Typography variant='caption' color='error'>
-                    {errors.eventType.message}
-                  </Typography>
-                )}
+                <FormHelperText>
+                  {errors.eventType?.message || 'Выберите тип события'}
+                </FormHelperText>
               </FormControl>
             </Box>
 
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Название события
-              </Typography>
               <Controller
                 name='eventName'
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    size={'small'}
                     {...field}
-                    placeholder='Введите название события'
+                    label={'Название события'}
+                    InputLabelProps={{ shrink: true }}
                     error={Boolean(errors.eventName)}
+                    helperText={
+                      errors.eventName?.message || 'Введите название события'
+                    }
                   />
                 )}
               />
-              {errors.eventName && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventName.message}
-                </Typography>
-              )}
             </Box>
 
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Место проведения
-              </Typography>
               <LocationAutocomplete
                 value={eventLocation ?? ''}
                 onChange={handleLocationChange}
                 onCoordinatesChange={handleCoordinatesChange}
                 error={Boolean(errors.eventLocation)}
-                helperText={errors.eventLocation?.message}
-                placeholder='Начните вводить адрес или название места'
+                errorsMassage={errors.eventLocation?.message}
               />
             </Box>
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Дата начала мероприятия
-              </Typography>
               <Controller
                 name='eventStartDate'
                 control={control}
@@ -369,127 +368,127 @@ export const CreateEventPage: React.FC = () => {
                   <TextField
                     {...field}
                     type='date'
-                    error={Boolean(errors.eventStartDate)}
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{
+                      min: formattedToday,
+                      max: formattedMaxDate,
+                    }}
+                    size={'small'}
+                    error={Boolean(errors.eventStartDate)}
+                    label={'Дата начала мероприятия'}
+                    helperText={
+                      errors.eventStartDate?.message ||
+                      'Укажите дату начала события. '
+                    }
                   />
                 )}
               />
-              <Typography variant='caption' color='textSecondary'>
-                Событие должно начаться минимум через 1 час
-              </Typography>
-              {errors.eventStartDate && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventStartDate.message}
-                </Typography>
-              )}
             </Box>
 
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Время начала события
-              </Typography>
               <Controller
                 name='eventStartTime'
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    size={'small'}
                     {...field}
                     type='time'
-                    error={Boolean(errors.eventStartTime)}
                     InputLabelProps={{ shrink: true }}
+                    error={Boolean(errors.eventStartTime)}
+                    label={'Время начала события'}
+                    helperText={
+                      errors.eventStartTime?.message ||
+                      'Укажите время начала события.'
+                    }
                   />
                 )}
               />
-              <Typography variant='caption' color='textSecondary'>
-                Событие должно начаться минимум через 1 час
-              </Typography>
-              {errors.eventStartTime && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventStartTime.message}
-                </Typography>
-              )}
             </Box>
 
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Время окончания события
-              </Typography>
               <Controller
                 name='eventEndTime'
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    size={'small'}
                     {...field}
                     type='time'
                     error={Boolean(errors.eventEndTime)}
                     InputLabelProps={{ shrink: true }}
+                    label={'Время окончания события'}
+                    helperText={
+                      errors.eventEndTime?.message ||
+                      'Должно быть после времени начала'
+                    }
                   />
                 )}
               />
-              <Typography variant='caption' color='textSecondary'>
-                Должно быть после времени начала
-              </Typography>
-              {errors.eventEndTime && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventEndTime.message}
-                </Typography>
-              )}
             </Box>
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Количество участников
-              </Typography>
               <Controller
                 name='countUsers'
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    size={'small'}
                     {...field}
                     type='number'
+                    InputLabelProps={{ shrink: true }}
                     error={Boolean(errors.countUsers)}
                     inputProps={{ min: 2, max: 1000 }}
+                    label={'Количество участников'}
+                    helperText={
+                      errors.countUsers?.message || 'От 2 до 1000 участников'
+                    }
                   />
                 )}
               />
-              <Typography variant='caption' color='textSecondary'>
-                От 2 до 1000 участников
-              </Typography>
-              {errors.countUsers && (
-                <Typography variant='caption' color='error'>
-                  {errors.countUsers.message}
-                </Typography>
-              )}
             </Box>
             <Box display='flex' flexDirection='column' gap='4px'>
-              <Typography variant='body2' color='textSecondary'>
-                Описание
-              </Typography>
               <Controller
                 name='eventDescription'
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    placeholder='Опишите событие подробнее'
+                    size={'small'}
+                    label='Описание'
+                    InputLabelProps={{ shrink: true }}
                     error={Boolean(errors.eventDescription)}
                     multiline
-                    rows={6}
+                    helperText={
+                      errors.eventDescription?.message ||
+                      'Опишите событие подробнее.'
+                    }
                   />
                 )}
               />
-              {errors.eventDescription && (
-                <Typography variant='caption' color='error'>
-                  {errors.eventDescription.message}
-                </Typography>
-              )}
             </Box>
 
-            <Button type='submit' variant='contained' disabled={isFormDisabled}>
-              СОЗДАТЬ СОБЫТИЕ
+            <Button
+              startIcon={<CheckCircleOutlineOutlinedIcon />}
+              type='submit'
+              variant='contained'
+              disabled={isFormDisabled}
+              fullWidth
+              size='mediumFixed'
+            >
+              <Typography fontSize={14} fontWeight={600}>
+                СОЗДАТЬ СОБЫТИЕ
+              </Typography>
             </Button>
 
-            <Button variant='outlined' onClick={handleCancel}>
-              ОТМЕНА
+            <Button
+              variant='outlined'
+              onClick={handleCancel}
+              fullWidth
+              size='mediumFixed'
+            >
+              <Typography fontSize={14} fontWeight={600}>
+                ОТМЕНА
+              </Typography>
             </Button>
           </Box>
         </Box>

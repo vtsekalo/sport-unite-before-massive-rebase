@@ -13,7 +13,7 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import { Badge, Box, IconButton, Stack, alpha, useTheme } from '@mui/material';
 
 import { useGetCountNotificationsQuery } from '@shared/api';
-import { ROUTES, useProfile } from '@shared/lib';
+import { ROUTES, useProfile, useToggleNavigate } from '@shared/lib';
 
 import {
   StyledNavBar,
@@ -25,18 +25,11 @@ export const NavBar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const toggleNavigate = useToggleNavigate();
 
   const { isAuthenticated } = useProfile({
     __meta: { toast: false },
   });
-
-  const authNavigate = (path: string, isProtected = true) => {
-    if (isProtected && !isAuthenticated) {
-      navigate(ROUTES.AUTH);
-      return;
-    }
-    navigate(path);
-  };
 
   const handleSwitchChange = () => {
     const nextPath =
@@ -109,7 +102,7 @@ export const NavBar = () => {
         >
           <IconButton
             color='primary'
-            onClick={() => authNavigate(ROUTES.CHATS.INDEX)}
+            onClick={() => toggleNavigate(ROUTES.CHATS.INDEX)}
             disabled={!isAuthenticated}
           >
             {isActive(ROUTES.CHATS.INDEX) ? (
@@ -132,7 +125,7 @@ export const NavBar = () => {
         >
           <IconButton
             color='primary'
-            onClick={() => authNavigate(ROUTES.PROFILE.INDEX)}
+            onClick={() => toggleNavigate(ROUTES.PROFILE.INDEX)}
           >
             {isActive(ROUTES.PROFILE.INDEX) ? (
               <AccountCircleIcon />
@@ -155,7 +148,7 @@ export const NavBar = () => {
           <IconButton
             color='inherit'
             size='large'
-            onClick={() => authNavigate(ROUTES.ADD_EVENT)}
+            onClick={() => toggleNavigate(ROUTES.ADD_EVENT)}
           >
             <AddOutlinedIcon fontSize='large' />
           </IconButton>
@@ -188,7 +181,7 @@ export const NavBar = () => {
         >
           <IconButton
             color='primary'
-            onClick={() => authNavigate(ROUTES.NOTIFICATIONS)}
+            onClick={() => toggleNavigate(ROUTES.NOTIFICATIONS)}
             disabled={!isAuthenticated}
           >
             {notificationIconWrapper(
