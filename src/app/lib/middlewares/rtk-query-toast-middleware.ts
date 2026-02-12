@@ -66,8 +66,7 @@ const getMeta = (action: unknown): RequestMeta | null => {
 };
 
 export const rtkQuerySnackbarMiddleware: Middleware =
-  (res) => (next) => (action) => {
-    console.log(action, res);
+  () => (next) => (action) => {
     const meta = getMeta(action);
     const endPoint = getEndpointName(action);
 
@@ -113,6 +112,8 @@ export const rtkQuerySnackbarMiddleware: Middleware =
         registration: 'Регистрация прошла успешно!',
         deleteMyProfile: 'Профиль успешно удален!',
         updateMyProfile: 'Профиль обновлен',
+        createEvent: 'Событие успешно создано!',
+        uploadPhoto: 'Фото успешно загружено!',
       };
 
       const message = defaultMessages[endPoint];
@@ -120,16 +121,6 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       if (message) {
         showSnackbar(message, 'success');
       }
-      if (endPoint === 'createEvent') {
-        showSnackbar('Событие успешно создано!', 'success');
-      }
-      if (endPoint === 'uploadPhoto') {
-        showSnackbar('Фото успешно загружено!', 'success');
-      }
-      if (endPoint === 'registration') {
-        showSnackbar('Регистрация прошла успешно!', 'success');
-      }
     }
-
     return next(action);
   };

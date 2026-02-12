@@ -36,7 +36,7 @@ export const RegistrationForm = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors, isValid },
+    formState: { errors, isValid, touchedFields },
     watch,
     reset,
   } = useForm<RegistrationFormData>({
@@ -44,6 +44,7 @@ export const RegistrationForm = () => {
     mode: 'onChange',
     defaultValues: {
       agree: false,
+      city: '',
     },
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -60,7 +61,14 @@ export const RegistrationForm = () => {
   const watchedValues = watch();
 
   const onSubmit = async (data: RegistrationFormData) => {
-    await registerUser(data).unwrap();
+    await registerUser({
+      nickname: data.nickname,
+      email: data.email,
+      dateOfBirth: data.dateOfBirth,
+      city: data.city,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+    }).unwrap();
     navigate(ROUTES.SEND_EMAIL);
     reset();
   };
@@ -175,9 +183,18 @@ export const RegistrationForm = () => {
             render={({ field, fieldState: { error } }) => (
               <DatePicker
                 label='Дата рождения'
-                value={field.value ? dayjs(field.value) : null}
+                maxDate={dayjs()}
+                value={
+                  field.value && field.value !== 'invalid'
+                    ? dayjs(field.value)
+                    : null
+                }
                 onChange={(newDate) => {
-                  field.onChange(newDate ? newDate.format('YYYY-MM-DD') : '');
+                  if (newDate && newDate.isValid()) {
+                    field.onChange(newDate.format('YYYY-MM-DD'));
+                  } else {
+                    field.onChange(newDate === null ? '' : 'invalid');
+                  }
                 }}
                 slots={{ openPickerIcon: EventIcon, toolbar: () => null }}
                 slotProps={{
@@ -205,9 +222,11 @@ export const RegistrationForm = () => {
           error={!!errors.city}
           helperText={
             errors.city?.message ||
-            (watchedValues.city
+            (watchedValues.city?.trim()
               ? 'Информация сохранена.'
-              : 'Введите город проживания')
+              : touchedFields.city
+                ? 'Необязательное поле'
+                : 'Введите город проживания')
           }
           fullWidth
         />
@@ -230,13 +249,14 @@ export const RegistrationForm = () => {
           )}
         />
         <Typography
-          display='block'
           variant='caption'
+          display='block'
           color={errors.agree ? 'error.main' : 'text.secondary'}
+          visibility={
+            watchedValues.agree && !errors.agree ? 'hidden' : 'visible'
+          }
         >
-          {errors.agree
-            ? errors.agree.message
-            : 'Необходимо ознакомиться и согласиться с правилами'}
+          {errors.agree ? errors.agree.message : '\u00A0'}
         </Typography>
       </Box>
       <Styled.RegistrationButton

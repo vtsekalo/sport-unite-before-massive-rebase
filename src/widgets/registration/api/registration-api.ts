@@ -1,16 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-import { ApiEndpoints } from '@shared/api';
+import { ApiEndpoints, baseApi } from '@shared/api';
+import { IUserProfile } from '@shared/lib';
 
 import { RegistrationFormData } from '../lib/schema';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-export const registrationApi = createApi({
-  reducerPath: 'registrationApi',
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
+export const registrationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    registrationUser: builder.mutation<string, RegistrationFormData>({
+    registrationUser: builder.mutation<IUserProfile, RegistrationFormData>({
       query: (data) => ({
         url: ApiEndpoints.CREATE_USER,
         method: 'POST',
