@@ -134,7 +134,7 @@ export const UserProfile: FC = () => {
                 lineHeight={{ xs: '14px', md: '24px' }}
                 fontSize={{ xs: '10px', md: '14px' }}
               >
-                Подписчики
+                Подписки
               </Typography>
               <Typography
                 lineHeight={{ xs: '14px', md: '24px' }}

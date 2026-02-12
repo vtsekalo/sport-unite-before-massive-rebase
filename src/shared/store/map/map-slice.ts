@@ -69,10 +69,12 @@ const mapSlice = createSlice({
 export const { setMapCenter, setMapZoom, setMapView } = mapSlice.actions;
 export const mapReducer = mapSlice.reducer;
 
-const selectMapState = (state: RootState) => state.map.center;
 export const selectMapCenter = createSelector(
-  [selectMapState],
-  (center) => center,
+  [(state: RootState) => state.map.center],
+  (center) => ({
+    latitude: center.latitude,
+    longitude: center.longitude,
+  }),
   {
     memoizeOptions: {
       resultEqualityCheck: (a, b) =>
