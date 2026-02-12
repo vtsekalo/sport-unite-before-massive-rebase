@@ -1,25 +1,37 @@
 import dayjs from 'dayjs';
-import { FC, Fragment, useMemo } from 'react';
+import { FC, Fragment, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Box, Divider, Icon, Tooltip, Typography } from '@mui/material';
 
-import { EventCardEntity } from '@entities/event-card';
+import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { Crown } from '@shared/assets';
-import { EventStatus, IEvent, UserRole } from '@shared/lib';
+import { EventStatus, IEvent, ROUTES, UserRole } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { groupEventsByStatus } from '../lib/group-events-by-status';
-import { EventListSkeleton } from './event-list-skeleton';
-import { Styled } from './event-list.style';
+import { MyEventListSkeleton } from './my-event-list-skeleton.tsx';
+import { Styled } from './my-event-list.style.ts';
 
 interface EventsListProps {
   loading?: boolean;
   events?: IEvent[];
 }
 
-export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
+export const MyEventListDesktop: FC<EventsListProps> = ({
+  events,
+  loading,
+}) => {
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
+  const navigate = useNavigate();
+
+  const handleOpenCard = useCallback(
+    (eventId: string) => {
+      navigate(ROUTES.EVENT.DETAIL(eventId));
+    },
+    [navigate],
+  );
 
   const titles = [
     { title: 'Активные', data: grouped.active },
@@ -74,10 +86,10 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
               pr='23px'
             >
               {loading ? (
-                <EventListSkeleton count={3} />
+                <MyEventListSkeleton count={3} />
               ) : column.data.length > 0 ? (
                 column.data.map((event) => (
-                  <EventCardEntity
+                  <MyEventListCardEntity
                     key={event.eventId}
                     eventStatus={event.eventStatus}
                     userRole={
@@ -133,14 +145,16 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
                       </Typography>
                     }
                     avatarEventNode={
-                      <ImageWrapper height={56} width={80}>
+                      <ImageWrapper
+                        height={56}
+                        width={80}
+                        src={event.eventPhoto}
+                      >
                         <Styled.EventImage
-                          component='img'
                           height={56}
                           width={80}
-                          borderRadius='10px'
                           $status={event.eventStatus}
-                          src={event.eventPhoto || undefined}
+                          src={event.eventPhoto}
                           alt={event.eventName}
                         />
                       </ImageWrapper>
@@ -160,6 +174,7 @@ export const EventsListDesktop: FC<EventsListProps> = ({ events, loading }) => {
                         variant='contained'
                         fullWidth
                         size='small'
+                        onClick={() => handleOpenCard(event.eventId)}
                       >
                         Подробнее
                       </Styled.StyledButton>

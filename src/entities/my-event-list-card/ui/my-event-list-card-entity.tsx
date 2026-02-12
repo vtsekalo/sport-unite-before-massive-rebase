@@ -19,7 +19,7 @@ interface EventEntityProps {
   userRole: UserRole;
 }
 
-export const EventCardEntity: FC<EventEntityProps> = ({
+export const MyEventListCardEntity: FC<EventEntityProps> = ({
   typeNode,
   roleNode,
   titleNode,

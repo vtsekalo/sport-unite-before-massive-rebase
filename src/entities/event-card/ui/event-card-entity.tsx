@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { Box, Typography } from '@mui/material';
-
-import { Styled } from './event-info.styled.ts';
+import { Box, Typography, useTheme } from '@mui/material';
 
 type EventInfoProps = {
   headerNode: React.ReactNode;
@@ -15,7 +13,7 @@ type EventInfoProps = {
   footerActionsNode: React.ReactNode;
 };
 
-export const EventInfo: React.FC<EventInfoProps> = ({
+export const EventCardEntity: React.FC<EventInfoProps> = ({
   headerNode,
   titleNode,
   dateNode,
@@ -25,8 +23,18 @@ export const EventInfo: React.FC<EventInfoProps> = ({
   participantsNode,
   footerActionsNode,
 }) => {
+  const theme = useTheme();
   return (
-    <Styled.EventCardContainer>
+    <Box
+      padding={0}
+      left={0}
+      display={'flex'}
+      flexDirection={'column'}
+      gap={{ xs: theme.spacing(2), md: theme.spacing(3) }}
+      height={'100%'}
+      width={'100%'}
+      maxWidth={{ xs: 361, md: 440 }}
+    >
       {headerNode}
       <Box
         paddingLeft={{ xs: 2, md: 4 }}
@@ -71,6 +79,6 @@ export const EventInfo: React.FC<EventInfoProps> = ({
           {footerActionsNode}
         </Box>
       </Box>
-    </Styled.EventCardContainer>
+    </Box>
   );
 };

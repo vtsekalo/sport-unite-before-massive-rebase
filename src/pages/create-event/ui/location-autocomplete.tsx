@@ -19,7 +19,7 @@ interface LocationAutocompleteProps {
   onChange: (location: string, coordinates?: Coordinates) => void;
   onCoordinatesChange?: (coordinates: Coordinates) => void;
   error?: boolean;
-  helperText?: string;
+  errorsMassage?: string;
   placeholder?: string;
 }
 
@@ -28,8 +28,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   onChange,
   onCoordinatesChange,
   error,
-  helperText,
-  placeholder = 'Начните вводить адрес или название места',
+  errorsMassage,
 }) => {
   const [inputValue, setInputValue] = useState(value);
 
@@ -106,9 +105,11 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={placeholder}
+          label={'Место проведения'}
+          size={'small'}
+          helperText={errorsMassage || 'Укажите место проведения.'}
+          InputLabelProps={{ shrink: true }}
           error={error}
-          helperText={helperText}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

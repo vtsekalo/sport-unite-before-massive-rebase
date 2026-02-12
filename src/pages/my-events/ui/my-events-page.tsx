@@ -13,9 +13,9 @@ import { ModalWrapper } from '@entities/modal-wrapper';
 import { useGetMyProfileQuery } from '@shared/api';
 import { useGetUserEventsQuery } from '@shared/api';
 import { ROUTES, UserRole } from '@shared/lib';
-import { EventsListDesktop, EventsListMobile } from '@widgets/events-list';
+import { MyEventListDesktop, MyEventListMobile } from '@widgets/my-events-list';
 
-export const MyEvents: FC = () => {
+export const MyEventsPage: FC = () => {
   const {
     data: eventsData,
     isLoading: eventsIsLoading,
@@ -59,7 +59,7 @@ export const MyEvents: FC = () => {
   );
 
   return (
-    <ModalWrapper showBackButton>
+    <ModalWrapper showBackEmptyButton>
       <Box
         position='relative'
         display='flex'
@@ -149,12 +149,12 @@ export const MyEvents: FC = () => {
           </Box>
         </Box>
         {isMobile ? (
-          <EventsListMobile
+          <MyEventListMobile
             events={eventsData ?? []}
             loading={eventsIsLoading}
           />
         ) : (
-          <EventsListDesktop
+          <MyEventListDesktop
             events={eventsData ?? []}
             loading={eventsIsLoading}
           />

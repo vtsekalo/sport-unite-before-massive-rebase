@@ -1,5 +1,5 @@
 import { Avatar, styled } from '@mui/material';
-import { Box, Button, Skeleton } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { ModalWrapper } from '@entities/modal-wrapper';
 
@@ -33,58 +33,19 @@ const Header = styled(Box, {
   backgroundColor: $image ? 'transparent' : theme.palette.text.disabled,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  backgroundImage: $image ? `url(${$image})` : 'none',
+  backgroundImage: $image
+    ? `url(${$image})`
+    : 'linear-gradient(135deg, #eee, #ccc)',
   [theme.breakpoints.up('md')]: {
     aspectRatio: '21 / 9',
     minHeight: theme.spacing(30),
   },
 }));
 
-const FavoriteButton = styled(Button)(({ theme }) => ({
-  position: 'absolute',
-  bottom: theme.spacing(2),
-  left: theme.spacing(2),
-}));
-
-const CloseButton = styled(Button)(({ theme }) => ({
-  position: 'absolute',
-  top: theme.spacing(2),
-  right: theme.spacing(2),
-}));
-
-const CategoryIconImage = styled('img')(({ theme }) => ({
-  display: 'block',
-  width: theme.spacing(3),
-  height: theme.spacing(3),
-  flexShrink: 0,
-}));
-
 const CategoryMuiIcon = styled('svg')(({ theme }) => ({
-  width: theme.spacing(3),
-  height: theme.spacing(3),
+  width: theme.spacing(20),
+  height: theme.spacing(20),
   color: theme.palette.primary.contrastText,
-}));
-
-const ButtonLabel = styled('span')(({ theme }) => ({
-  fontSize: theme.typography.pxToRem(14),
-  fontWeight: 600,
-}));
-
-const AbsoluteSkeleton = styled(Skeleton)({
-  position: 'absolute',
-  inset: 0,
-});
-
-const RoundedSkeleton = styled(Skeleton)(({ theme }) => ({
-  borderRadius: theme.spacing(1),
-  marginLeft: theme.spacing(2),
-  marginRight: theme.spacing(2),
-}));
-
-const ButtonSkeleton = styled(Skeleton)(({ theme }) => ({
-  borderRadius: theme.spacing(1),
-  marginLeft: theme.spacing(1),
-  marginRight: theme.spacing(1),
 }));
 
 const EventAvatar = styled(Avatar)(() => ({
@@ -95,14 +56,7 @@ const EventAvatar = styled(Avatar)(() => ({
 
 export const Styled = {
   Header,
-  FavoriteButton,
-  CloseButton,
-  CategoryIconImage,
   CategoryMuiIcon,
-  ButtonLabel,
-  AbsoluteSkeleton,
-  RoundedSkeleton,
-  ButtonSkeleton,
   EventAvatar,
   AnimatedModalWrapper,
 };
