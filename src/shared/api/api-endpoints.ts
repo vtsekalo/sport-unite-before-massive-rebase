@@ -5,6 +5,7 @@ export const ApiEndpoints = {
   CREATE_USER: `/${API_PATHS.USER_SERVICE}/users`,
   EVENTS_SEARCH: `/${API_PATHS.EVENT_SERVICE}/events/search`,
   EVENTS_TYPES: `/${API_PATHS.EVENT_SERVICE}/events/types`,
+  EVENTS_JOININ: `/${API_PATHS.EVENT_SERVICE}/events/{eventId}/join`,
   EVENT_BY_ID: `/${API_PATHS.EVENT_SERVICE}/events`,
   USER_CHATS: `/${API_PATHS.CHAT_SERVICE}/chat-rooms/my`,
   CHAT_MESSAGES: `/${API_PATHS.CHAT_SERVICE}/chat-rooms`,

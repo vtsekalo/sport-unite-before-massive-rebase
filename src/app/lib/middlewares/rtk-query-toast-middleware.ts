@@ -66,8 +66,7 @@ const getMeta = (action: unknown): RequestMeta | null => {
 };
 
 export const rtkQuerySnackbarMiddleware: Middleware =
-  (res) => (next) => (action) => {
-    console.log(action, res);
+  () => (next) => (action) => {
     const meta = getMeta(action);
     const endPoint = getEndpointName(action);
 
@@ -82,9 +81,8 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       status === StatusCodes.Forbidden
     ) {
       const message = StatusMessages[status];
-
       if (message) {
-        showSnackbar(StatusMessages[status], 'error');
+        showSnackbar(message, 'error');
       }
 
       return next(action);
@@ -114,6 +112,8 @@ export const rtkQuerySnackbarMiddleware: Middleware =
         registration: 'Регистрация прошла успешно!',
         deleteMyProfile: 'Профиль успешно удален!',
         updateMyProfile: 'Профиль обновлен',
+        createEvent: 'Событие успешно создано!',
+        uploadPhoto: 'Фото успешно загружено!',
       };
 
       const message = defaultMessages[endPoint];
@@ -121,22 +121,6 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       if (message) {
         showSnackbar(message, 'success');
       }
-      if (endPoint === 'createEvent') {
-        showSnackbar('Событие успешно создано!', 'success');
-      }
     }
-
-    if (isFulfilled(action) && endPoint) {
-      if (endPoint === 'registration') {
-        showSnackbar('Регистрация прошла успешно!', 'success');
-      }
-      if (endPoint === 'createEvent') {
-        showSnackbar('Событие успешно создано!', 'success');
-      }
-      if (endPoint === 'uploadPhoto') {
-        showSnackbar('Фото успешно загружено!', 'success');
-      }
-    }
-
     return next(action);
   };

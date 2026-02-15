@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -12,10 +13,8 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import { Badge, Box, IconButton, Stack, alpha, useTheme } from '@mui/material';
 
 import { useGetCountNotificationsQuery } from '@shared/api';
-import { ROUTES } from '@shared/lib';
+import { ROUTES, useProfile, useToggleNavigate } from '@shared/lib';
 
-import { useActiveButton } from '../lib/use-active-button';
-import { useSwitchState } from '../lib/use-switch-state';
 import {
   StyledNavBar,
   StyledSwitch,
@@ -23,7 +22,27 @@ import {
 } from './nav-bar.styled';
 
 export const NavBar = () => {
-  const { activeButton, setActiveButton, handleNavigate } = useActiveButton();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const toggleNavigate = useToggleNavigate();
+
+  const { isAuthenticated } = useProfile({
+    __meta: { toast: false },
+  });
+
+  const handleSwitchChange = () => {
+    const nextPath =
+      {
+        [ROUTES.HOME]: ROUTES.LIST,
+        [ROUTES.LIST]: ROUTES.HOME,
+      }[pathname] ?? ROUTES.HOME;
+
+    navigate(nextPath);
+  };
+
+  const isActive = (path: string) => pathname === path;
+
   const { data: count } = useGetCountNotificationsQuery(
     {
       __meta: { toast: false },
@@ -31,11 +50,9 @@ export const NavBar = () => {
     {
       pollingInterval: 20_000,
       skipPollingIfUnfocused: true,
+      skip: !isAuthenticated,
     },
   );
-  const { checked, handleSwitchChange } = useSwitchState(setActiveButton);
-
-  const theme = useTheme();
 
   const actualNotifications = count
     ? count?.countAllActualMessages - count?.countReadMessages
@@ -78,16 +95,17 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === ROUTES.CHATS.INDEX
+            isActive(ROUTES.CHATS.INDEX)
               ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
           <IconButton
             color='primary'
-            onClick={() => handleNavigate(ROUTES.CHATS.INDEX)}
+            onClick={() => toggleNavigate(ROUTES.CHATS.INDEX)}
+            disabled={!isAuthenticated}
           >
-            {activeButton === ROUTES.CHATS.INDEX ? (
+            {isActive(ROUTES.CHATS.INDEX) ? (
               <EmailIcon />
             ) : (
               <EmailOutlinedIcon />
@@ -100,16 +118,16 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === ROUTES.PROFILE.INDEX
+            isActive(ROUTES.PROFILE.INDEX)
               ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
           <IconButton
             color='primary'
-            onClick={() => handleNavigate(ROUTES.PROFILE.INDEX)}
+            onClick={() => toggleNavigate(ROUTES.PROFILE.INDEX)}
           >
-            {activeButton === ROUTES.PROFILE.INDEX ? (
+            {isActive(ROUTES.PROFILE.INDEX) ? (
               <AccountCircleIcon />
             ) : (
               <AccountCircleOutlinedIcon />
@@ -130,7 +148,7 @@ export const NavBar = () => {
           <IconButton
             color='inherit'
             size='large'
-            onClick={() => handleNavigate(ROUTES.ADD_EVENT)}
+            onClick={() => toggleNavigate(ROUTES.ADD_EVENT)}
           >
             <AddOutlinedIcon fontSize='large' />
           </IconButton>
@@ -147,7 +165,7 @@ export const NavBar = () => {
               <FormatListBulletedOutlinedIcon />
             </StyledSwitchThumb>
           }
-          checked={checked}
+          checked={location.pathname === ROUTES.LIST}
           onChange={handleSwitchChange}
         />
 
@@ -156,17 +174,18 @@ export const NavBar = () => {
           height={40}
           borderRadius={2}
           bgcolor={
-            activeButton === ROUTES.NOTIFICATIONS
+            isActive(ROUTES.NOTIFICATIONS)
               ? `${alpha(theme.palette.primary.main, 0.3)}`
               : undefined
           }
         >
           <IconButton
             color='primary'
-            onClick={() => handleNavigate(ROUTES.NOTIFICATIONS)}
+            onClick={() => toggleNavigate(ROUTES.NOTIFICATIONS)}
+            disabled={!isAuthenticated}
           >
             {notificationIconWrapper(
-              activeButton === ROUTES.NOTIFICATIONS ? (
+              isActive(ROUTES.NOTIFICATIONS) ? (
                 <NotificationsIcon />
               ) : (
                 <NotificationsNoneOutlinedIcon />

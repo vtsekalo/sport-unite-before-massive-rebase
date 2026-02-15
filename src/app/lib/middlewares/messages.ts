@@ -47,4 +47,10 @@ export const EndPointsMessages = {
   uploadPhoto: {
     413: 'Событие создано, но ошибка при загрузке фото',
   },
+
+  joinEvent: {
+    400: 'Некорректный запрос на участие',
+    403: 'Нет доступа к событию',
+    500: 'Внутренняя ошибка сервиса',
+  },
 } as const satisfies Record<string, Partial<Record<number, string>>>;

@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
 
-import { IEvent, IUserParticipant, UserRole } from '@shared/lib';
+import {
+  IEventWithoutCoordinates,
+  IUserParticipant,
+  UserRole,
+} from '@shared/lib';
 
 export const useIsEventOrganizer = (
-  event: IEvent | null,
+  event?: IEventWithoutCoordinates | null,
   currentUserId?: string,
 ): [boolean, IUserParticipant | undefined] =>
   useMemo(() => {

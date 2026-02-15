@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-import BrokenImageIcon from '@mui/icons-material/BrokenImage';
+import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import { Box, BoxProps } from '@mui/material';
 
 interface FallbackProps extends BoxProps {
   src?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const ImageWrapper = ({ src, children, ...props }: FallbackProps) => {
@@ -23,7 +23,7 @@ export const ImageWrapper = ({ src, children, ...props }: FallbackProps) => {
         bgcolor='grey.300'
         borderRadius='10px'
       >
-        <BrokenImageIcon color='disabled' />
+        <NoPhotographyIcon color='disabled' />
       </Box>
     );
   }

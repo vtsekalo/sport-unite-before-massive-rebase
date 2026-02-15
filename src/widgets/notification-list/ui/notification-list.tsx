@@ -220,7 +220,13 @@ export function NotificationsList() {
   }, []);
 
   return (
-    <Box height='100%' width='100%' display='flex' flexDirection='column'>
+    <Box
+      height='100%'
+      width='100%'
+      display='flex'
+      flexDirection='column'
+      overflow='hidden'
+    >
       <Box px={1} py={1} borderBottom='1px solid' borderColor='divider'>
         <Stack
           direction={isMobile ? 'column' : 'row'}
@@ -273,7 +279,7 @@ export function NotificationsList() {
                 aria-posinset={index + 1}
                 aria-setsize={count}
                 position='absolute'
-                top={0}
+                top={virtualRow.start}
                 left={0}
                 width='100%'
                 boxSizing='border-box'

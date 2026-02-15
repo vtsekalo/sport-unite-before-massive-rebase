@@ -13,7 +13,6 @@ interface PageModalProps {
 
 export const PageModal: FC<PageModalProps> = ({ open, children }) => {
   const { pathname } = useLocation();
-
   if (!open) return null;
 
   let config = ROUTE_SETTINGS[pathname];

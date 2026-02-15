@@ -13,6 +13,7 @@ declare module '@mui/material/Button' {
 }
 declare module '@mui/material/Skeleton' {
   interface SkeletonPropsVariantOverrides {
+    base: true;
     button: true;
   }
 }
@@ -56,9 +57,10 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiButton: {
-        defaultProps: {
-          variant: 'contained',
-          size: 'medium',
+        styleOverrides: {
+          root: {
+            borderRadius: 10,
+          },
         },
         variants: [
           {
@@ -144,6 +146,12 @@ export const theme = (isMobile: boolean) =>
       },
       MuiSkeleton: {
         variants: [
+          {
+            props: { variant: 'base' },
+            style: {
+              borderRadius: 10,
+            },
+          },
           {
             props: { variant: 'button' },
             style: {
