@@ -1,6 +1,7 @@
 import { ICoordinate } from '../types';
 
-export interface CreateEventFormData {
+// Базовые данные формы события (общие поля)
+interface BaseEventFormData {
   eventType: string;
   eventName: string;
   eventLocation: string;
@@ -9,8 +10,17 @@ export interface CreateEventFormData {
   eventEndTime: string;
   countUsers: number;
   eventDescription: string;
-  eventPhoto?: File | null;
   coordinates: ICoordinate;
+}
+
+// Для создания нового события (eventPhoto - это File)
+export interface CreateEventFormData extends BaseEventFormData {
+  eventPhoto?: File | null;
+}
+
+// Для инициализации формы из существующего события (eventPhoto - это string URL или File)
+export interface EventFormInitialData extends BaseEventFormData {
+  eventPhoto?: string | File | null;
 }
 
 export interface UploadPhotoRequest {
