@@ -1,18 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useCreateEventMutation,
-  useUploadPhotoMutation,
-} from '@shared/api';
-
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { 
-  CreateEventFormData, 
-  EventFormInitialData, 
-  ROUTES 
-} from '@shared/lib';
+import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
+import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
+
 import { CopyEventModalProps } from '../api/types';
 
 export const CopyEventModal: React.FC<CopyEventModalProps> = ({
@@ -22,7 +15,8 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const navigate = useNavigate();
 
   const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
-  const [uploadPhoto, { isLoading: isUploadingPhoto }] = useUploadPhotoMutation();
+  const [uploadPhoto, { isLoading: isUploadingPhoto }] =
+    useUploadPhotoMutation();
 
   const defaultValues: EventFormInitialData = useMemo(() => {
     return {

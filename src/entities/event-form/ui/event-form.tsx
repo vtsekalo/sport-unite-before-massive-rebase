@@ -1,28 +1,30 @@
-import { FC, useCallback, useMemo, useRef, useState, ChangeEvent } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { ChangeEvent, FC, useCallback, useMemo, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
 import { yupResolver } from '@hookform/resolvers/yup';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
-  useMediaQuery,
-  useTheme,
-  Typography,
+  Button,
+  CircularProgress,
   FormControl,
   MenuItem,
   Select,
   TextField,
-  Button,
-  CircularProgress,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ImageIcon from '@mui/icons-material/Image';
-import { showSnackbar } from '@shared/lib';
 
 import { useGetTypeEventsQuery } from '@shared/api';
+import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
-import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
-import { PhotoPreview } from './event-form.styled.'
 import { EventFormInitialData } from '@shared/lib';
+import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
+
+import { PhotoPreview } from './event-form.styled.';
 
 interface EventFormEntityProps {
   title: string;
@@ -45,14 +47,17 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
   isSubmitting,
   isUploadingPhoto,
   initialPhotoUrl,
-  photoVariant
+  photoVariant,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | undefined>(initialPhotoUrl);
+  const [photoPreview, setPhotoPreview] = useState<string | undefined>(
+    initialPhotoUrl,
+  );
 
-  const { data: eventTypes, isLoading: isLoadingTypes } = useGetTypeEventsQuery();
+  const { data: eventTypes, isLoading: isLoadingTypes } =
+    useGetTypeEventsQuery();
 
   const {
     control,
@@ -68,7 +73,8 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
 
   const eventLocation = watch('eventLocation');
 
-  const isFormDisabled = !isValid || !isDirty || isSubmitting || isUploadingPhoto;
+  const isFormDisabled =
+    !isValid || !isDirty || isSubmitting || isUploadingPhoto;
 
   const sortedEventTypes = useMemo(() => {
     if (!eventTypes) return [];
@@ -97,50 +103,50 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
     [setValue],
   );
 
-    const handlePhotoClick = () => {
-      fileInputRef.current?.click();
-    };
-  
-    const handlePhotoChange = useCallback(
-      (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-  
-        if (file.size > 5 * 1024 * 1024) {
-          showSnackbar('Размер файла не должен превышать 5 МБ', 'error');
-          return;
-        }
-  
-        const supportedFormats = [
-          'image/jpg',
-          'image/jpeg',
-          'image/png',
-          'image/webp',
-        ];
-  
-        if (!supportedFormats.includes(file.type)) {
-          showSnackbar(
-            'Поддерживаются только изображения (jpg, jpeg, png, webp)',
-            'error',
-          );
-          return;
-        }
-  
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPhotoPreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      },
-      [],
-    );
-  
-    const handleRemovePhoto = useCallback(() => {
-      setPhotoPreview(undefined);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handlePhotoChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        showSnackbar('Размер файла не должен превышать 5 МБ', 'error');
+        return;
       }
-    }, []);
+
+      const supportedFormats = [
+        'image/jpg',
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+      ];
+
+      if (!supportedFormats.includes(file.type)) {
+        showSnackbar(
+          'Поддерживаются только изображения (jpg, jpeg, png, webp)',
+          'error',
+        );
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    },
+    [],
+  );
+
+  const handleRemovePhoto = useCallback(() => {
+    setPhotoPreview(undefined);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
 
   return (
     <Box
@@ -168,64 +174,63 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
 
       <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
         <input
-        ref={fileInputRef}
-        type='file'
-        hidden
-        accept='image/jpeg,image/jpg,image/png,image/webp'
-        onChange={handlePhotoChange}
-        disabled={isUploadingPhoto}
-      />
+          ref={fileInputRef}
+          type='file'
+          hidden
+          accept='image/jpeg,image/jpg,image/png,image/webp'
+          onChange={handlePhotoChange}
+          disabled={isUploadingPhoto}
+        />
 
-<Box
-  height={232}
-  overflow="hidden"
-  position="relative"
-  borderRadius="10px"
-  bgcolor="grey.200"
-  display="flex"
-  alignItems="center"
-  justifyContent="center"
->
-  {photoPreview ? (
-    <PhotoPreview src={photoPreview} alt="Event preview" />
-  ) : photoVariant === 'create' ? (
-    <ImageIcon/>
-  ) : (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      gap={1}
-    >
-      <ImageIcon />
-      <Typography color="grey.600" variant="body2">
-        Добавить фото
-      </Typography>
-    </Box>
-  )}
-</Box>
+        <Box
+          height={232}
+          overflow='hidden'
+          position='relative'
+          borderRadius='10px'
+          bgcolor='grey.200'
+          display='flex'
+          alignItems='center'
+          justifyContent='center'
+        >
+          {photoPreview ? (
+            <PhotoPreview src={photoPreview} alt='Event preview' />
+          ) : photoVariant === 'create' ? (
+            <ImageIcon />
+          ) : (
+            <Box
+              display='flex'
+              flexDirection='column'
+              alignItems='center'
+              gap={1}
+            >
+              <ImageIcon />
+              <Typography color='grey.600' variant='body2'>
+                Добавить фото
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
         <Box display='flex' gap={1}>
-                <Button
-                  variant='contained'
-                  fullWidth
-                  startIcon={<ImageIcon />}
-                  onClick={handlePhotoClick}
-                  disabled={isUploadingPhoto}
-                >
-                  {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
-                </Button>
+          <Button
+            variant='contained'
+            fullWidth
+            startIcon={<ImageIcon />}
+            onClick={handlePhotoClick}
+            disabled={isUploadingPhoto}
+          >
+            {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
+          </Button>
 
-              <Box>
-  {photoPreview && (
-    <Button variant='classicWidthAction' onClick={handleRemovePhoto}>
-      <DeleteIcon />
-    </Button>
-  )}
-</Box>
+          <Box>
+            {photoPreview && (
+              <Button variant='classicWidthAction' onClick={handleRemovePhoto}>
+                <DeleteIcon />
+              </Button>
+            )}
+          </Box>
         </Box>
       </Box>
-
 
       <Box
         component='form'
@@ -466,7 +471,9 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
             disabled={isFormDisabled}
             fullWidth
             startIcon={
-              isSubmitting || isUploadingPhoto ? null : <CheckCircleOutlineIcon />
+              isSubmitting || isUploadingPhoto ? null : (
+                <CheckCircleOutlineIcon />
+              )
             }
           >
             {isSubmitting || isUploadingPhoto ? (
