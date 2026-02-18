@@ -1,4 +1,4 @@
-import { IEventDetailed } from "@shared/lib";
+import { IEventDetailed } from '@shared/lib';
 
 export type CopyEventForm = Omit<
   IEventDetailed,
