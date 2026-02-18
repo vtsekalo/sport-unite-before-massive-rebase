@@ -30,6 +30,12 @@ export const CommonEventListPage = () => {
     };
   });
 
+  const noEvents = !isLoading && events.length === 0;
+
+  if (noEvents) {
+    return null;
+  }
+
   return (
     <ModalWrapper>
       {isMobile ? (
