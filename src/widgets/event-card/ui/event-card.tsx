@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { FC, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Cross from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -30,10 +30,6 @@ import { EventCardSkeleton } from '@widgets/event-card/ui/event-card-skeleton';
 
 import { Styled } from './event-card.styled';
 
-type EventEditModalProps = {
-  onClose?: () => void;
-};
-
 enum FooterMode {
   IN_PROGRESS = 'IN_PROGRESS',
   ORGANIZER = 'ORGANIZER',
@@ -41,8 +37,9 @@ enum FooterMode {
   GUEST = 'GUEST',
 }
 
-export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
+export const EventCard: FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const { eventId } = useParams<{ eventId: string }>();
   const [joinEvent, { isLoading: isLoadingJoin }] =
@@ -92,9 +89,10 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
     event,
     profile?.id,
   );
+
   const handleClose = () => {
-    if (onClose) {
-      onClose();
+    if (location.state?.from === 'list') {
+      navigate(-1);
     } else {
       navigate(ROUTES.HOME);
     }
@@ -203,7 +201,7 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
   };
 
   return (
-    <ModalWrapper maxWidth={{ xs: '361px', md: '440px' }} showBackButton>
+    <ModalWrapper maxWidth={{ xs: '361px', md: '440px' }}>
       <EventCardEntity
         headerNode={
           <Styled.Header

@@ -81,7 +81,7 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
 
   const handleMarkerClick = useCallback(
     (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
+      navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'map' } });
     },
     [navigate],
   );
