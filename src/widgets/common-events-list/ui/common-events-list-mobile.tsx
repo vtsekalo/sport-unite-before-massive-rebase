@@ -30,6 +30,10 @@ export const CommonEventsListMobile: FC<CommonEventsListProps> = ({
     setValue(newValue);
   };
 
+  const handleOpenCard = (eventId: string) => () => {
+    navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'list' } });
+  };
+
   return (
     <Styled.ListCardsContainer
       display={'flex'}
@@ -68,7 +72,7 @@ export const CommonEventsListMobile: FC<CommonEventsListProps> = ({
                 display={'flex'}
                 flexDirection={'column'}
                 key={eventItem.eventId}
-                onClick={() => navigate(ROUTES.EVENT.DETAIL(eventItem.eventId))}
+                onClick={handleOpenCard(eventItem.eventId)}
               >
                 <CommonEventListEntity
                   key={eventItem.eventId}

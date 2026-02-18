@@ -25,6 +25,10 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
   const navigate = useNavigate();
   const theme = useTheme();
 
+  const handleOpenCard = (eventId: string) => () => {
+    navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'list' } });
+  };
+
   return (
     <Styled.ListCardsContainer
       display={'flex'}
@@ -149,9 +153,7 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
                       variant='contained'
                       fullWidth
                       size='mediumFixed'
-                      onClick={() =>
-                        navigate(ROUTES.EVENT.DETAIL(eventItem.eventId))
-                      }
+                      onClick={handleOpenCard(eventItem.eventId)}
                     >
                       Подробнее
                     </Button>

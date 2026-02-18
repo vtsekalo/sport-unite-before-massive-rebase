@@ -12,10 +12,7 @@ interface EventListSkeletonProps {
 
 export const EventCardSkeleton: FC<EventListSkeletonProps> = () => {
   return (
-    <Styled.AnimatedModalWrapper
-      maxWidth={{ xs: '361px', md: '440px' }}
-      showBackButton
-    >
+    <Styled.AnimatedModalWrapper maxWidth={{ xs: '361px', md: '440px' }}>
       <EventCardEntity
         headerNode={
           <Styled.Header>
