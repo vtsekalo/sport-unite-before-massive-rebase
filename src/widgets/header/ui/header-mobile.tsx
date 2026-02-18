@@ -14,8 +14,8 @@ interface HeaderMobileProps {
 
 export const HeaderMobile: FC<HeaderMobileProps> = ({ buttonRef }) => {
   return (
-    <Styled.HeaderWrapper width='min-content' height='56' padding='8px 8px'>
-      <Stack direction='row' alignItems='center' spacing={1}>
+    <Styled.HeaderWrapper p='8px'>
+      <Stack direction='row' width='100%' alignItems='center' spacing={1}>
         <InputSearch />
         <IconButton color='primary' ref={buttonRef}>
           <FilterAltIcon fontSize='medium' />

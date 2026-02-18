@@ -50,11 +50,11 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
       }}
       pt={{
         xs: '88px',
-        md: '136px',
+        md: '112px',
       }}
       pb={{
-        xs: '88px',
-        md: '32px',
+        xs: '96px',
+        md: '112px',
       }}
       sx={{
         pointerEvents: pointerEvents,

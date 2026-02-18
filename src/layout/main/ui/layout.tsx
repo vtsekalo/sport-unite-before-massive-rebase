@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react';
-import { Outlet, useNavigate, useOutlet } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet, useLocation, useNavigate, useOutlet } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
-import { CreateEventFab } from '@features/create-event/ui/create-event-fab';
+import { LoginButton } from '@features/auth';
 import { FilterEventsModal } from '@features/filter-events';
+import { useProfile } from '@shared/lib';
 import { ROUTES } from '@shared/lib/constants';
 import { PageModal } from '@shared/ui/modal';
 import { HeaderDesktop, HeaderMobile } from '@widgets/header';
@@ -14,6 +15,7 @@ import { NavBar } from '@widgets/navbar';
 
 export const Layout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const hasOutlet = useOutlet();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -23,11 +25,8 @@ export const Layout = () => {
   };
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
-    setAnchorEl(node);
-  }, []);
-
-  const showFab = location.pathname === ROUTES.HOME;
+  const { isAuthenticated } = useProfile({ __meta: { toast: false } });
+  const isHomePage = location.pathname === ROUTES.HOME;
 
   return (
     <Box
@@ -43,9 +42,9 @@ export const Layout = () => {
       <EventsMap />
 
       {isMobile ? (
-        <HeaderMobile buttonRef={buttonRefCallback} />
+        <HeaderMobile buttonRef={setAnchorEl} />
       ) : (
-        <HeaderDesktop buttonRef={buttonRefCallback} />
+        <HeaderDesktop buttonRef={setAnchorEl} />
       )}
       <FilterEventsModal buttonRef={anchorEl} />
       <MapControls />
@@ -53,9 +52,7 @@ export const Layout = () => {
         <Outlet />
       </PageModal>
 
-      <NavBar />
-
-      {showFab && <CreateEventFab />}
+      {isAuthenticated ? <NavBar /> : isHomePage && <LoginButton />}
     </Box>
   );
 };

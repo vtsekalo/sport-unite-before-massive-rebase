@@ -7,6 +7,8 @@ export enum StatusCodes {
   ServiceUnavailable = 503,
 }
 
+export const SilentOn401Endpoints: string[] = ['getMyProfile'];
+
 export const StatusMessages = {
   400: 'Некорректный запрос',
   401: 'Вы не авторизованы',

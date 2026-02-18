@@ -48,11 +48,7 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
   const [joinEvent, { isLoading: isLoadingJoin }] =
     useGetJoinInEventsMutation();
 
-  const {
-    profile,
-    isLoading: isProfileLoading,
-    isAuthenticated,
-  } = useProfile({
+  const { profile } = useProfile({
     __meta: { toast: false },
   });
 
@@ -64,12 +60,6 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
     skip: !eventId || !profile,
     refetchOnMountOrArgChange: true,
   });
-
-  useEffect(() => {
-    if (!isProfileLoading && !isAuthenticated) {
-      navigate(ROUTES.AUTH);
-    }
-  }, [isAuthenticated, isProfileLoading, navigate]);
 
   useEffect(() => {
     if (isError) {
