@@ -6,6 +6,7 @@ import { Coordinates, RootState } from '@shared/lib';
 interface MapViewState {
   center: Coordinates;
   zoom: number;
+  pendingZoom: number | null;
 }
 
 const STORAGE_KEY = 'map_view_state';
@@ -42,6 +43,7 @@ const mapPersistence = {
         longitude: DEFAULT_MAP_CENTER[0],
       },
       zoom: DEFAULT_MAP_ZOOM,
+      pendingZoom: null,
     };
   },
 };
@@ -58,15 +60,22 @@ const mapSlice = createSlice({
       state.zoom = action.payload;
       mapPersistence.save(state);
     },
-    setMapView(state, action: PayloadAction<MapViewState>) {
+    setMapView(
+      state,
+      action: PayloadAction<{ center: Coordinates; zoom: number }>,
+    ) {
       state.center = action.payload.center;
       state.zoom = action.payload.zoom;
       mapPersistence.save(state);
     },
+    setPendingZoom(state, action: PayloadAction<number | null>) {
+      state.pendingZoom = action.payload;
+    },
   },
 });
 
-export const { setMapCenter, setMapZoom, setMapView } = mapSlice.actions;
+export const { setMapCenter, setMapZoom, setMapView, setPendingZoom } =
+  mapSlice.actions;
 export const mapReducer = mapSlice.reducer;
 
 export const selectMapCenter = createSelector(
@@ -83,3 +92,4 @@ export const selectMapCenter = createSelector(
   },
 );
 export const selectMapZoom = (state: RootState) => state.map.zoom;
+export const selectPendingZoom = (state: RootState) => state.map.pendingZoom;

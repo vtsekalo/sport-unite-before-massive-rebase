@@ -1,6 +1,8 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   Checkbox,
@@ -14,23 +16,63 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useGetTypeEventsQuery } from '@shared/api';
-import { IEventType, useEventSearch } from '@shared/lib';
-import { resetCustomRange, setFilterRange } from '@shared/store';
+import { IEventType, ROUTES, useEventSearch } from '@shared/lib';
+import {
+  resetCustomRange,
+  selectFilters,
+  selectSearchTerm,
+  selectSportIds,
+  selectTempDateValue,
+  selectTempRadius,
+  setPendingZoom,
+  setSearchTerm,
+  setSelectedSportIds,
+  setTempDateValue,
+  setTempRadius,
+  toggleSportId,
+} from '@shared/store';
 
+import { getZoomForRadius } from '../lib/get-zoom-for-radius';
 import { Styled } from './filter-events-modal.styled';
+
+dayjs.extend(utc);
 
 interface FilterEventsModalProps {
   buttonRef: HTMLButtonElement | null;
 }
 
-export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
+export const FilterEventsModal: FC<FilterEventsModalProps> = ({
   buttonRef,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
-  const eventsByFilter = useEventSearch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    hasAppliedFilters,
+    hasAppliedSportFilter,
+    hasAppliedDateFilter,
+    hasAppliedRangeFilter,
+    setTypes,
+    setStartDate,
+    setRange,
+    resetFilters,
+  } = useEventSearch();
   const { data: eventTypes = [] } = useGetTypeEventsQuery();
+
+  const selectedSports = useSelector(selectSportIds);
+  const radius = useSelector(selectTempRadius);
+  const searchTerm = useSelector(selectSearchTerm);
+  const tempDateValue = useSelector(selectTempDateValue);
+  const filters = useSelector(selectFilters);
+
+  const hasTempSportFilter = selectedSports.length > 0;
+  const hasTempDateFilter = tempDateValue !== null;
+  const hasTempRangeFilter = radius !== 0;
+  const hasAnyTempFilter =
+    hasTempSportFilter || hasTempDateFilter || hasTempRangeFilter;
+  const hasAnyFilter = hasAnyTempFilter || hasAppliedFilters;
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [sportAnchorEl, setSportAnchorEl] = useState<HTMLElement | null>(null);
@@ -42,16 +84,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   const dateButtonRef = useRef<HTMLButtonElement | null>(null);
   const locationButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSports, setSelectedSports] = useState<string[]>(
-    () => eventsByFilter.filters.eventTypes || [],
-  );
-  const [radius, setRadius] = useState<number>(5);
-  const [dateValue, setDateValue] = useState<Dayjs | null>(() =>
-    eventsByFilter.filters.eventStartDate
-      ? dayjs(eventsByFilter.filters.eventStartDate)
-      : null,
-  );
+  const dateValue = tempDateValue ? dayjs(tempDateValue) : null;
 
   useEffect(() => {
     const button = buttonRef;
@@ -72,82 +105,122 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
   const closeDate = () => setDateAnchorEl(null);
   const closeLocation = () => setLocationAnchorEl(null);
 
-  const handleApplyDate = useCallback(() => {
-    const dateString = dateValue
-      ? `${dateValue.format('YYYY-MM-DD')}T00:00:00.000Z`
-      : undefined;
-
-    eventsByFilter.setStartDateTime(dateString);
-    closeDate();
-    closeMain();
-  }, [dateValue, eventsByFilter]);
-
-  const handleResetDate = useCallback(() => {
-    eventsByFilter.setStartDateTime(undefined);
-    setDateValue(null);
-    closeDate();
-    closeMain();
-  }, [eventsByFilter]);
-
-  const handleToggleSport = useCallback((sportId: string) => {
-    setSelectedSports((prev) =>
-      prev.includes(sportId)
-        ? prev.filter((id) => id !== sportId)
-        : [...prev, sportId],
-    );
-  }, []);
-
-  const handleApplySport = useCallback(() => {
+  const applyFilters = useCallback(() => {
     const sportNames = selectedSports.map((id) => {
       const sport = eventTypes.find((s) => s.typeId.toString() === id);
       return sport ? sport.typeName : id;
     });
-    eventsByFilter.setTypes(sportNames.length > 0 ? sportNames : undefined);
+    setTypes(sportNames.length > 0 ? sportNames : undefined);
+
+    const dateString = dateValue
+      ? dateValue.utc().startOf('day').toISOString()
+      : undefined;
+    setStartDate(dateString);
+
+    if (radius > 0) {
+      const radiusMeters = radius * 1000;
+      setRange(radiusMeters, true);
+
+      const mapContainer = document.querySelector('[data-testid="base-map"]');
+      const width = mapContainer?.clientWidth ?? window.innerWidth;
+      const height = mapContainer?.clientHeight ?? window.innerHeight;
+
+      const newZoom = getZoomForRadius(
+        radiusMeters,
+        filters.latitude,
+        width,
+        height,
+      );
+      dispatch(setPendingZoom(newZoom));
+    }
+
+    if (
+      location.pathname !== ROUTES.HOME &&
+      location.pathname !== ROUTES.LIST
+    ) {
+      navigate(ROUTES.HOME);
+    }
+  }, [
+    selectedSports,
+    dateValue,
+    radius,
+    eventTypes,
+    setTypes,
+    setStartDate,
+    setRange,
+    filters.latitude,
+    dispatch,
+    location.pathname,
+    navigate,
+  ]);
+
+  const handleApplyDate = useCallback(() => {
+    applyFilters();
+    closeDate();
+    closeMain();
+  }, [applyFilters]);
+
+  const handleResetDate = useCallback(() => {
+    setStartDate(undefined);
+    dispatch(setTempDateValue(null));
+    closeDate();
+    closeMain();
+  }, [setStartDate, dispatch]);
+
+  const handleToggleSport = useCallback(
+    (sportId: string) => {
+      dispatch(toggleSportId(sportId));
+    },
+    [dispatch],
+  );
+
+  const handleApplySport = useCallback(() => {
+    applyFilters();
     closeSport();
     closeMain();
-  }, [selectedSports, eventsByFilter, eventTypes]);
+  }, [applyFilters]);
 
   const handleResetSport = useCallback(() => {
-    eventsByFilter.setTypes(undefined);
-    setSelectedSports([]);
-    setSearchTerm('');
+    setTypes(undefined);
+    dispatch(setSelectedSportIds([]));
     closeSport();
     closeMain();
-  }, [eventsByFilter]);
+  }, [setTypes, dispatch]);
 
   const handleApplyLocation = useCallback(() => {
-    dispatch(setFilterRange({ range: radius * 1000, fromUser: true }));
+    applyFilters();
     closeLocation();
     closeMain();
-  }, [radius, dispatch]);
+  }, [applyFilters]);
 
   const handleResetLocation = useCallback(() => {
     dispatch(resetCustomRange());
-    setRadius(5);
     closeLocation();
     closeMain();
   }, [dispatch]);
 
   const handleSliderChange = useCallback(
     (_: Event, value: number | number[]) => {
-      if (typeof value === 'number') setRadius(value);
+      if (typeof value === 'number') {
+        dispatch(setTempRadius(value));
+      }
     },
-    [],
+    [dispatch],
   );
 
   const handleResetAll = useCallback(() => {
-    eventsByFilter.resetFilters();
-    setSelectedSports([]);
-    setDateValue(null);
-    setRadius(5);
-    setSearchTerm('');
+    resetFilters();
     closeMain();
-  }, [eventsByFilter]);
+  }, [resetFilters]);
 
   const formatDisplayValue = useCallback((value: number) => `${value} км`, []);
 
-  const filteredSports = eventTypes.filter((sport) =>
-    sport.typeName.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredSports = useMemo(
+    () =>
+      eventTypes.filter((sport) =>
+        sport.typeName.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [eventTypes, searchTerm],
   );
 
   return (
@@ -195,6 +268,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
           variant='contained'
           color='primary'
           onClick={handleResetAll}
+          disabled={!hasAnyFilter}
         >
           Сбросить все фильтры
         </Styled.PrimaryButton>
@@ -225,7 +299,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             fullWidth
             placeholder='Search...'
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
             size='small'
             slotProps={{
               input: {
@@ -275,6 +349,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             onClick={handleResetSport}
             variant='contained'
             color='primary'
+            disabled={!hasTempSportFilter && !hasAppliedSportFilter}
           >
             Сбросить
           </Styled.SportResetButton>
@@ -283,6 +358,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             onClick={handleApplySport}
             variant='contained'
             color='primary'
+            disabled={!hasAnyFilter}
           >
             Показать события
           </Styled.SportApplyButton>
@@ -311,13 +387,21 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
           </Styled.BackButton>
         )}
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='ru'>
-          <Styled.SportDataCalendar value={dateValue} onChange={setDateValue} />
+          <Styled.SportDataCalendar
+            value={dateValue}
+            onChange={(newValue) => {
+              dispatch(
+                setTempDateValue(newValue ? newValue.toISOString() : null),
+              );
+            }}
+          />
         </LocalizationProvider>
         <Styled.DateButtonStack spacing={2}>
           <Styled.DateResetButton
             onClick={handleResetDate}
             variant='contained'
             color='primary'
+            disabled={!hasTempDateFilter && !hasAppliedDateFilter}
           >
             Сбросить
           </Styled.DateResetButton>
@@ -326,6 +410,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             onClick={handleApplyDate}
             variant='contained'
             color='primary'
+            disabled={!hasAnyFilter}
           >
             Показать события
           </Styled.DateApplyButton>
@@ -357,7 +442,11 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             <Typography variant='body1' fontWeight={500}>
               Радиус поиска
             </Typography>
-            <Typography variant='body1' fontWeight={600} color='primary'>
+            <Typography
+              variant='body1'
+              fontWeight={600}
+              color={radius === 0 ? 'text.disabled' : 'primary'}
+            >
               {radius} км
             </Typography>
           </Styled.SliderHeader>
@@ -389,6 +478,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             onClick={handleResetLocation}
             variant='contained'
             color='primary'
+            disabled={!hasTempRangeFilter && !hasAppliedRangeFilter}
           >
             Сбросить
           </Styled.LocationResetButton>
@@ -397,6 +487,7 @@ export const FilterEventsModal: React.FC<FilterEventsModalProps> = ({
             onClick={handleApplyLocation}
             variant='contained'
             color='primary'
+            disabled={!hasAnyFilter}
           >
             Показать события
           </Styled.LocationApplyButton>

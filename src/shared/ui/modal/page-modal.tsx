@@ -27,7 +27,7 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
   const bgcolor = config?.bgcolor || 'rgba(54, 119, 255, 0.6)';
   const justifyContent = config?.justifyContent || 'center';
   const pointerEvents = config?.pointerEvents || 'default';
-  const backdropFilter = config?.pointerEvents || 'blur(4px)';
+  const backdropFilter = config?.backdropFilter || 'blur(4px)';
   const alignItems = config?.alignItems || 'center';
   const height = config?.height || '100%';
   const width = config?.width || '100%';

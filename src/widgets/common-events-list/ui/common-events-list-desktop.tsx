@@ -38,7 +38,7 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
       height={'100%'}
     >
       <Box
-        width={380}
+        width={399}
         display='flex'
         gap={1}
         flexDirection={'column'}
