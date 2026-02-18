@@ -2,12 +2,9 @@ import { Box, styled } from '@mui/material';
 import Switch from '@mui/material/Switch';
 
 export const StyledNavBar = styled(Box)(({ theme }) => ({
-  display: 'none',
+  display: 'flex',
+  height: '48px',
   backgroundColor: theme.palette.background.paper,
-  [theme.breakpoints.down('md')]: {
-    display: 'flex',
-    height: '48px',
-  },
 }));
 
 export const StyledSwitch = styled(Switch)(({ theme }) => ({

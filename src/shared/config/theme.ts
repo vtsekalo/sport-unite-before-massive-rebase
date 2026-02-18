@@ -4,6 +4,7 @@ declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
     veryBig: true;
+    adaptive: true;
   }
   interface ButtonPropsVariantOverrides {
     classicWidthAction: true;
@@ -85,6 +86,12 @@ export const theme = (isMobile: boolean) =>
             props: { size: 'veryBig' },
             style: {
               minHeight: isMobile ? 40 : 64,
+            },
+          },
+          {
+            props: { size: 'adaptive' },
+            style: {
+              minHeight: isMobile ? 48 : 40,
             },
           },
           {

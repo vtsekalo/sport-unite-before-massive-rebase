@@ -22,11 +22,18 @@ type InputSearchProps = {
 
 export const InputSearch: FC<InputSearchProps> = ({
   startIcon = (
-    <Box component='img' src={Logo} alt='Logo' width={24} height={24} />
+    <Box
+      component='img'
+      src={Logo}
+      alt='Logo'
+      width={24}
+      height={24}
+      borderRadius={'10px'}
+    />
   ),
   endIcon = <SearchIcon />,
   onClick,
-  placeholder = 'Поиск...',
+  placeholder = 'Search...',
   ...rest
 }) => {
   const theme = useTheme();

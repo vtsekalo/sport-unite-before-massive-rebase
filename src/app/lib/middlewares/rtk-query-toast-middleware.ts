@@ -4,7 +4,12 @@ import { isFulfilled, isRejectedWithValue } from '@reduxjs/toolkit';
 import { showSnackbar } from '@shared/lib';
 import { RequestMeta } from '@shared/lib';
 
-import { EndPointsMessages, StatusCodes, StatusMessages } from './messages';
+import {
+  EndPointsMessages,
+  SilentOn401Endpoints,
+  StatusCodes,
+  StatusMessages,
+} from './messages';
 
 const getStatus = (action: unknown): number | null => {
   if (
@@ -80,9 +85,13 @@ export const rtkQuerySnackbarMiddleware: Middleware =
       status === StatusCodes.Unauthorized ||
       status === StatusCodes.Forbidden
     ) {
-      const message = StatusMessages[status];
-      if (message) {
-        showSnackbar(message, 'error');
+      const isSilent = endPoint && SilentOn401Endpoints.includes(endPoint);
+
+      if (!isSilent) {
+        const message = StatusMessages[status];
+        if (message) {
+          showSnackbar(message, 'error');
+        }
       }
 
       return next(action);
