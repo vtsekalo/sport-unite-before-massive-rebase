@@ -61,7 +61,7 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
           await uploadPhoto({
             id: createdEvent.eventId,
             photoType: 'EVENT',
-            file: data.eventPhoto, // ✅ File тип
+            file: data.eventPhoto,
           }).unwrap();
         }
 

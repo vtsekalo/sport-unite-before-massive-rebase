@@ -20,6 +20,7 @@ interface LocationAutocompleteProps {
   onCoordinatesChange?: (coordinates: Coordinates) => void;
   error?: boolean;
   errorsMassage?: string;
+  helperText: string | undefined;
   placeholder?: string;
 }
 

@@ -36,10 +36,12 @@ export const eventApi = baseApi.injectEndpoints({
       }),
       providesTags: (result) => providesList(result, 'EventTypes', 'typeId'),
     }),
+
     getUserEvents: builder.query<IEvent[], void>({
       query: () => ({ url: ApiEndpoints.USER_EVENTS, method: 'GET' }),
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
+
     getEventById: builder.query<IEvent, string>({
       query: (eventId) => ({
         url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}`,
@@ -49,6 +51,7 @@ export const eventApi = baseApi.injectEndpoints({
         { type: 'EventById', id: eventId },
       ],
     }),
+
     deleteEvent: builder.mutation<void, string>({
       query: (eventId) => ({
         url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}/delete`,
@@ -59,6 +62,7 @@ export const eventApi = baseApi.injectEndpoints({
         { type: 'EventById', id: eventId },
       ],
     }),
+
     createEvent: builder.mutation<IEventDetailed, CreateEventRequest>({
       query: (eventData) => ({
         url: ApiEndpoints.CREATE_EVENT,
@@ -71,6 +75,7 @@ export const eventApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Events'],
     }),
+
     uploadPhoto: builder.mutation<UploadPhotoResponse, UploadPhotoRequest>({
       query: ({ id, photoType, file }) => {
         const formData = new FormData();
@@ -95,14 +100,7 @@ export const {
   useLazyGetFilteredEventsQuery,
   useDeleteEventMutation,
   useGetUserEventsQuery,
-<<<<<<< HEAD
   useGetJoinInEventsMutation,
-} = eventApi;
-=======
   useCreateEventMutation,
   useUploadPhotoMutation,
 } = eventApi;
-<<<<<<< HEAD
->>>>>>> 143c424 (свитч криейтивента и копиивента на энтитис)
-=======
->>>>>>> 6cca676 (свитч криейтивента и копиивента на энтитис)

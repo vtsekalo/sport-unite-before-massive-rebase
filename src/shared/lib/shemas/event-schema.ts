@@ -59,6 +59,24 @@ export const createEventSchema = yup.object({
       },
     ),
 
+  eventEndDate: yup
+    .string()
+    .required('Укажите дату окончания')
+    .test(
+      'after-start-date',
+      'Дата окончания должна быть не раньше даты начала',
+      function (value) {
+        if (!value) return false;
+        const { eventStartDate } = this.parent;
+        if (!eventStartDate) return true;
+
+        const startDate = new Date(eventStartDate);
+        const endDate = new Date(value);
+
+        return endDate >= startDate;
+      },
+    ),
+
   eventEndTime: yup
     .string()
     .required('Укажите время окончания')
@@ -68,13 +86,13 @@ export const createEventSchema = yup.object({
       function (value) {
         if (!value) return false;
 
-        const { eventStartDate, eventStartTime } = this.parent;
-        if (!eventStartDate || !eventStartTime) return true;
+        const { eventStartDate, eventStartTime, eventEndDate } = this.parent;
+        if (!eventStartDate || !eventStartTime || !eventEndDate) return true;
 
         const startDateTime = new Date(
           `${eventStartDate}T${eventStartTime}:00`,
         );
-        const endDateTime = new Date(`${eventStartDate}T${value}:00`);
+        const endDateTime = new Date(`${eventEndDate}T${value}:00`);
 
         const minEndTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
 

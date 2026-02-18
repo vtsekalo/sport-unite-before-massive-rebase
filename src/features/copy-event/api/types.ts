@@ -1,7 +1,7 @@
-import { IEventResponse } from '@shared/lib';
+import { IEventDetailed } from "@shared/lib";
 
 export type CopyEventForm = Omit<
-  IEventResponse,
+  IEventDetailed,
   | 'eventId'
   | 'eventStatus'
   | 'userRole'
@@ -11,6 +11,6 @@ export type CopyEventForm = Omit<
 >;
 
 export interface CopyEventModalProps {
-  event: IEventResponse;
+  event: IEventDetailed;
   onClose: () => void;
 }

@@ -297,9 +297,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Место проведения
-          </Typography>
           <LocationAutocomplete
             value={eventLocation ?? ''}
             onChange={handleLocationChange}

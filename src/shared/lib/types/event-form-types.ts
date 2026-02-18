@@ -7,6 +7,7 @@ interface BaseEventFormData {
   eventLocation: string;
   eventStartDate: string;
   eventStartTime: string;
+  eventEndDate: string;
   eventEndTime: string;
   countUsers: number;
   eventDescription: string;

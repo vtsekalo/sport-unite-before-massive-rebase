@@ -90,8 +90,8 @@ export interface IEventDetailed {
   eventEndDate: string;
   countUsers: number;
   eventDescription: string;
-  eventLocation?: string;
-  eventPhoto: string | null;
+  eventLocation: string;
+  eventPhoto: string;
   coordinates: ICoordinate;
   users: IUserParticipant[];
 }

@@ -15,6 +15,7 @@ import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 import { EventCardEntity } from '@entities/event-card';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { CancelEventButton } from '@features/cancel-event';
+import { CopyEventModal } from '@features/copy-event';
 import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import {
   EventStatus,
@@ -47,6 +48,7 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
   const { eventId } = useParams<{ eventId: string }>();
   const [joinEvent, { isLoading: isLoadingJoin }] =
     useGetJoinInEventsMutation();
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
   const {
     profile,
@@ -119,6 +121,14 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
     await joinEvent(eventId);
   };
 
+  const handleCopyClick = () => {
+    setIsCopyModalOpen(true);
+  };
+
+  const handleCopyModalClose = () => {
+    setIsCopyModalOpen(false);
+  };
+
   useEffect(() => {
     setIsWaitingForParticipant(false);
   }, [eventId]);
@@ -176,7 +186,6 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
       case FooterMode.PARTICIPANT:
         return (
           <Button variant='fullWidthAction' fullWidth size='large'>
-            {' '}
             <LogoutIcon />
             <Typography
               fontSize={theme.typography.pxToRem(14)}
@@ -213,164 +222,179 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
   };
 
   return (
-    <ModalWrapper maxWidth={{ xs: '361px', md: '440px' }} showBackButton>
-      <EventCardEntity
-        headerNode={
-          <Styled.Header
-            {...(event.eventPhoto ? { $image: event.eventPhoto } : {})}
-          >
-            {!event.eventPhoto && (
-              <Box
-                width='100%'
-                height='100%'
-                position='absolute'
-                display='flex'
-                alignItems='center'
-                justifyContent='center'
+    <>
+      {!isCopyModalOpen && (
+        <ModalWrapper maxWidth={{ xs: '361px', md: '440px' }} showBackButton>
+          <EventCardEntity
+            headerNode={
+              <Styled.Header
+                {...(event.eventPhoto ? { $image: event.eventPhoto } : {})}
               >
-                <Styled.CategoryMuiIcon as={NoPhotographyIcon} />
-              </Box>
-            )}
-            <>
-              <Box
-                position={'absolute'}
-                bottom={theme.spacing(2)}
-                left={theme.spacing(2)}
-              >
-                <Button variant='classicWidthAction'>
-                  <StarBorderIcon />
-                </Button>
-              </Box>
+                {!event.eventPhoto && (
+                  <Box
+                    width='100%'
+                    height='100%'
+                    position='absolute'
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='center'
+                  >
+                    <Styled.CategoryMuiIcon as={NoPhotographyIcon} />
+                  </Box>
+                )}
+                <>
+                  <Box
+                    position={'absolute'}
+                    bottom={theme.spacing(2)}
+                    left={theme.spacing(2)}
+                  >
+                    <Button variant='classicWidthAction'>
+                      <StarBorderIcon />
+                    </Button>
+                  </Box>
 
-              <Box
-                position={'absolute'}
-                top={theme.spacing(2)}
-                right={theme.spacing(2)}
-              >
-                <Button variant='classicWidthAction' onClick={handleClose}>
-                  <Cross />
-                </Button>
-              </Box>
-            </>
-          </Styled.Header>
-        }
-        titleNode={
-          <>
-            <SportIcon
-              bgcolor='#FFFF'
-              width={48}
-              height={48}
-              border={3}
-              borderColor='#2269FF'
-              type={event.eventType}
-              widthIcon='26px'
-              heightIcon='26px'
-              filter={false}
-            />
-
-            <Typography
-              variant='h6'
-              flex={1}
-              fontSize='18px'
-              fontWeight={600}
-              alignSelf='center'
-            >
-              {event.eventName}
-            </Typography>
-
-            {isOrganizer && (
-              <Button variant='classicWidthAction'>
-                <CreateIcon />
-              </Button>
-            )}
-          </>
-        }
-        dateNode={
-          <>
-            <Typography variant='body2' color='primary'>
-              {dayjs(event.eventStartDate).format('DD.MM.YYYY')}
-            </Typography>
-            <Typography variant='body2' color='primary'>
-              {`${dayjs(event.eventStartDate).format('HH:mm')} - ${event.eventEndDate}`}
-            </Typography>
-          </>
-        }
-        locationNode={<>Место: {event.eventLocation}</>}
-        descriptionNode={
-          <>
-            Описание события.
-            <Typography variant='body2' fontSize='14px' color='text.primary'>
-              {event.eventDescription}
-            </Typography>
-          </>
-        }
-        organizerNode={
-          <>
-            <Typography
-              variant='body2'
-              color='text.disabled'
-              fontSize='12px'
-              minWidth={96}
-            >
-              Организатор:
-            </Typography>
-            <AvatarGroup max={1}>
-              {organizer?.userId && (
-                <Styled.EventAvatar
-                  alt={organizer.nickName || ''}
-                  src={organizer.urlUserPhoto || ''}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
-                  }}
+                  <Box
+                    position={'absolute'}
+                    top={theme.spacing(2)}
+                    right={theme.spacing(2)}
+                  >
+                    <Button variant='classicWidthAction' onClick={handleClose}>
+                      <Cross />
+                    </Button>
+                  </Box>
+                </>
+              </Styled.Header>
+            }
+            titleNode={
+              <>
+                <SportIcon
+                  bgcolor='#FFFF'
+                  width={48}
+                  height={48}
+                  border={3}
+                  borderColor='#2269FF'
+                  type={event.eventType}
+                  widthIcon='26px'
+                  heightIcon='26px'
+                  filter={false}
                 />
-              )}
-            </AvatarGroup>
-          </>
-        }
-        participantsNode={
-          <>
-            <Typography
-              variant='body2'
-              color='text.disabled'
-              fontSize='12px'
-              minWidth={96}
-            >
-              Участники: ({usersCount}/{maxUsers})
-            </Typography>
-            <AvatarGroup max={4}>
-              {usersParticipant.map((user: IUserParticipant) => (
-                <Styled.EventAvatar
-                  key={user.userId}
-                  alt={user.nickName}
-                  src={user.urlUserPhoto || undefined}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(ROUTES.PROFILE.DETAIL(user.userId));
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-          </>
-        }
-        footerActionsNode={
-          <>
-            {isOrganizer && (
-              <Button variant='classicWidthAction'>
-                <ContentCopyIcon />
-              </Button>
-            )}
 
-            {renderMainAction()}
+                <Typography
+                  variant='h6'
+                  flex={1}
+                  fontSize='18px'
+                  fontWeight={600}
+                  alignSelf='center'
+                >
+                  {event.eventName}
+                </Typography>
 
-            {(isOrganizer || isParticipant) && (
-              <Button variant={'classicWidthAction'}>
-                <MailIcon />
-              </Button>
-            )}
-          </>
-        }
-      />
-    </ModalWrapper>
+                {isOrganizer && (
+                  <Button variant='classicWidthAction'>
+                    <CreateIcon />
+                  </Button>
+                )}
+              </>
+            }
+            dateNode={
+              <>
+                <Typography variant='body2' color='primary'>
+                  {dayjs(event.eventStartDate).format('DD.MM.YYYY')}
+                </Typography>
+                <Typography variant='body2' color='primary'>
+                  {`${dayjs(event.eventStartDate).format('HH:mm')} - ${event.eventEndDate}`}
+                </Typography>
+              </>
+            }
+            locationNode={<>Место: {event.eventLocation}</>}
+            descriptionNode={
+              <>
+                Описание события.
+                <Typography
+                  variant='body2'
+                  fontSize='14px'
+                  color='text.primary'
+                >
+                  {event.eventDescription}
+                </Typography>
+              </>
+            }
+            organizerNode={
+              <>
+                <Typography
+                  variant='body2'
+                  color='text.disabled'
+                  fontSize='12px'
+                  minWidth={96}
+                >
+                  Организатор:
+                </Typography>
+                <AvatarGroup max={1}>
+                  {organizer?.userId && (
+                    <Styled.EventAvatar
+                      alt={organizer.nickName || ''}
+                      src={organizer.urlUserPhoto || ''}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
+                      }}
+                    />
+                  )}
+                </AvatarGroup>
+              </>
+            }
+            participantsNode={
+              <>
+                <Typography
+                  variant='body2'
+                  color='text.disabled'
+                  fontSize='12px'
+                  minWidth={96}
+                >
+                  Участники: ({usersCount}/{maxUsers})
+                </Typography>
+                <AvatarGroup max={4}>
+                  {usersParticipant.map((user: IUserParticipant) => (
+                    <Styled.EventAvatar
+                      key={user.userId}
+                      alt={user.nickName}
+                      src={user.urlUserPhoto || undefined}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(ROUTES.PROFILE.DETAIL(user.userId));
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </>
+            }
+            footerActionsNode={
+              <>
+                {isOrganizer && (
+                  <Button
+                    variant='classicWidthAction'
+                    onClick={handleCopyClick}
+                  >
+                    <ContentCopyIcon />
+                  </Button>
+                )}
+
+                {renderMainAction()}
+
+                {(isOrganizer || isParticipant) && (
+                  <Button variant={'classicWidthAction'}>
+                    <MailIcon />
+                  </Button>
+                )}
+              </>
+            }
+          />
+        </ModalWrapper>
+      )}
+
+      {isCopyModalOpen && event && (
+        <CopyEventModal event={event} onClose={handleCopyModalClose} />
+      )}
+    </>
   );
 };
