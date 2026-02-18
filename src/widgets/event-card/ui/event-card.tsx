@@ -9,7 +9,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MailIcon from '@mui/icons-material/Mail';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
@@ -222,16 +221,6 @@ export const EventCard: FC<EventEditModalProps> = ({ onClose }) => {
               </Box>
             )}
             <>
-              <Box
-                position={'absolute'}
-                bottom={theme.spacing(2)}
-                left={theme.spacing(2)}
-              >
-                <Button variant='classicWidthAction'>
-                  <StarBorderIcon />
-                </Button>
-              </Box>
-
               <Box
                 position={'absolute'}
                 top={theme.spacing(2)}
