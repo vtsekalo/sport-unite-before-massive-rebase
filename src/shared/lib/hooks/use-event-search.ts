@@ -97,11 +97,6 @@ export const useEventSearch = () => {
   const hasAppliedRangeFilter = useCustomRange;
   const hasAppliedFilters =
     hasAppliedSportFilter || hasAppliedDateFilter || hasAppliedRangeFilter;
-  // const hasAppliedFilters = useMemo(() => {
-  //   return Boolean(
-  //     filters.eventTypes?.length || filters.eventStartDate || useCustomRange,
-  //   );
-  // }, [filters.eventTypes, filters.eventStartDate, useCustomRange]);
 
   return {
     filters,
