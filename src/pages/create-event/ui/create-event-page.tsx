@@ -268,20 +268,11 @@ export const CreateEventPage: React.FC = () => {
                 fullWidth
                 size='mediumFixed'
               >
-                {isUploadingPhoto ? (
-                  'Загрузка...'
-                ) : (
-                  <Typography variant='button' fontSize={14} fontWeight={600}>
-                    Загрузить фото
-                  </Typography>
-                )}
+                {isUploadingPhoto ? 'Загрузка...' : 'Загрузить фото'}
               </Button>
 
               {photoPreview && (
-                <Button
-                  variant='classicWidthAction'
-                  onClick={handleRemovePhoto}
-                >
+                <Button size='classicWidthAction' onClick={handleRemovePhoto}>
                   <DeleteIcon />
                 </Button>
               )}
@@ -475,9 +466,7 @@ export const CreateEventPage: React.FC = () => {
               fullWidth
               size='mediumFixed'
             >
-              <Typography fontSize={14} fontWeight={600}>
-                СОЗДАТЬ СОБЫТИЕ
-              </Typography>
+              СОЗДАТЬ СОБЫТИЕ
             </Button>
 
             <Button
@@ -486,9 +475,7 @@ export const CreateEventPage: React.FC = () => {
               fullWidth
               size='mediumFixed'
             >
-              <Typography fontSize={14} fontWeight={600}>
-                ОТМЕНА
-              </Typography>
+              ОТМЕНА
             </Button>
           </Box>
         </Box>
