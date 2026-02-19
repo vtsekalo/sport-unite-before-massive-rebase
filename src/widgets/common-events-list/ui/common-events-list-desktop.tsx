@@ -34,8 +34,11 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
       display={'flex'}
       borderRadius={'10px'}
       flexDirection={'column'}
-      width={'100%'}
       height={'100%'}
+      width={'100%'}
+      maxHeight={{
+        md: `calc(100vh - ${theme.spacing(17)} - ${theme.spacing(11)})`,
+      }}
     >
       <Box
         width={399}

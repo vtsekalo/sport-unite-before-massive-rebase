@@ -7,7 +7,7 @@ import {
 } from '@shared/lib';
 
 export const useIsEventOrganizer = (
-  event?: IEventWithoutCoordinates | null,
+  event?: IEventWithoutCoordinates | undefined,
   currentUserId?: string,
 ): [boolean, IUserParticipant | undefined] =>
   useMemo(() => {

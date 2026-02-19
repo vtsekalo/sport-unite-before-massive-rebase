@@ -123,6 +123,8 @@ export const rtkQuerySnackbarMiddleware: Middleware =
         updateMyProfile: 'Профиль обновлен',
         createEvent: 'Событие успешно создано!',
         uploadPhoto: 'Фото успешно загружено!',
+        deleteEvent: 'Событие удалено!',
+        joinInEvents: 'Вы присоединились к событию!',
         exitEvent: 'Вы успешно вышли из события',
       };
 
@@ -132,6 +134,5 @@ export const rtkQuerySnackbarMiddleware: Middleware =
         showSnackbar(message, 'success');
       }
     }
-
     return next(action);
   };

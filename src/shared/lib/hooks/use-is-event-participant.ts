@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { IEvent, IUserParticipant, UserRole } from '@shared/lib';
 
 export const useEventParticipantData = (
-  event: IEvent | null,
+  event: IEvent | undefined,
   currentUserId?: string,
 ) =>
   useMemo(() => {

@@ -42,13 +42,7 @@ export const LogoutConfirmationModal = ({
         Вы действительно хотите выйти из профиля?
       </Typography>
 
-      <Box
-        display='flex'
-        justifyContent={{ xs: 'center', md: 'flex-end' }}
-        pt={1}
-        pb={2}
-        px={2}
-      >
+      <Box display='flex' justifyContent={'center'} pt={1} pb={2} px={2}>
         <Box
           flex={1}
           display='flex'
