@@ -13,14 +13,6 @@ export const eventApi = baseApi.injectEndpoints({
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
 
-    getJoinInEvents: builder.mutation<IEvent, string>({
-      query: (eventId) => ({
-        url: `/event-service/api/v1/events/${eventId}/join`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Events', 'EventById'],
-    }),
-
     getTypeEvents: builder.query<IEventType[], void>({
       query: () => ({
         url: ApiEndpoints.EVENTS_TYPES,
@@ -41,16 +33,6 @@ export const eventApi = baseApi.injectEndpoints({
         { type: 'EventById', id: eventId },
       ],
     }),
-    deleteEvent: builder.mutation<void, string>({
-      query: (eventId) => ({
-        url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}/delete`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: (_result, _error, eventId) => [
-        { type: 'Events', id: 'LIST' },
-        { type: 'EventById', id: eventId },
-      ],
-    }),
   }),
 });
 
@@ -59,7 +41,5 @@ export const {
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
-  useDeleteEventMutation,
   useGetUserEventsQuery,
-  useGetJoinInEventsMutation,
 } = eventApi;

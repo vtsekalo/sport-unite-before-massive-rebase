@@ -1,22 +1,14 @@
 import dayjs from 'dayjs';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Cross from '@mui/icons-material/Close';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CreateIcon from '@mui/icons-material/Create';
-import MailIcon from '@mui/icons-material/Mail';
-import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
-import { ModalWrapper } from '@entities/modal-wrapper';
-import { CancelEventButton } from '@features/cancel-event';
-import { ExitEventButton, canExitEvent } from '@features/exit-event';
-import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
+import { useGetEventByIdQuery } from '@shared/api';
 import {
-  EventStatus,
   IEvent,
   IUserParticipant,
   ROUTES,
@@ -24,25 +16,19 @@ import {
   useIsEventOrganizer,
   useProfile,
 } from '@shared/lib';
+import { ImageWrapper } from '@shared/ui';
 import { SportIcon } from '@shared/ui/sport-icons';
-import { EventCardSkeleton } from '@widgets/event-card/ui/event-card-skeleton';
-
-import { Styled } from './event-card.styled';
-
-enum FooterMode {
-  IN_PROGRESS = 'IN_PROGRESS',
-  ORGANIZER = 'ORGANIZER',
-  PARTICIPANT = 'PARTICIPANT',
-  GUEST = 'GUEST',
-}
+import {
+  EventCardFooter,
+  EventCardSkeleton,
+  Styled,
+} from '@widgets/event-card';
 
 export const EventCard: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const { eventId } = useParams<{ eventId: string }>();
-  const [joinEvent, { isLoading: isLoadingJoin }] =
-    useGetJoinInEventsMutation();
 
   const { profile } = useProfile({
     __meta: { toast: false },
@@ -57,172 +43,94 @@ export const EventCard: FC = () => {
     refetchOnMountOrArgChange: true,
   });
 
+  const [isOrganizer, organizer] = useIsEventOrganizer(eventData, profile?.id);
+
+  const { isParticipant, usersParticipant } = useEventParticipantData(
+    eventData,
+    profile?.id,
+  );
+
+  useEffect(() => {
+    if (!profile) {
+      navigate(ROUTES.AUTH);
+    }
+  }, [profile, navigate]);
+
   useEffect(() => {
     if (isError) {
       navigate(ROUTES.HOME);
     }
   }, [isError, navigate]);
 
-  const event: IEvent | null = eventData
-    ? {
-        eventId: eventData.eventId,
-        eventName: eventData.eventName,
-        eventType: eventData.eventType,
-        eventStatus: eventData.eventStatus,
-        eventStartDate: eventData.eventStartDate,
-        eventEndDate:
-          eventData.eventEndDate &&
-          dayjs(eventData.eventEndDate).format('HH:mm'),
-        countUsers: eventData.countUsers,
-        eventDescription: eventData.eventDescription,
-        eventPhoto: eventData.eventPhoto,
-        eventLocation: eventData.eventLocation,
-        coordinates: eventData.coordinates,
-        users: eventData.users,
+  const renderEventContent = () => {
+    if (!eventData) return null;
+
+    const event: IEvent = {
+      eventId: eventData.eventId,
+      eventName: eventData.eventName,
+      eventType: eventData.eventType,
+      eventStatus: eventData.eventStatus,
+      eventStartDate: eventData.eventStartDate,
+      eventEndDate: dayjs(eventData.eventEndDate).format('HH:mm'),
+      countUsers: eventData.countUsers,
+      eventDescription: eventData.eventDescription,
+      eventPhoto: eventData.eventPhoto,
+      eventLocation: eventData.eventLocation,
+      coordinates: eventData.coordinates,
+      users: eventData.users,
+    };
+
+    const handleClose = () => {
+      if (location.state?.from === 'list') {
+        navigate(-1);
+      } else {
+        navigate(ROUTES.HOME);
       }
-    : null;
+    };
 
-  const isEventPlanned = event?.eventStatus === EventStatus.PLANNED;
-  const [isOrganizer, organizer] = useIsEventOrganizer(event, profile?.id);
-  const { isParticipant, usersParticipant } = useEventParticipantData(
-    event,
-    profile?.id,
-  );
+    const usersCount = event.users?.length || 0;
+    const maxUsers = event.countUsers;
 
-  const handleClose = () => {
-    if (location.state?.from === 'list') {
-      navigate(-1);
-    } else {
-      navigate(ROUTES.HOME);
-    }
-  };
-
-  const [isWaitingForParticipant, setIsWaitingForParticipant] = useState(false);
-
-  const handleJoinEvent = async () => {
-    if (!eventId || isWaitingForParticipant) return;
-
-    setIsWaitingForParticipant(true);
-    await joinEvent(eventId);
-  };
-
-  useEffect(() => {
-    setIsWaitingForParticipant(false);
-  }, [eventId]);
-
-  useEffect(() => {
-    if (isParticipant || isError) {
-      setIsWaitingForParticipant(false);
-    }
-  }, [isParticipant, isError]);
-
-  if (isLoading || !event) return <EventCardSkeleton />;
-
-  const usersCount = event.users?.length || 0;
-  const maxUsers = event.countUsers;
-  const hasFreeSlots = maxUsers > usersCount;
-
-  const getFooterMode = (params: {
-    isEventPlanned: boolean;
-    isOrganizer: boolean;
-    isParticipant: boolean;
-  }): FooterMode => {
-    if (!params.isEventPlanned) return FooterMode.IN_PROGRESS;
-    if (params.isOrganizer) return FooterMode.ORGANIZER;
-    if (params.isParticipant) return FooterMode.PARTICIPANT;
-    return FooterMode.GUEST;
-  };
-  const footerMode = getFooterMode({
-    isEventPlanned,
-    isOrganizer,
-    isParticipant,
-  });
-
-  const renderMainAction = () => {
-    switch (footerMode) {
-      case FooterMode.IN_PROGRESS:
-        return (
-          <Box
-            flex={1}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-          >
-            <Typography>Событие уже идет</Typography>
-          </Box>
-        );
-
-      case FooterMode.ORGANIZER:
-        return (
-          <CancelEventButton
-            eventId={eventId}
-            onCanceled={() => navigate(ROUTES.HOME)}
-          />
-        );
-
-      case FooterMode.PARTICIPANT:
-        return (
-          <ExitEventButton
-            eventId={eventId}
-            eventStartDate={event.eventStartDate}
-          />
-        );
-
-      case FooterMode.GUEST:
-        return (
-          <Button
-            variant='contained'
-            fullWidth
-            size='fullWidthAction'
-            disabled={!hasFreeSlots || isLoadingJoin || isWaitingForParticipant}
-            onClick={handleJoinEvent}
-            loading={isLoadingJoin}
-          >
-            <PlayCircleOutlineIcon />
-            Присоединиться
-          </Button>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <ModalWrapper maxWidth={{ xs: '361px', md: '440px' }}>
+    return (
       <EventCardEntity
         headerNode={
-          <Styled.Header
-            {...(event.eventPhoto ? { $image: event.eventPhoto } : {})}
+          <Box
+            width={{ xs: '361px', md: '440px' }}
+            height={{ xs: '160px', md: '240px' }}
+            position={'relative'}
+            overflow={'hidden'}
+            flexShrink={0}
           >
-            {!event.eventPhoto && (
-              <Box
+            <ImageWrapper
+              key={event.eventId}
+              src={event.eventPhoto}
+              borderRadius={0}
+              fontSize={100}
+              width={{ xs: '361px', md: '440px' }}
+              height={{ xs: '160px', md: '240px' }}
+            >
+              <Styled.EventImage
                 width='100%'
                 height='100%'
-                position='absolute'
-                display='flex'
-                alignItems='center'
-                justifyContent='center'
+                $status={event.eventStatus}
+                src={event.eventPhoto}
+                alt={event.eventName}
+              />
+            </ImageWrapper>
+            <Box
+              position={'absolute'}
+              top={theme.spacing(2)}
+              right={theme.spacing(2)}
+            >
+              <Button
+                variant='contained'
+                size='classicWidthAction'
+                onClick={handleClose}
               >
-                <Styled.CategoryMuiIcon as={NoPhotographyIcon} />
-              </Box>
-            )}
-            <>
-              <Box
-                position={'absolute'}
-                top={theme.spacing(2)}
-                right={theme.spacing(2)}
-              >
-                <Button
-                  variant='contained'
-                  size='classicWidthAction'
-                  onClick={handleClose}
-                >
-                  <Cross />
-                </Button>
-              </Box>
-            </>
-          </Styled.Header>
+                <Cross />
+              </Button>
+            </Box>
+          </Box>
         }
         titleNode={
           <>
@@ -237,7 +145,6 @@ export const EventCard: FC = () => {
               heightIcon='26px'
               filter={false}
             />
-
             <Typography
               variant='h6'
               flex={1}
@@ -247,7 +154,6 @@ export const EventCard: FC = () => {
             >
               {event.eventName}
             </Typography>
-
             {isOrganizer && (
               <Button variant='contained' size='classicWidthAction'>
                 <CreateIcon />
@@ -269,7 +175,13 @@ export const EventCard: FC = () => {
         descriptionNode={
           <>
             Описание события.
-            <Typography variant='body2' fontSize='14px' color='text.primary'>
+            <Typography
+              variant='body2'
+              fontSize='14px'
+              color='text.primary'
+              overflow='hidden'
+              sx={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+            >
               {event.eventDescription}
             </Typography>
           </>
@@ -287,8 +199,8 @@ export const EventCard: FC = () => {
             <AvatarGroup max={1}>
               {organizer?.userId && (
                 <Styled.EventAvatar
-                  alt={organizer.nickName || ''}
-                  src={organizer.urlUserPhoto || ''}
+                  alt={organizer.nickName}
+                  src={`${organizer.urlUserPhoto}?v=${Math.random()}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
@@ -308,12 +220,12 @@ export const EventCard: FC = () => {
             >
               Участники: ({usersCount}/{maxUsers})
             </Typography>
-            <AvatarGroup max={4}>
-              {usersParticipant.map((user: IUserParticipant) => (
+            <AvatarGroup>
+              {usersParticipant.slice(0, 4).map((user: IUserParticipant) => (
                 <Styled.EventAvatar
                   key={user.userId}
                   alt={user.nickName}
-                  src={user.urlUserPhoto || undefined}
+                  src={`${user.urlUserPhoto}?v=${Math.random()}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(ROUTES.PROFILE.DETAIL(user.userId));
@@ -324,48 +236,31 @@ export const EventCard: FC = () => {
           </>
         }
         footerActionsNode={
-          <Box width='100%'>
-            <Box
-              display='flex'
-              justifyContent='space-between'
-              alignItems='center'
-              width='100%'
-              gap={1.25}
-              mb={isParticipant && !canExitEvent(event.eventStartDate) ? 1 : 0}
-            >
-              {isOrganizer && (
-                <Button variant='contained' size='classicWidthAction'>
-                  <ContentCopyIcon />
-                </Button>
-              )}
-
-              <Box flex={1}>{renderMainAction()}</Box>
-
-              {(isOrganizer || isParticipant) && (
-                <Button variant='contained' size='classicWidthAction'>
-                  <MailIcon />
-                </Button>
-              )}
-            </Box>
-
-            {isParticipant && !canExitEvent(event.eventStartDate) && (
-              <Typography
-                variant='caption'
-                color='text.secondary'
-                fontSize='12px'
-                lineHeight='14px'
-                textAlign='center'
-                width='100%'
-                mt={0.5}
-                whiteSpace='pre-line'
-              >
-                Нельзя покинуть событие{'\n'}менее чем за 6 часов до начала
-                события.
-              </Typography>
-            )}
-          </Box>
+          <EventCardFooter
+            isOrganizer={isOrganizer}
+            eventStartDate={event.eventStartDate}
+            eventStatus={event.eventStatus}
+            eventId={event.eventId}
+            hasFreeSlots={maxUsers > usersCount}
+            onCanceled={() => navigate(ROUTES.HOME)}
+            isParticipant={isParticipant}
+            isError={isError}
+          />
         }
       />
-    </ModalWrapper>
+    );
+  };
+
+  return (
+    <Styled.AnimatedModalWrapper
+      key={eventId}
+      maxWidth={{ xs: '361px', md: '440px' }}
+    >
+      {isLoading || !eventData || isError ? (
+        <EventCardSkeleton />
+      ) : (
+        renderEventContent()
+      )}
+    </Styled.AnimatedModalWrapper>
   );
 };

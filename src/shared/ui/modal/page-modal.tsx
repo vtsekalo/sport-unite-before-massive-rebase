@@ -31,6 +31,7 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
   const alignItems = config?.alignItems || 'center';
   const height = config?.height || '100%';
   const width = config?.width || '100%';
+  const maxHeight = config?.width || '100%';
 
   return (
     <Box
@@ -65,6 +66,7 @@ export const PageModal: FC<PageModalProps> = ({ open, children }) => {
         width: width,
         height: height,
         WebkitBackdropFilter: backdropFilter,
+        maxHeight: maxHeight,
       }}
     >
       {children}

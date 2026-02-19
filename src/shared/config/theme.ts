@@ -103,7 +103,6 @@ export const theme = (isMobile: boolean) =>
           {
             props: { size: 'classicWidthAction' },
             style: ({ theme }) => ({
-              borderRadius: theme.shape.borderRadius * 3,
               width: theme.spacing(5),
               height: theme.spacing(5),
               minWidth: theme.spacing(5),
@@ -116,11 +115,9 @@ export const theme = (isMobile: boolean) =>
             props: { size: 'fullWidthAction' },
             style: ({ theme }) => ({
               width: 'auto',
-              borderRadius: theme.shape.borderRadius * 3,
               height: theme.spacing(5),
               minHeight: theme.spacing(5),
               maxHeight: theme.spacing(5),
-              gap: theme.spacing(1),
               padding: theme.spacing(1, 2),
             }),
           },

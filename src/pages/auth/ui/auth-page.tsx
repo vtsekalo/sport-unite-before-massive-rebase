@@ -15,7 +15,7 @@ export const AuthPage = () => {
   };
 
   return (
-    <ModalWrapper height='auto' justifyContent='center' maxWidth='360px'>
+    <ModalWrapper height='auto' justifyContent='center' maxWidth='361px'>
       <Box
         display='flex'
         flexDirection='column'

@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, FC, useCallback, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +35,7 @@ import { createEventSchema } from '../lib/schema';
 import { PhotoPreview } from './create-event-page.styled';
 import { LocationAutocomplete } from './location-autocomplete';
 
-export const CreateEventPage: React.FC = () => {
+export const CreateEventPage: FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
@@ -186,7 +180,7 @@ export const CreateEventPage: React.FC = () => {
           }).unwrap();
         }
 
-        navigate(ROUTES.HOME);
+        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
       } catch (error) {
         console.error('Error creating common-event-card-list:', error);
       }
@@ -228,7 +222,7 @@ export const CreateEventPage: React.FC = () => {
           display='flex'
           flexDirection='column'
           width='100%'
-          maxWidth={isMobile ? 360 : 480}
+          maxWidth={isMobile ? 361 : 480}
           margin='0 auto'
           gap={isMobile ? theme.spacing(2) : theme.spacing(3)}
         >

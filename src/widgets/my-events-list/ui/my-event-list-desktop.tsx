@@ -11,8 +11,8 @@ import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { groupEventsByStatus } from '../lib/group-events-by-status';
-import { MyEventListSkeleton } from './my-event-list-skeleton.tsx';
-import { Styled } from './my-event-list.style.ts';
+import { MyEventListSkeleton } from './my-event-list-skeleton';
+import { Styled } from './my-event-list.style';
 
 interface EventsListProps {
   loading?: boolean;
@@ -82,7 +82,7 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
               pl={2}
               pr='23px'
             >
-              {loading ? (
+              {!loading ? (
                 <MyEventListSkeleton count={3} />
               ) : column.data.length > 0 ? (
                 column.data.map((event) => (

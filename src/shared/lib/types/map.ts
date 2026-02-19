@@ -33,10 +33,6 @@ export interface MapMarker {
 }
 
 /**
- * 2GIS API Types
- */
-
-/**
  * Элемент ответа от 2GIS API (внутренний тип)
  */
 export interface TwoGisApiItem {

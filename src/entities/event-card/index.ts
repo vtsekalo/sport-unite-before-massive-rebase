@@ -1,1 +1,1 @@
-export { EventCardEntity } from './ui/event-card-entity.tsx';
+export * from './ui/event-card-entity';

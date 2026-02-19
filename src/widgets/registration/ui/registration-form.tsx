@@ -80,7 +80,7 @@ export const RegistrationForm = () => {
       flexDirection='column'
       justifyContent='space-between'
       gap='16px'
-      maxWidth={{ xs: '360px', md: '480px' }}
+      maxWidth={{ xs: '361px', md: '480px' }}
       p={{ xs: '16px', md: '24px 32px' }}
       onSubmit={handleSubmit(onSubmit)}
     >

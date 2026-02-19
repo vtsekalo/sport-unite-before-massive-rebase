@@ -4,7 +4,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Button } from '@mui/material';
 
 import { CancelEventConfirmModal } from '@features/cancel-event/';
-import { useDeleteEventMutation } from '@shared/api';
+
+import { useDeleteEventMutation } from '../api/delete-event-api';
 
 type CancelEventButtonProps = {
   eventId: string | undefined;
@@ -44,8 +45,8 @@ export const CancelEventButton: FC<CancelEventButtonProps> = ({
         size='fullWidthAction'
         onClick={handleOpen}
         disabled={disabled || isOpen || isLoading}
+        startIcon={<CancelIcon />}
       >
-        <CancelIcon />
         ОТМЕНИТЬ СОБЫТИЕ
       </Button>
 

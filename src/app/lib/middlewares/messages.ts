@@ -1,10 +1,6 @@
 export enum StatusCodes {
-  BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,
-  Conflict = 409,
-  InternalServerError = 500,
-  ServiceUnavailable = 503,
 }
 
 export const SilentOn401Endpoints: string[] = ['getMyProfile'];
@@ -35,7 +31,6 @@ export const EndPointsMessages = {
     404: 'У вас нет доступных чатов',
   },
   createEvent: {
-    400: 'Некорректные данные события. Проверьте все поля',
     500: 'Не удалось создать событие. Попробуйте позже',
   },
   deleteMyProfile: {
@@ -48,15 +43,5 @@ export const EndPointsMessages = {
   },
   uploadPhoto: {
     413: 'Событие создано, но ошибка при загрузке фото',
-  },
-
-  joinEvent: {
-    400: 'Некорректный запрос на участие',
-    403: 'Нет доступа к событию',
-    500: 'Внутренняя ошибка сервиса',
-  },
-  exitEvent: {
-    0: 'Нет соединения с сервером',
-    500: 'Ошибка при выходе из события',
   },
 } as const satisfies Record<string, Partial<Record<number, string>>>;
