@@ -20,20 +20,29 @@ export const ProfileDeleted: FC = () => {
   };
   return (
     <Box
+      flex={1}
+      height='100%'
       display='flex'
       flexDirection='column'
       alignItems='center'
       justifyContent='center'
       gap={5}
       pt={{ xs: '24px', md: '0px' }}
-      mb={{ md: '80px' }}
+      pb={{ md: '64px' }}
     >
       <Typography fontWeight={700} fontSize={{ xs: '14px', md: '24px' }}>
         Ваш профиль удалён.
       </Typography>
-      <Button size='mediumFixed' variant='contained' onClick={handleGoHome}>
-        Перейти на главную страницу
-      </Button>
+      <Box maxWidth='321px' width='100%'>
+        <Button
+          size='mediumFixed'
+          variant='contained'
+          fullWidth
+          onClick={handleGoHome}
+        >
+          Перейти на главную страницу
+        </Button>
+      </Box>
     </Box>
   );
 };

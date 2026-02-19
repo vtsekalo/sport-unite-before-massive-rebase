@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Typography, useTheme } from '@mui/material';
+import { Box, Button, useTheme } from '@mui/material';
 
 import { ROUTES } from '@shared/lib';
 
@@ -26,15 +26,7 @@ export const LoginButton: FC = () => {
         fullWidth
         onClick={() => navigate(ROUTES.AUTH)}
       >
-        <Typography
-          fontWeight={500}
-          fontSize='14px'
-          lineHeight='24px'
-          letterSpacing='0.4px'
-          textTransform='uppercase'
-        >
-          Войти
-        </Typography>
+        Войти
       </Button>
     </Box>
   );

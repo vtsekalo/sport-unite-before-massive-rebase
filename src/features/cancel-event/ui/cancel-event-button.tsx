@@ -40,12 +40,13 @@ export const CancelEventButton: FC<CancelEventButtonProps> = ({
   return (
     <>
       <Button
-        variant='fullWidthAction'
+        variant='contained'
+        size='fullWidthAction'
         onClick={handleOpen}
         disabled={disabled || isOpen || isLoading}
       >
         <CancelIcon />
-        <span>ОТМЕНИТЬ СОБЫТИЕ</span>
+        ОТМЕНИТЬ СОБЫТИЕ
       </Button>
 
       <CancelEventConfirmModal

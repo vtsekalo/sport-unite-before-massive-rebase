@@ -162,35 +162,24 @@ export const EventCard: FC = () => {
 
       case FooterMode.PARTICIPANT:
         return (
-          <Button variant='fullWidthAction' fullWidth size='large'>
-            {' '}
+          <Button variant='contained' fullWidth size='fullWidthAction'>
             <LogoutIcon />
-            <Typography
-              fontSize={theme.typography.pxToRem(14)}
-              fontWeight={600}
-            >
-              Покинуть событие
-            </Typography>
+            Покинуть событие
           </Button>
         );
 
       case FooterMode.GUEST:
         return (
           <Button
-            variant='fullWidthAction'
+            variant='contained'
             fullWidth
-            size='large'
+            size='fullWidthAction'
             disabled={!hasFreeSlots || isLoadingJoin || isWaitingForParticipant}
             onClick={handleJoinEvent}
             loading={isLoadingJoin}
           >
             <PlayCircleOutlineIcon />
-            <Typography
-              fontSize={theme.typography.pxToRem(14)}
-              fontWeight={600}
-            >
-              Присоединиться
-            </Typography>
+            Присоединиться
           </Button>
         );
 
@@ -224,7 +213,11 @@ export const EventCard: FC = () => {
                 top={theme.spacing(2)}
                 right={theme.spacing(2)}
               >
-                <Button variant='classicWidthAction' onClick={handleClose}>
+                <Button
+                  variant='contained'
+                  size='classicWidthAction'
+                  onClick={handleClose}
+                >
                   <Cross />
                 </Button>
               </Box>
@@ -256,7 +249,7 @@ export const EventCard: FC = () => {
             </Typography>
 
             {isOrganizer && (
-              <Button variant='classicWidthAction'>
+              <Button variant='contained' size='classicWidthAction'>
                 <CreateIcon />
               </Button>
             )}
@@ -333,7 +326,7 @@ export const EventCard: FC = () => {
         footerActionsNode={
           <>
             {isOrganizer && (
-              <Button variant='classicWidthAction'>
+              <Button variant='contained' size='classicWidthAction'>
                 <ContentCopyIcon />
               </Button>
             )}
@@ -341,7 +334,7 @@ export const EventCard: FC = () => {
             {renderMainAction()}
 
             {(isOrganizer || isParticipant) && (
-              <Button variant={'classicWidthAction'}>
+              <Button variant='contained' size='classicWidthAction'>
                 <MailIcon />
               </Button>
             )}

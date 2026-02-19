@@ -29,7 +29,11 @@ export const NoEventsModal: FC = () => {
       </Typography>
 
       {hasAppliedFilters && (
-        <Styled.ResetButton variant={'fullWidthAction'} onClick={resetFilters}>
+        <Styled.ResetButton
+          variant='contained'
+          size='fullWidthAction'
+          onClick={resetFilters}
+        >
           СБРОСИТЬ ФИЛЬТРЫ
         </Styled.ResetButton>
       )}
