@@ -55,6 +55,7 @@ export const Layout = () => {
       ) : (
         <HeaderDesktop buttonRef={setAnchorEl} />
       )}
+
       <FilterEventsModal buttonRef={anchorEl} />
       <MapControls />
       <PageModal open={Boolean(hasOutlet)} onClose={handleCloseModal}>

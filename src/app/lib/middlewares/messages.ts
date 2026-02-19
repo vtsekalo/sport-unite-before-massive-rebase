@@ -55,4 +55,8 @@ export const EndPointsMessages = {
     403: 'Нет доступа к событию',
     500: 'Внутренняя ошибка сервиса',
   },
+  exitEvent: {
+    0: 'Нет соединения с сервером',
+    500: 'Ошибка при выходе из события',
+  },
 } as const satisfies Record<string, Partial<Record<number, string>>>;

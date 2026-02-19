@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Cross from '@mui/icons-material/Close';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CreateIcon from '@mui/icons-material/Create';
-import LogoutIcon from '@mui/icons-material/Logout';
 import MailIcon from '@mui/icons-material/Mail';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -14,6 +13,7 @@ import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 import { EventCardEntity } from '@entities/event-card';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { CancelEventButton } from '@features/cancel-event';
+import { ExitEventButton, canExitEvent } from '@features/exit-event';
 import { useGetEventByIdQuery, useGetJoinInEventsMutation } from '@shared/api';
 import {
   EventStatus,
@@ -162,10 +162,10 @@ export const EventCard: FC = () => {
 
       case FooterMode.PARTICIPANT:
         return (
-          <Button variant='contained' fullWidth size='fullWidthAction'>
-            <LogoutIcon />
-            Покинуть событие
-          </Button>
+          <ExitEventButton
+            eventId={eventId}
+            eventStartDate={event.eventStartDate}
+          />
         );
 
       case FooterMode.GUEST:
@@ -324,21 +324,46 @@ export const EventCard: FC = () => {
           </>
         }
         footerActionsNode={
-          <>
-            {isOrganizer && (
-              <Button variant='contained' size='classicWidthAction'>
-                <ContentCopyIcon />
-              </Button>
-            )}
+          <Box width='100%'>
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              width='100%'
+              gap={1.25}
+              mb={isParticipant && !canExitEvent(event.eventStartDate) ? 1 : 0}
+            >
+              {isOrganizer && (
+                <Button variant='contained' size='classicWidthAction'>
+                  <ContentCopyIcon />
+                </Button>
+              )}
 
-            {renderMainAction()}
+              <Box flex={1}>{renderMainAction()}</Box>
 
-            {(isOrganizer || isParticipant) && (
-              <Button variant='contained' size='classicWidthAction'>
-                <MailIcon />
-              </Button>
+              {(isOrganizer || isParticipant) && (
+                <Button variant='contained' size='classicWidthAction'>
+                  <MailIcon />
+                </Button>
+              )}
+            </Box>
+
+            {isParticipant && !canExitEvent(event.eventStartDate) && (
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                fontSize='12px'
+                lineHeight='14px'
+                textAlign='center'
+                width='100%'
+                mt={0.5}
+                whiteSpace='pre-line'
+              >
+                Нельзя покинуть событие{'\n'}менее чем за 6 часов до начала
+                события.
+              </Typography>
             )}
-          </>
+          </Box>
         }
       />
     </ModalWrapper>
