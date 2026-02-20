@@ -23,10 +23,10 @@ import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
 import { EventFormInitialData } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
+import { StyledTextField } from '@shared/ui';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 
 import { PhotoPreview } from './event-form.styled';
-import { StyledTextField } from '@shared/ui';
 
 interface EventFormEntityProps {
   title: string;

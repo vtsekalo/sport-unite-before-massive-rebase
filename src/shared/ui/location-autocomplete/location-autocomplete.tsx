@@ -2,11 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Autocomplete, Box, CircularProgress, Typography } from '@mui/material';
-import { StyledTextField } from '../styled-text-field';
+
 import { useLazyGet2GisSuggestionsQuery } from '@shared/api';
 import { SuggestionItem } from '@shared/lib';
 import type { Coordinates } from '@shared/lib';
 import { useDebounce } from '@shared/lib/hooks';
+
+import { StyledTextField } from '../styled-text-field';
 
 interface LocationAutocompleteProps {
   value: string;
