@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import * as yup from 'yup';
 
 export const createEventSchema = yup.object({
@@ -51,11 +52,14 @@ export const createEventSchema = yup.object({
         const { eventStartDate } = this.parent;
         if (!eventStartDate) return true;
 
-        const eventDateTime = new Date(`${eventStartDate}T${value}:00`);
-        const now = new Date();
-        const minDateTime = new Date(now.getTime() + 60 * 60 * 1000);
+        const eventDateTime = dayjs(
+          `${eventStartDate} ${value}`,
+          'YYYY-MM-DD HH:mm',
+        );
+        const now = dayjs();
+        const minDateTime = now.add(1, 'hour');
 
-        return eventDateTime >= minDateTime;
+        return eventDateTime.isAfter(minDateTime);
       },
     ),
 
@@ -70,10 +74,10 @@ export const createEventSchema = yup.object({
         const { eventStartDate } = this.parent;
         if (!eventStartDate) return true;
 
-        const startDate = new Date(eventStartDate);
-        const endDate = new Date(value);
+        const startDate = dayjs(eventStartDate, 'YYYY-MM-DD');
+        const endDate = dayjs(value, 'YYYY-MM-DD');
 
-        return endDate >= startDate;
+        return !endDate.isBefore(startDate);
       },
     ),
 
@@ -89,14 +93,18 @@ export const createEventSchema = yup.object({
         const { eventStartDate, eventStartTime, eventEndDate } = this.parent;
         if (!eventStartDate || !eventStartTime || !eventEndDate) return true;
 
-        const startDateTime = new Date(
-          `${eventStartDate}T${eventStartTime}:00`,
+        const startDateTime = dayjs(
+          `${eventStartDate} ${eventStartTime}`,
+          'YYYY-MM-DD HH:mm',
         );
-        const endDateTime = new Date(`${eventEndDate}T${value}:00`);
+        const endDateTime = dayjs(
+          `${eventEndDate} ${value}`,
+          'YYYY-MM-DD HH:mm',
+        );
 
-        const minEndTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
+        const minEndTime = startDateTime.add(1, 'hour');
 
-        return endDateTime >= minEndTime;
+        return !endDateTime.isBefore(minEndTime);
       },
     ),
 

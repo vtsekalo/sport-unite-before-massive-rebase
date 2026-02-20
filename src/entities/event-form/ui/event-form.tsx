@@ -22,9 +22,11 @@ import { useGetTypeEventsQuery } from '@shared/api';
 import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
 import { EventFormInitialData } from '@shared/lib';
+import { PhotoVariant } from '@shared/lib';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 
-import { PhotoPreview } from './event-form.styled.';
+import { PhotoPreview } from './event-form.styled';
+import { StyledTextField } from '@shared/ui';
 
 interface EventFormEntityProps {
   title: string;
@@ -35,7 +37,7 @@ interface EventFormEntityProps {
   isSubmitting: boolean;
   isUploadingPhoto: boolean;
   initialPhotoUrl?: string;
-  photoVariant: 'create' | 'copy';
+  photoMode: PhotoVariant;
 }
 
 export const EventFormEntity: FC<EventFormEntityProps> = ({
@@ -47,7 +49,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
   isSubmitting,
   isUploadingPhoto,
   initialPhotoUrl,
-  photoVariant,
+  photoMode,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -183,7 +185,10 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         />
 
         <Box
+          width={329}
           height={232}
+          lineHeight={24}
+          letterSpacing={0.15}
           overflow='hidden'
           position='relative'
           borderRadius='10px'
@@ -194,7 +199,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         >
           {photoPreview ? (
             <PhotoPreview src={photoPreview} alt='Event preview' />
-          ) : photoVariant === 'create' ? (
+          ) : photoMode === PhotoVariant.CREATE ? (
             <ImageIcon />
           ) : (
             <Box
@@ -239,19 +244,33 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         flexDirection='column'
         gap={theme.spacing(2.5)}
       >
-        <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Тип события
-          </Typography>
+        <Box
+          display='flex'
+          width={329}
+          height={41}
+          flexDirection='column'
+          gap='4px'
+        >
           <FormControl error={Boolean(errors.eventType)}>
             <Controller
               name='eventType'
               control={control}
               render={({ field }) => (
-                <Select {...field} displayEmpty disabled={isLoadingTypes}>
-                  <MenuItem value='' disabled>
-                    Выберите тип события
-                  </MenuItem>
+                <Select
+                  {...field}
+                  displayEmpty
+                  disabled={isLoadingTypes}
+                  renderValue={(selected) => {
+                    if (!selected || selected === '') {
+                      return (
+                        <Typography color='text.disabled'>
+                          Тип события
+                        </Typography>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
                   {isLoadingTypes ? (
                     <MenuItem value=''>
                       <CircularProgress size={20} />
@@ -275,17 +294,17 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Название события
-          </Typography>
           <Controller
             name='eventName'
             control={control}
             render={({ field }) => (
-              <TextField
+              <StyledTextField
                 {...field}
+                label='Название события'
+                variant='outlined'
                 placeholder='Введите название события'
                 error={Boolean(errors.eventName)}
+                fullWidth
               />
             )}
           />
@@ -308,15 +327,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Дата начала мероприятия
-          </Typography>
           <Controller
             name='eventStartDate'
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
+                label='Дата начала мероприятия'
                 type='date'
                 error={Boolean(errors.eventStartDate)}
                 InputLabelProps={{ shrink: true }}
@@ -324,7 +341,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
             )}
           />
           <Typography variant='caption' color='textSecondary'>
-            Событие должно начаться минимум через 1 час
+            Укажите дата начала события.
           </Typography>
           {errors.eventStartDate && (
             <Typography variant='caption' color='error'>
@@ -334,15 +351,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Время начала события
-          </Typography>
           <Controller
             name='eventStartTime'
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
+                label='Время начала события'
                 type='time'
                 error={Boolean(errors.eventStartTime)}
                 InputLabelProps={{ shrink: true }}
@@ -350,7 +365,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
             )}
           />
           <Typography variant='caption' color='textSecondary'>
-            Событие должно начаться минимум через 1 час
+            Укажите время начала события.
           </Typography>
           {errors.eventStartTime && (
             <Typography variant='caption' color='error'>
@@ -360,24 +375,19 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Дата окончания события
-          </Typography>
           <Controller
             name='eventEndDate'
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
+                label='Дата окончания события'
                 type='date'
                 error={Boolean(errors.eventEndDate)}
                 InputLabelProps={{ shrink: true }}
               />
             )}
           />
-          <Typography variant='caption' color='textSecondary'>
-            Должна быть после даты начала
-          </Typography>
           {errors.eventEndDate && (
             <Typography variant='caption' color='error'>
               {errors.eventEndDate.message}
@@ -386,24 +396,19 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Время окончания события
-          </Typography>
           <Controller
             name='eventEndTime'
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
+                label='Время окончания события'
                 type='time'
                 error={Boolean(errors.eventEndTime)}
                 InputLabelProps={{ shrink: true }}
               />
             )}
           />
-          <Typography variant='caption' color='textSecondary'>
-            Должно быть после времени начала
-          </Typography>
           {errors.eventEndTime && (
             <Typography variant='caption' color='error'>
               {errors.eventEndTime.message}
@@ -412,24 +417,19 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Количество участников
-          </Typography>
           <Controller
             name='countUsers'
             control={control}
             render={({ field }) => (
-              <TextField
+              <StyledTextField
                 {...field}
+                label='Количество участников'
                 type='number'
                 error={Boolean(errors.countUsers)}
                 inputProps={{ min: 2, max: 1000 }}
               />
             )}
           />
-          <Typography variant='caption' color='textSecondary'>
-            От 2 до 1000 участников
-          </Typography>
           {errors.countUsers && (
             <Typography variant='caption' color='error'>
               {errors.countUsers.message}
@@ -438,15 +438,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
 
         <Box display='flex' flexDirection='column' gap='4px'>
-          <Typography variant='body2' color='textSecondary'>
-            Описание
-          </Typography>
           <Controller
             name='eventDescription'
             control={control}
             render={({ field }) => (
-              <TextField
+              <StyledTextField
                 {...field}
+                label='Описание'
                 placeholder='Опишите событие подробнее'
                 error={Boolean(errors.eventDescription)}
                 multiline

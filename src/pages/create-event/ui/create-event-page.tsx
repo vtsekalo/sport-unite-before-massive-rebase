@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
-import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
+import {
+  CreateEventFormData,
+  EventFormInitialData,
+  PhotoOwner,
+  ROUTES,
+} from '@shared/lib';
+import { PhotoVariant } from '@shared/lib';
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -38,7 +44,7 @@ export const CreateEventPage = () => {
         if (data.eventPhoto && createdEvent.eventId) {
           await uploadPhoto({
             id: createdEvent.eventId,
-            photoType: 'EVENT',
+            photoType: PhotoOwner.EVENT,
             file: data.eventPhoto,
           }).unwrap();
         }
@@ -86,7 +92,7 @@ export const CreateEventPage = () => {
         submitButtonText='СОЗДАТЬ СОБЫТИЕ'
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
-        photoVariant='create'
+        photoMode={PhotoVariant.CREATE}
       />
     </ModalWrapper>
   );

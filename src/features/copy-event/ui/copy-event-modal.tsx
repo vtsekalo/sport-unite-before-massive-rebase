@@ -1,17 +1,21 @@
-import { useCallback, useMemo } from 'react';
+import dayjs from 'dayjs';
+import { FC, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
-import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
+import {
+  CreateEventFormData,
+  EventFormInitialData,
+  PhotoOwner,
+  ROUTES,
+} from '@shared/lib';
+import { PhotoVariant } from '@shared/lib';
 
 import { CopyEventModalProps } from '../api/types';
 
-export const CopyEventModal: React.FC<CopyEventModalProps> = ({
-  event,
-  onClose,
-}) => {
+export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
   const navigate = useNavigate();
 
   const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
@@ -20,7 +24,7 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
 
   const defaultValues: EventFormInitialData = useMemo(() => {
     return {
-      eventType: event.eventType,
+      eventType: '',
       eventName: event.eventName,
       eventLocation: event.eventLocation,
       eventStartDate: '',
@@ -37,8 +41,12 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
       try {
-        const eventStartDate = `${data.eventStartDate}T${data.eventStartTime}:00`;
-        const eventEndDate = `${data.eventEndDate}T${data.eventEndTime}:00`;
+        const eventStartDate = dayjs(
+          `${data.eventStartDate} ${data.eventStartTime}`,
+        ).format();
+        const eventEndDate = dayjs(
+          `${data.eventEndDate} ${data.eventEndTime}`,
+        ).format();
 
         const eventData = {
           eventType: data.eventType,
@@ -60,7 +68,7 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         if (data.eventPhoto && createdEvent.eventId) {
           await uploadPhoto({
             id: createdEvent.eventId,
-            photoType: 'EVENT',
+            photoType: PhotoOwner.EVENT,
             file: data.eventPhoto,
           }).unwrap();
         }
@@ -80,8 +88,8 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
 
   return (
     <ModalWrapper
-      maxWidth={{ xs: 361, md: 480 }}
-      height='auto'
+      maxWidth={{ xs: 377, md: 480 }}
+      height={1220}
       maxHeight='100%'
       overflow='auto'
     >
@@ -94,7 +102,7 @@ export const CopyEventModal: React.FC<CopyEventModalProps> = ({
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
         initialPhotoUrl={event?.eventPhoto}
-        photoVariant='copy'
+        photoMode={PhotoVariant.COPY}
       />
     </ModalWrapper>
   );

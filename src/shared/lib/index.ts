@@ -1,5 +1,4 @@
 export * from './types';
-export * from './types/event-form-types';
 export * from './constants';
 export * from './hooks';
 export * from './show-snackbar';

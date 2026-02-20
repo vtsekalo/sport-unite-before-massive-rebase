@@ -26,8 +26,13 @@ export interface EventFormInitialData extends BaseEventFormData {
 
 export interface UploadPhotoRequest {
   id: string;
-  photoType: 'EVENT' | 'USER';
+  photoType: PhotoOwner;
   file: File;
+}
+
+export enum PhotoOwner {
+  EVENT = 'EVENT',
+  USER = 'USER',
 }
 
 export interface UploadPhotoResponse {
@@ -47,4 +52,9 @@ export interface CreateEventRequest {
     latitude: number;
     longitude: number;
   };
+}
+
+export enum PhotoVariant {
+  CREATE = 'create',
+  COPY = 'copy',
 }
