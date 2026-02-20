@@ -82,7 +82,7 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
               pl={2}
               pr='23px'
             >
-              {!loading ? (
+              {loading ? (
                 <MyEventListSkeleton count={3} />
               ) : column.data.length > 0 ? (
                 column.data.map((event) => (
