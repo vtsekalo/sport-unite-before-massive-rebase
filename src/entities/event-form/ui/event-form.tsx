@@ -23,10 +23,10 @@ import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
 import { EventFormInitialData } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
-import { StyledTextField } from '@shared/ui';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 
 import { PhotoPreview } from './event-form.styled';
+import { StyledTextField } from '@shared/ui';
 
 interface EventFormEntityProps {
   title: string;
@@ -220,11 +220,17 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           <Button
             variant='contained'
             fullWidth
-            startIcon={<ImageIcon />}
+            startIcon={
+             isUploadingPhoto ? null : <ImageIcon />
+            }
             onClick={handlePhotoClick}
             disabled={isUploadingPhoto}
           >
-            {isUploadingPhoto ? 'Загрузка...' : 'ЗАГРУЗИТЬ ФОТО'}
+            {isUploadingPhoto ? (
+              <CircularProgress size={20}/>
+            ) : (
+            'ЗАГРУЗИТЬ ФОТО'
+            )}
           </Button>
 
           <Box>
@@ -285,6 +291,12 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                 </Select>
               )}
             />
+            {photoMode === PhotoVariant.CREATE && (
+    <Typography variant='caption' color='textSecondary' lineHeight='16px'>
+      Выберите тип события.
+    </Typography>
+  )}
+
             {errors.eventType && (
               <Typography variant='caption' color='error'>
                 {errors.eventType.message}
@@ -308,6 +320,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               />
             )}
           />
+          {photoMode === PhotoVariant.CREATE && (
+            <Typography variant='caption' color='textSecondary'>
+              Укажите название события.
+            </Typography>
+          )
+
+          }
           {errors.eventName && (
             <Typography variant='caption' color='error'>
               {errors.eventName.message}
@@ -321,10 +340,22 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
             onChange={handleLocationChange}
             onCoordinatesChange={handleCoordinatesChange}
             error={Boolean(errors.eventLocation)}
-            helperText={errors.eventLocation?.message}
             placeholder='Начните вводить адрес или название места'
           />
-        </Box>
+
+        {photoMode === PhotoVariant.CREATE && (
+    <Typography variant='caption' color='textSecondary' lineHeight='16px'>
+      Укажите место проведения.
+    </Typography>
+  )}
+  
+  {errors.eventLocation && (
+    <Typography variant='caption' color='error'>
+      {errors.eventLocation.message}
+    </Typography>
+  )}
+</Box>
+
 
         <Box display='flex' flexDirection='column' gap='4px'>
           <Controller
@@ -388,6 +419,9 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               />
             )}
           />
+          <Typography variant='caption' color='textSecondary'>
+            Укажите дату окончания события.
+          </Typography>
           {errors.eventEndDate && (
             <Typography variant='caption' color='error'>
               {errors.eventEndDate.message}
@@ -409,6 +443,9 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               />
             )}
           />
+          <Typography variant='caption' color='textSecondary'>
+            Укажите время окончания события.
+          </Typography>
           {errors.eventEndTime && (
             <Typography variant='caption' color='error'>
               {errors.eventEndTime.message}
@@ -430,6 +467,11 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               />
             )}
           />
+            {photoMode === PhotoVariant.CREATE && (
+    <Typography variant='caption' color='textSecondary' lineHeight='16px'>
+      Укажите количество участников.
+    </Typography>
+  )}
           {errors.countUsers && (
             <Typography variant='caption' color='error'>
               {errors.countUsers.message}
@@ -448,10 +490,15 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                 placeholder='Опишите событие подробнее'
                 error={Boolean(errors.eventDescription)}
                 multiline
-                rows={6}
+                rows={8}
               />
             )}
           />
+            {photoMode === PhotoVariant.CREATE && (
+    <Typography variant='caption' color='textSecondary' lineHeight='16px'>
+      Укажите описание.
+    </Typography>
+  )}
           {errors.eventDescription && (
             <Typography variant='caption' color='error'>
               {errors.eventDescription.message}
@@ -472,7 +519,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
             }
           >
             {isSubmitting || isUploadingPhoto ? (
-              <CircularProgress size={24} color='inherit' />
+              <CircularProgress size={20} />
             ) : (
               submitButtonText
             )}

@@ -8,12 +8,11 @@ import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
 import {
   CreateEventFormData,
   EventFormInitialData,
-  PhotoOwner,
   ROUTES,
 } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
 
-import { CopyEventModalProps } from '../api/types';
+import { CopyEventModalProps } from '../lib/types';
 
 export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
   const navigate = useNavigate();
@@ -40,13 +39,8 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
-      try {
-        const eventStartDate = dayjs(
-          `${data.eventStartDate} ${data.eventStartTime}`,
-        ).format();
-        const eventEndDate = dayjs(
-          `${data.eventEndDate} ${data.eventEndTime}`,
-        ).format();
+      const eventStartDate = dayjs(`${data.eventStartDate} ${data.eventStartTime}`,).format();
+      const eventEndDate = dayjs(`${data.eventEndDate} ${data.eventEndTime}`,).format();
 
         const eventData = {
           eventType: data.eventType,
@@ -68,18 +62,15 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
         if (data.eventPhoto && createdEvent.eventId) {
           await uploadPhoto({
             id: createdEvent.eventId,
-            photoType: PhotoOwner.EVENT,
+            photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
         }
 
         onClose();
-        navigate(`${ROUTES.EVENT.DETAIL(createdEvent.eventId)}`);
-      } catch (error) {
-        console.error('Error creating event:', error);
-      }
-    },
-    [createEvent, uploadPhoto, navigate, onClose],
+        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+      },
+      [createEvent, uploadPhoto, navigate, onClose],
   );
 
   const handleClose = () => {

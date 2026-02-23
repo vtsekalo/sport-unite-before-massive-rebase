@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
@@ -7,7 +8,6 @@ import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
 import {
   CreateEventFormData,
   EventFormInitialData,
-  PhotoOwner,
   ROUTES,
 } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
@@ -20,9 +20,8 @@ export const CreateEventPage = () => {
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
-      try {
-        const eventStartDate = `${data.eventStartDate}T${data.eventStartTime}:00`;
-        const eventEndDate = `${data.eventEndDate}T${data.eventEndTime}:00`;
+        const eventStartDate = dayjs(`${data.eventStartDate} ${data.eventStartTime}`,).format();
+        const eventEndDate = dayjs(`${data.eventEndDate} ${data.eventEndTime}`,).format();
 
         const eventData = {
           eventType: data.eventType,
@@ -31,7 +30,7 @@ export const CreateEventPage = () => {
           eventStartDate,
           eventEndDate,
           eventDescription: data.eventDescription,
-          countUsers: Number(data.countUsers),
+          countUsers: data.countUsers,
           eventPhoto: '',
           coordinates: {
             latitude: Number(data.coordinates.latitude),
@@ -44,15 +43,12 @@ export const CreateEventPage = () => {
         if (data.eventPhoto && createdEvent.eventId) {
           await uploadPhoto({
             id: createdEvent.eventId,
-            photoType: PhotoOwner.EVENT,
+            photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
         }
 
-        navigate(`${ROUTES.EVENT.DETAIL(createdEvent.eventId)}`);
-      } catch (error) {
-        console.error('Error creating event:', error);
-      }
+        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
     },
     [createEvent, uploadPhoto, navigate],
   );
@@ -69,7 +65,7 @@ export const CreateEventPage = () => {
     eventStartTime: '',
     eventEndDate: '',
     eventEndTime: '',
-    countUsers: 10,
+    countUsers: 0,
     eventDescription: '',
     eventPhoto: null,
     coordinates: {

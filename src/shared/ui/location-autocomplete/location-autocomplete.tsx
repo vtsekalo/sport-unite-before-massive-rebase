@@ -2,13 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Autocomplete, Box, CircularProgress, Typography } from '@mui/material';
-
+import { StyledTextField } from '../styled-text-field/styled-text-field';
 import { useLazyGet2GisSuggestionsQuery } from '@shared/api';
 import { SuggestionItem } from '@shared/lib';
 import type { Coordinates } from '@shared/lib';
 import { useDebounce } from '@shared/lib/hooks';
-
-import { StyledTextField } from '../styled-text-field';
 
 interface LocationAutocompleteProps {
   value: string;
@@ -16,7 +14,6 @@ interface LocationAutocompleteProps {
   onCoordinatesChange?: (coordinates: Coordinates) => void;
   error?: boolean;
   errorsMassage?: string;
-  helperText: string | undefined;
   placeholder?: string;
 }
 
@@ -25,7 +22,6 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   onChange,
   onCoordinatesChange,
   error,
-  errorsMassage,
 }) => {
   const [inputValue, setInputValue] = useState(value);
 
@@ -104,7 +100,6 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           {...params}
           label={'Место проведения'}
           size={'small'}
-          helperText={errorsMassage || 'Укажите место проведения.'}
           InputLabelProps={{ shrink: true }}
           error={error}
           InputProps={{
