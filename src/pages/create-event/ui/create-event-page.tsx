@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation } from '@shared/api';
+import { useUploadPhotoMutation } from '@shared/api';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
-import { useUploadPhotoMutation } from '@shared/api';
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
