@@ -5,7 +5,6 @@ export const StyledTextField = styled(TextField)({
   width: '329px',
 
   '& .MuiOutlinedInput-root': {
-
     '&:not(.MuiInputBase-multiline)': {
       minHeight: '40px',
     },

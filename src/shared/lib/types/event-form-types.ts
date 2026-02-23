@@ -1,4 +1,4 @@
-import { ICoordinate } from "./event";
+import { ICoordinate } from './event';
 
 /**
  * Базовые данные формы события (общие поля)

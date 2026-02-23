@@ -4,12 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
-import {
-  CreateEventFormData,
-  EventFormInitialData,
-  ROUTES,
-} from '@shared/lib';
+import { useUploadPhotoMutation } from '@shared/api';
+import { useCreateEventMutation } from '@shared/api';
+import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
 import { PhotoVariant } from '@shared/lib';
 
 import { CopyEventModalProps } from '../lib/types';
@@ -39,38 +36,42 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
-      const eventStartDate = dayjs(`${data.eventStartDate} ${data.eventStartTime}`,).format();
-      const eventEndDate = dayjs(`${data.eventEndDate} ${data.eventEndTime}`,).format();
+      const eventStartDate = dayjs(
+        `${data.eventStartDate} ${data.eventStartTime}`,
+      ).format();
+      const eventEndDate = dayjs(
+        `${data.eventEndDate} ${data.eventEndTime}`,
+      ).format();
 
-        const eventData = {
-          eventType: data.eventType,
-          eventName: data.eventName,
-          eventLocation: data.eventLocation,
-          eventStartDate,
-          eventEndDate,
-          eventDescription: data.eventDescription,
-          countUsers: Number(data.countUsers),
-          eventPhoto: '',
-          coordinates: {
-            latitude: Number(data.coordinates.latitude),
-            longitude: Number(data.coordinates.longitude),
-          },
-        };
+      const eventData = {
+        eventType: data.eventType,
+        eventName: data.eventName,
+        eventLocation: data.eventLocation,
+        eventStartDate,
+        eventEndDate,
+        eventDescription: data.eventDescription,
+        countUsers: Number(data.countUsers),
+        eventPhoto: '',
+        coordinates: {
+          latitude: Number(data.coordinates.latitude),
+          longitude: Number(data.coordinates.longitude),
+        },
+      };
 
-        const createdEvent = await createEvent(eventData).unwrap();
+      const createdEvent = await createEvent(eventData).unwrap();
 
-        if (data.eventPhoto && createdEvent.eventId) {
-          await uploadPhoto({
-            id: createdEvent.eventId,
-            photoType: 'EVENT',
-            file: data.eventPhoto,
-          }).unwrap();
-        }
+      if (data.eventPhoto && createdEvent.eventId) {
+        await uploadPhoto({
+          id: createdEvent.eventId,
+          photoType: 'EVENT',
+          file: data.eventPhoto,
+        }).unwrap();
+      }
 
-        onClose();
-        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
-      },
-      [createEvent, uploadPhoto, navigate, onClose],
+      onClose();
+      navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+    },
+    [createEvent, uploadPhoto, navigate, onClose],
   );
 
   const handleClose = () => {
