@@ -75,9 +75,7 @@ export const NavBar = () => {
       minWidth={'361px'}
       borderRadius={'10px'}
       padding={'0 16px'}
-      boxShadow={`0px 3px 5px -1px rgba(0,0,0,0.2),
-            0px 6px 10px 0px rgba(0,0,0,0.14),
-            0px 1px 18px 0px rgba(0,0,0,0.12)`}
+      boxShadow={6}
       bottom={'32px'}
       bgcolor={theme.palette.background.paper}
       zIndex={20}
