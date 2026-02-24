@@ -7,7 +7,6 @@ import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation } from '@shared/api';
 import { useUploadPhotoMutation } from '@shared/api';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
-import { PhotoVariant } from '@shared/lib';
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ export const CreateEventPage = () => {
         `${data.eventStartDate} ${data.eventStartTime}`,
       ).format();
       const eventEndDate = dayjs(
-        `${data.eventEndDate} ${data.eventEndTime}`,
+        `${data.eventStartDate} ${data.eventEndTime}`,
       ).format();
 
       const eventData = {
@@ -89,7 +88,6 @@ export const CreateEventPage = () => {
         submitButtonText='СОЗДАТЬ СОБЫТИЕ'
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
-        photoMode={PhotoVariant.CREATE}
       />
     </ModalWrapper>
   );

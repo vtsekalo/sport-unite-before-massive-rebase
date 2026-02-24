@@ -88,11 +88,3 @@ export interface CreateEventRequest {
     longitude: number;
   };
 }
-
-/**
- * Режим работы формы события
- */
-export enum PhotoVariant {
-  CREATE = 'create',
-  COPY = 'copy',
-}

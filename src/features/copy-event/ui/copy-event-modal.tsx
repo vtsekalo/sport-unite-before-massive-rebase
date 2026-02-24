@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
@@ -7,7 +7,6 @@ import { ModalWrapper } from '@entities/modal-wrapper';
 import { useUploadPhotoMutation } from '@shared/api';
 import { useCreateEventMutation } from '@shared/api';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
-import { PhotoVariant } from '@shared/lib';
 
 import { CopyEventModalProps } from '../lib/types';
 
@@ -18,8 +17,7 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
-  const defaultValues: EventFormInitialData = useMemo(() => {
-    return {
+  const defaultValues: EventFormInitialData = {
       eventType: '',
       eventName: event.eventName,
       eventLocation: event.eventLocation,
@@ -32,7 +30,6 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
       eventPhoto: event.eventPhoto,
       coordinates: event.coordinates,
     };
-  }, [event]);
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
@@ -40,7 +37,7 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
         `${data.eventStartDate} ${data.eventStartTime}`,
       ).format();
       const eventEndDate = dayjs(
-        `${data.eventEndDate} ${data.eventEndTime}`,
+        `${data.eventStartDate} ${data.eventEndTime}`,
       ).format();
 
       const eventData = {
@@ -80,11 +77,11 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
 
   return (
     <ModalWrapper
-      maxWidth={{ xs: 377, md: 480 }}
-      height={1220}
-      maxHeight='100%'
-      overflow='auto'
-    >
+  maxWidth={{ xs: 377, md: 480 }}
+  height='auto'
+  maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
+  overflow='auto'
+>
       <EventFormEntity
         title='Копирование события'
         defaultValues={defaultValues}
@@ -94,7 +91,6 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
         initialPhotoUrl={event?.eventPhoto}
-        photoMode={PhotoVariant.COPY}
       />
     </ModalWrapper>
   );

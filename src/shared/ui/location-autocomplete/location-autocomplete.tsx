@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Autocomplete, Box, CircularProgress, Typography } from '@mui/material';
+import { Autocomplete, Box, CircularProgress, Typography, TextField } from '@mui/material';
 
 import { useLazyGet2GisSuggestionsQuery } from '@shared/api';
 import { SuggestionItem } from '@shared/lib';
 import type { Coordinates } from '@shared/lib';
-import { useDebounce } from '@shared/lib/hooks';
-
-import { StyledTextField } from '../styled-text-field/styled-text-field';
+import { useDebounce } from '@shared/lib/hooks';;
 
 interface LocationAutocompleteProps {
   value: string;
@@ -98,7 +96,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
         );
       }}
       renderInput={(params) => (
-        <StyledTextField
+        <TextField
           {...params}
           label={'Место проведения'}
           size={'small'}
