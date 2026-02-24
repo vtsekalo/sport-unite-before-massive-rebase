@@ -25,7 +25,6 @@ type Props = {
 export const EventCardFooter: FC<Props> = ({
   eventId,
   eventStatus,
-  eventStartDate,
   isOrganizer,
   isParticipant,
   hasFreeSlots,
@@ -47,9 +46,7 @@ export const EventCardFooter: FC<Props> = ({
     [EventFooterMode.ORGANIZER]: (
       <CancelEventButton eventId={eventId} onCanceled={onCanceled} />
     ),
-    [EventFooterMode.PARTICIPANT]: (
-      <ExitEventButton eventId={eventId} eventStartDate={eventStartDate} />
-    ),
+    [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={eventId} />,
     [EventFooterMode.GUEST]: (
       <JoinEventButton
         eventId={eventId}
