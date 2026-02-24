@@ -3,6 +3,6 @@ export * from './image-wrapper';
 export * from './input';
 export * from './map';
 export * from './modal';
-export * from './modal';
+export * from './marker';
 export * from './sport-icons';
 export * from './styled-text-field';

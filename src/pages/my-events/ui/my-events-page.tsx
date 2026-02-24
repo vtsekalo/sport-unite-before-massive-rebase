@@ -59,7 +59,7 @@ export const MyEventsPage: FC = () => {
   );
 
   return (
-    <ModalWrapper showBackEmptyButton>
+    <ModalWrapper>
       <Box
         position='relative'
         display='flex'

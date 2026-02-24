@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Tab, Typography } from '@mui/material';
@@ -25,12 +25,10 @@ export const MyEventListMobile: FC<EventsListProps> = ({ events, loading }) => {
 
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
 
-  const handleOpenCard = useCallback(
-    (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
-    },
-    [navigate],
-  );
+  const handleOpenCard = (eventId: string) => {
+    navigate(ROUTES.EVENT.DETAIL(eventId));
+  };
+
   const handleChange = (_event: unknown, newValue: number) => {
     setValue(newValue);
   };

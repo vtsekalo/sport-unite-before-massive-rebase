@@ -1,7 +1,7 @@
-import { Avatar, styled } from '@mui/material';
-import { Box } from '@mui/material';
+import { Avatar, BoxProps, styled } from '@mui/material';
 
 import { ModalWrapper } from '@entities/modal-wrapper';
+import { EventStatus } from '@shared/lib';
 
 const AnimatedModalWrapper = styled(ModalWrapper)`
   animation: zoomSoft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -19,27 +19,20 @@ const AnimatedModalWrapper = styled(ModalWrapper)`
 `;
 
 /**
- * @prop $image - Картинка события.
- * Нельзя через пропсы Box из-за кастомного пропа $image
+ * @prop src - Картинка события.
  */
-type HeaderProps = {
-  $image?: string;
+type EventImageProps = BoxProps & {
+  $status: EventStatus;
+  src?: string;
+  alt?: string;
 };
-const Header = styled(Box, {
-  shouldForwardProp: (prop) => prop !== '$image',
-})<HeaderProps>(({ theme, $image }) => ({
-  position: 'relative',
-  aspectRatio: '16 / 9',
-  backgroundColor: $image ? 'transparent' : theme.palette.text.disabled,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundImage: $image
-    ? `url(${$image})`
-    : 'linear-gradient(135deg, #eee, #ccc)',
-  [theme.breakpoints.up('md')]: {
-    aspectRatio: '21 / 9',
-    minHeight: theme.spacing(30),
-  },
+
+const EventImage = styled('img')<EventImageProps>(({ $status }) => ({
+  objectFit: 'cover',
+  filter:
+    $status === EventStatus.COMPLETED || $status === EventStatus.CANCELLED
+      ? 'grayscale(100%)'
+      : 'none',
 }));
 
 const CategoryMuiIcon = styled('svg')(({ theme }) => ({
@@ -55,7 +48,7 @@ const EventAvatar = styled(Avatar)(() => ({
 }));
 
 export const Styled = {
-  Header,
+  EventImage,
   CategoryMuiIcon,
   EventAvatar,
   AnimatedModalWrapper,

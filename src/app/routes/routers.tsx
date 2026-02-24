@@ -22,32 +22,41 @@ import { ProfileEdit } from '@widgets/profile-edit';
 import { SendEmail } from '@widgets/send-email';
 import { UserProfile } from '@widgets/user-profile';
 
+import { ProtectedRoute } from './protected-route';
+
 export const Routers: FC = () => {
   return (
     <Routes>
       <Route path={ROUTES.HOME} element={<Layout />}>
-        <Route path={ROUTES.CHATS.INDEX} element={<Chats />} />
-        <Route path={ROUTES.CHATS.DETAIL(':id')} element={<Chat />} />
-        <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
-        <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
-        <Route path={ROUTES.PROFILE.INDEX} element={<ProfilePage />}>
-          <Route index element={<Profile />} />
-          <Route path={ROUTES.PROFILE.EDIT} element={<ProfileEdit />} />
-          <Route element={<DeletionGuard />}>
-            <Route path={ROUTES.PROFILE.DELETED} element={<ProfileDeleted />} />
-          </Route>
-          <Route
-            path={ROUTES.PROFILE.DETAIL(':id')}
-            element={<UserProfile />}
-          />
-        </Route>
-        <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
-        <Route path={ROUTES.EVENT.DETAIL(':eventId')} element={<EventCard />} />
-        <Route path={ROUTES.LIST} element={<CommonEventListPage />} />
         <Route path={ROUTES.AUTH} element={<AuthPage />} />
         <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
         <Route path={ROUTES.SEND_EMAIL} element={<SendEmail />} />
-        <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path={ROUTES.LIST} element={<CommonEventListPage />} />
+          <Route path={ROUTES.CHATS.INDEX} element={<Chats />} />
+          <Route path={ROUTES.CHATS.DETAIL(':id')} element={<Chat />} />
+          <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
+          <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
+          <Route path={ROUTES.PROFILE.INDEX} element={<ProfilePage />}>
+            <Route index element={<Profile />} />
+            <Route path={ROUTES.PROFILE.EDIT} element={<ProfileEdit />} />
+            <Route element={<DeletionGuard />}>
+              <Route
+                path={ROUTES.PROFILE.DELETED}
+                element={<ProfileDeleted />}
+              />
+            </Route>
+            <Route
+              path={ROUTES.PROFILE.DETAIL(':id')}
+              element={<UserProfile />}
+            />
+          </Route>
+          <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
+          <Route
+            path={ROUTES.EVENT.DETAIL(':eventId')}
+            element={<EventCard />}
+          />
+        </Route>
       </Route>
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
       <Route path={ROUTES.TEST_PAGE} element={<TestPage />} />

@@ -119,10 +119,7 @@ export const Profile: FC = () => {
 
     return {
       avatarNode: profile.profilePicture ? (
-        <Styled.AvatarImage
-          src={`${profile.profilePicture}?v=${Math.random()}`}
-          alt='Avatar'
-        />
+        <Styled.AvatarImage src={`${profile.profilePicture}`} alt='Avatar' />
       ) : (
         <Styled.StyledPhotoCameraFrontIcon color='primary' />
       ),

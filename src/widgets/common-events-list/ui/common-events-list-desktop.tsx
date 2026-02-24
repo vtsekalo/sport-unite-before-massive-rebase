@@ -25,16 +25,23 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
   const navigate = useNavigate();
   const theme = useTheme();
 
+  const handleOpenCard = (eventId: string) => () => {
+    navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'list' } });
+  };
+
   return (
     <Styled.ListCardsContainer
       display={'flex'}
       borderRadius={'10px'}
       flexDirection={'column'}
-      width={'100%'}
       height={'100%'}
+      width={'100%'}
+      maxHeight={{
+        md: `calc(100vh - ${theme.spacing(17)} - ${theme.spacing(11)})`,
+      }}
     >
       <Box
-        width={380}
+        width={399}
         display='flex'
         gap={1}
         flexDirection={'column'}
@@ -149,9 +156,7 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
                       variant='contained'
                       fullWidth
                       size='mediumFixed'
-                      onClick={() =>
-                        navigate(ROUTES.EVENT.DETAIL(eventItem.eventId))
-                      }
+                      onClick={handleOpenCard(eventItem.eventId)}
                     >
                       Подробнее
                     </Button>

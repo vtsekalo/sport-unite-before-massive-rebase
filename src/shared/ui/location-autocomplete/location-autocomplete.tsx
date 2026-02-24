@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { FC, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {
@@ -23,7 +23,7 @@ interface LocationAutocompleteProps {
   placeholder?: string;
 }
 
-export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
+export const LocationAutocomplete: FC<LocationAutocompleteProps> = ({
   value,
   onChange,
   onCoordinatesChange,
@@ -43,17 +43,14 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   }, [debouncedInputValue, getSuggestions]);
 
   const handleInputChange = useCallback(
-    (_event: React.SyntheticEvent, newInputValue: string) => {
+    (_event: SyntheticEvent, newInputValue: string) => {
       setInputValue(newInputValue);
     },
     [],
   );
 
   const handleChange = useCallback(
-    (
-      _event: React.SyntheticEvent,
-      selectedValue: SuggestionItem | string | null,
-    ) => {
+    (_event: SyntheticEvent, selectedValue: SuggestionItem | string | null) => {
       if (selectedValue && typeof selectedValue !== 'string') {
         const coordinates = {
           latitude: selectedValue.point.lat,

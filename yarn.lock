@@ -813,7 +813,7 @@
 
 "@fontsource/roboto@^5.2.9":
   version "5.2.9"
-  resolved "https://registry.npmjs.org/@fontsource/roboto/-/roboto-5.2.9.tgz"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.2.9.tgz#55092cf992ab8d5082be73b79b42f383a9c0903c"
   integrity sha512-ZTkyHiPk74B/aj8BZWbsxD5Yu+Lq+nR64eV4wirlrac2qXR7jYk2h6JlLYuOuoruTkGQWNw2fMuKNavw7/rg0w==
 
 "@hookform/resolvers@^3.10.0":
@@ -1262,7 +1262,7 @@
 
 "@tanstack/react-virtual@^3.13.18":
   version "3.13.18"
-  resolved "https://registry.npmjs.org/@tanstack/react-virtual/-/react-virtual-3.13.18.tgz"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.18.tgz#9124ee9f08b2ca3c67ffd508dae3732328983362"
   integrity sha512-dZkhyfahpvlaV0rIKnvQiVoWPyURppl6w4m9IwMDpuIjcJ1sD9YGWrt0wISvgU7ewACXx2Ct46WPgI6qAD4v6A==
   dependencies:
     "@tanstack/virtual-core" "3.13.18"

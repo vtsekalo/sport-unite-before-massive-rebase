@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FC, Fragment, useCallback, useMemo } from 'react';
+import { FC, Fragment, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Divider, Icon, Tooltip, Typography } from '@mui/material';
@@ -11,8 +11,8 @@ import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { groupEventsByStatus } from '../lib/group-events-by-status';
-import { MyEventListSkeleton } from './my-event-list-skeleton.tsx';
-import { Styled } from './my-event-list.style.ts';
+import { MyEventListSkeleton } from './my-event-list-skeleton';
+import { Styled } from './my-event-list.style';
 
 interface EventsListProps {
   loading?: boolean;
@@ -26,12 +26,9 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
   const navigate = useNavigate();
 
-  const handleOpenCard = useCallback(
-    (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
-    },
-    [navigate],
-  );
+  const handleOpenCard = (eventId: string) => {
+    navigate(ROUTES.EVENT.DETAIL(eventId));
+  };
 
   const titles = [
     { title: 'Активные', data: grouped.active },
