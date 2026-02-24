@@ -46,11 +46,7 @@ export const EventCardFooter: FC<Props> = ({
     [EventFooterMode.ORGANIZER]: (
       <CancelEventButton eventId={event.eventId} onCanceled={onCanceled} />
     ),
-    [EventFooterMode.PARTICIPANT]: (
-      <ExitEventButton
-        eventId={event.eventId}
-      />
-    ),
+    [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={event.eventId} />,
     [EventFooterMode.GUEST]: (
       <JoinEventButton
         eventId={event.eventId}
@@ -60,7 +56,6 @@ export const EventCardFooter: FC<Props> = ({
       />
     ),
   };
-
 
   return (
     <>
