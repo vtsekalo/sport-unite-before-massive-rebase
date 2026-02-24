@@ -1,39 +1,33 @@
 import dayjs from 'dayjs';
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { useUploadPhotoMutation } from '@shared/api';
-import { useCreateEventMutation } from '@shared/api';
+import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
-import { ConfirmModal } from '@shared/ui/confirm-modal';
 
-import { CopyEventModalProps } from '../lib/types';
-
-interface Props extends CopyEventModalProps {
-  open: boolean;
-}
-
-export const CopyEventModal: FC<Props> = ({ event, onClose, open }) => {
+export const CopyEventPage: FC = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const newEvent = state?.newEvent;
 
   const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
   const defaultValues: EventFormInitialData = {
-    eventType: '',
-    eventName: event.eventName,
-    eventLocation: event.eventLocation,
+    eventType: newEvent?.eventType ?? '',
+    eventName: newEvent?.eventName ?? '',
+    eventLocation: newEvent?.eventLocation ?? '',
     eventStartDate: '',
     eventStartTime: '',
     eventEndDate: '',
     eventEndTime: '',
-    countUsers: event.countUsers,
-    eventDescription: event.eventDescription,
-    eventPhoto: event.eventPhoto,
-    coordinates: event.coordinates,
+    countUsers: newEvent?.countUsers ?? 2,
+    eventDescription: newEvent?.eventDescription ?? '',
+    eventPhoto: newEvent?.eventPhoto ?? null,
+    coordinates: newEvent?.coordinates ?? { latitude: 0, longitude: 0 },
   };
 
   const onSubmit = async (data: CreateEventFormData) => {
@@ -69,29 +63,26 @@ export const CopyEventModal: FC<Props> = ({ event, onClose, open }) => {
       }).unwrap();
     }
 
-    onClose();
     navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
   };
 
   return (
-    <ConfirmModal open={open} onClose={onClose}>
-      <ModalWrapper
-        maxWidth={{ xs: 377, md: 480 }}
-        height='auto'
-        maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
-        overflow='auto'
-      >
-        <EventFormEntity
-          title='Копирование события'
-          defaultValues={defaultValues}
-          onSubmit={onSubmit}
-          onClose={onClose}
-          submitButtonText='СОХРАНИТЬ'
-          isSubmitting={isCreating}
-          isUploadingPhoto={isUploadingPhoto}
-          initialPhotoUrl={event?.eventPhoto}
-        />
-      </ModalWrapper>
-    </ConfirmModal>
+    <ModalWrapper
+      maxWidth={{ xs: 377, md: 480 }}
+      height='auto'
+      maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
+      overflow='auto'
+    >
+      <EventFormEntity
+        title='Копирование события'
+        defaultValues={defaultValues}
+        onSubmit={onSubmit}
+        onClose={() => navigate(-1)}
+        submitButtonText='СОХРАНИТЬ'
+        isSubmitting={isCreating}
+        isUploadingPhoto={isUploadingPhoto}
+        initialPhotoUrl={newEvent?.eventPhoto}
+      />
+    </ModalWrapper>
   );
 };

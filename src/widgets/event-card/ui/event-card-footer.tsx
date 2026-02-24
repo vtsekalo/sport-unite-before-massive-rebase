@@ -5,14 +5,14 @@ import { Box, Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
 import { CancelEventButton } from '@features/cancel-event';
-import { CopyEventButton } from '@features/copy-event';
+import { CopyEventButton } from '@features/copy-event-button';
 import { ExitEventButton, canExitEvent } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
 import { EventFooterMode, EventStatus, IEventDetailed } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
 type Props = {
-  eventId?: string;
+  event: IEventDetailed;
   eventStatus: EventStatus;
   isOrganizer: boolean;
   eventStartDate: string;
@@ -20,11 +20,10 @@ type Props = {
   hasFreeSlots: boolean;
   isError: boolean;
   onCanceled: () => void;
-  event: IEventDetailed;
 };
 
 export const EventCardFooter: FC<Props> = ({
-  eventId,
+  event,
   eventStatus,
   eventStartDate,
   isOrganizer,
@@ -32,7 +31,6 @@ export const EventCardFooter: FC<Props> = ({
   hasFreeSlots,
   onCanceled,
   isError,
-  event,
 }) => {
   const footerMode: EventFooterMode = getEventFooterMode({
     isEventPlanned: eventStatus === EventStatus.PLANNED,
@@ -47,20 +45,24 @@ export const EventCardFooter: FC<Props> = ({
       </Box>
     ),
     [EventFooterMode.ORGANIZER]: (
-      <CancelEventButton eventId={eventId} onCanceled={onCanceled} />
+      <CancelEventButton eventId={event.eventId} onCanceled={onCanceled} />
     ),
     [EventFooterMode.PARTICIPANT]: (
-      <ExitEventButton eventId={eventId} eventStartDate={eventStartDate} />
+      <ExitEventButton
+        eventId={event.eventId}
+        eventStartDate={eventStartDate}
+      />
     ),
     [EventFooterMode.GUEST]: (
       <JoinEventButton
-        eventId={eventId}
+        eventId={event.eventId}
         hasFreeSlots={hasFreeSlots}
         isError={isError}
         isParticipant={isParticipant}
       />
     ),
   };
+
   return (
     <>
       <Stack gap={1.25}>

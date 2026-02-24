@@ -10,7 +10,7 @@ export type CopyEventForm = Omit<
   | 'eventEndDate'
 >;
 
-export interface CopyEventModalProps {
+export interface CopyEventPageProps {
   event: IEventDetailed;
   onClose: () => void;
 }

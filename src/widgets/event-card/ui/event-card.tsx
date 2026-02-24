@@ -187,13 +187,13 @@ export const EventCard: FC = () => {
           </>
         }
         organizerNode={
-          <>
-            <Typography
-              variant='body2'
-              color='text.disabled'
-              fontSize='12px'
-              minWidth={96}
-            >
+          <Box
+            display={'flex'}
+            flexDirection='row'
+            alignItems={'center'}
+            gap={5}
+          >
+            <Typography variant='body2' color='text.disabled' fontSize='12px'>
               Организатор:
             </Typography>
             <AvatarGroup max={1}>
@@ -208,40 +208,45 @@ export const EventCard: FC = () => {
                 />
               )}
             </AvatarGroup>
-          </>
+          </Box>
         }
         participantsNode={
-          <>
-            <Typography
-              variant='body2'
-              color='text.disabled'
-              fontSize='12px'
-              minWidth={96}
-            >
-              Участники: ({usersCount}/{maxUsers})
+          <Box
+            display={'flex'}
+            flexDirection='row'
+            gap={2}
+            alignItems={'center'}
+          >
+            <Typography variant='body2' color='text.disabled' fontSize='12px'>
+              Участники ({usersCount}/{maxUsers}):
             </Typography>
-            <AvatarGroup>
-              {usersParticipant.slice(0, 4).map((user: IUserParticipant) => (
-                <Styled.EventAvatar
-                  key={user.userId}
-                  alt={user.nickName}
-                  src={`${user.urlUserPhoto}?v=${Math.random()}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(ROUTES.PROFILE.DETAIL(user.userId));
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-          </>
+            {usersCount > 1 ? (
+              <AvatarGroup>
+                {usersParticipant.slice(0, 4).map((user: IUserParticipant) => (
+                  <Styled.EventAvatar
+                    key={user.userId}
+                    alt={user.nickName}
+                    src={`${user.urlUserPhoto}?v=${Math.random()}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(ROUTES.PROFILE.DETAIL(user.userId));
+                    }}
+                  />
+                ))}
+              </AvatarGroup>
+            ) : (
+              <Typography fontSize={12}>
+                Пока никто не присоединился к событию.
+              </Typography>
+            )}
+          </Box>
         }
         footerActionsNode={
           <EventCardFooter
-            event={event}
             isOrganizer={isOrganizer}
             eventStartDate={event.eventStartDate}
             eventStatus={event.eventStatus}
-            eventId={event.eventId}
+            event={eventData}
             hasFreeSlots={maxUsers > usersCount}
             onCanceled={() => navigate(ROUTES.HOME)}
             isParticipant={isParticipant}
