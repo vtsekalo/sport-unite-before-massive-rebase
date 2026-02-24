@@ -1,6 +1,7 @@
 import { FC } from 'react';
 
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { CopyEventButton } from '@features/copy-event';
+
 import MailIcon from '@mui/icons-material/Mail';
 import { Box, Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
@@ -8,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import { CancelEventButton } from '@features/cancel-event';
 import { ExitEventButton, canExitEvent } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
-import { EventFooterMode, EventStatus } from '@shared/lib';
+import { EventFooterMode, EventStatus, IEventDetailed } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
 type Props = {
@@ -20,6 +21,7 @@ type Props = {
   hasFreeSlots: boolean;
   isError: boolean;
   onCanceled: () => void;
+  event: IEventDetailed;
 };
 
 export const EventCardFooter: FC<Props> = ({
@@ -31,6 +33,7 @@ export const EventCardFooter: FC<Props> = ({
   hasFreeSlots,
   onCanceled,
   isError,
+  event,
 }) => {
   const footerMode: EventFooterMode = getEventFooterMode({
     isEventPlanned: eventStatus === EventStatus.PLANNED,
@@ -69,9 +72,7 @@ export const EventCardFooter: FC<Props> = ({
           gap={1.25}
         >
           {isOrganizer && (
-            <Button variant='contained' size='classicWidthAction'>
-              <ContentCopyIcon />
-            </Button>
+            <CopyEventButton event={event} />
           )}
 
           {components[footerMode]}

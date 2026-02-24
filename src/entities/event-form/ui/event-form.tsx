@@ -212,7 +212,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           </Button>
 
           {photoPreview && (
-            <Button variant='classicWidthAction' onClick={handleRemovePhoto}>
+            <Button size='classicWidthAction' onClick={handleRemovePhoto}>
               <DeleteIcon />
             </Button>
           )}
