@@ -18,18 +18,18 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
     useUploadPhotoMutation();
 
   const defaultValues: EventFormInitialData = {
-      eventType: '',
-      eventName: event.eventName,
-      eventLocation: event.eventLocation,
-      eventStartDate: '',
-      eventStartTime: '',
-      eventEndDate: '',
-      eventEndTime: '',
-      countUsers: event.countUsers,
-      eventDescription: event.eventDescription,
-      eventPhoto: event.eventPhoto,
-      coordinates: event.coordinates,
-    };
+    eventType: '',
+    eventName: event.eventName,
+    eventLocation: event.eventLocation,
+    eventStartDate: '',
+    eventStartTime: '',
+    eventEndDate: '',
+    eventEndTime: '',
+    countUsers: event.countUsers,
+    eventDescription: event.eventDescription,
+    eventPhoto: event.eventPhoto,
+    coordinates: event.coordinates,
+  };
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
@@ -77,11 +77,11 @@ export const CopyEventModal: FC<CopyEventModalProps> = ({ event, onClose }) => {
 
   return (
     <ModalWrapper
-  maxWidth={{ xs: 377, md: 480 }}
-  height='auto'
-  maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
-  overflow='auto'
->
+      maxWidth={{ xs: 377, md: 480 }}
+      height='auto'
+      maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
+      overflow='auto'
+    >
       <EventFormEntity
         title='Копирование события'
         defaultValues={defaultValues}

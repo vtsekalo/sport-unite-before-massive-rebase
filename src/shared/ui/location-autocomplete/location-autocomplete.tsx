@@ -1,12 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Autocomplete, Box, CircularProgress, Typography, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import { useLazyGet2GisSuggestionsQuery } from '@shared/api';
 import { SuggestionItem } from '@shared/lib';
 import type { Coordinates } from '@shared/lib';
-import { useDebounce } from '@shared/lib/hooks';;
+import { useDebounce } from '@shared/lib/hooks';
 
 interface LocationAutocompleteProps {
   value: string;

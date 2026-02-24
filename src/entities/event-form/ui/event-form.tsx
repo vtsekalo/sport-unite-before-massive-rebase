@@ -325,8 +325,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventStartTime)}
               helperText={
-                errors.eventStartTime?.message ||
-                'Укажите время начала события'
+                errors.eventStartTime?.message || 'Укажите время начала события'
               }
             />
           )}
@@ -431,7 +430,12 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         </Button>
 
-        <Button variant='outlined' fullWidth size='mediumFixed' onClick={onClose}>
+        <Button
+          variant='outlined'
+          fullWidth
+          size='mediumFixed'
+          onClick={onClose}
+        >
           ОТМЕНА
         </Button>
       </Box>
