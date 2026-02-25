@@ -69,12 +69,12 @@ export const eventApi = baseApi.injectEndpoints({
     }),
 
     uploadPhoto: builder.mutation<UploadPhotoResponse, UploadPhotoRequest>({
-      query: ({ id, photoType, file }) => {
+      query: ({ id, file }) => {
         const formData = new FormData();
         formData.append('file', file);
 
         return {
-          url: `${ApiEndpoints.UPLOAD_PHOTO}/${id}?photoType=${photoType}`,
+          url: `${ApiEndpoints.UPLOAD_PHOTO}/${id}?file`,
           method: 'POST',
           credentials: 'include',
           body: formData,

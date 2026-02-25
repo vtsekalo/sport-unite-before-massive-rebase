@@ -167,7 +167,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         {title}
       </Typography>
 
-      {/* Фото */}
       <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
         <input
           ref={fileInputRef}
@@ -219,7 +218,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         </Box>
       </Box>
 
-      {/* Форма */}
       <Box
         component='form'
         onSubmit={handleSubmit(onSubmit)}
@@ -227,7 +225,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         flexDirection='column'
         gap={theme.spacing(2)}
       >
-        {/* Тип события */}
         <FormControl error={Boolean(errors.eventType)}>
           <Controller
             name='eventType'
@@ -261,7 +258,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           </FormHelperText>
         </FormControl>
 
-        {/* Название */}
         <Controller
           name='eventName'
           control={control}
@@ -279,7 +275,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* Место проведения */}
         <LocationAutocomplete
           value={eventLocation ?? ''}
           onChange={handleLocationChange}
@@ -289,7 +284,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           placeholder='Начните вводить адрес или название места'
         />
 
-        {/* Дата начала */}
         <Controller
           name='eventStartDate'
           control={control}
@@ -312,7 +306,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* Время начала */}
         <Controller
           name='eventStartTime'
           control={control}
@@ -331,26 +324,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* TODO: вернуть когда пользователь сможет выбирать дату окончания (до МВП отложено)
-        <Controller
-          name='eventEndDate'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Дата окончания события'
-              type='date'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventEndDate)}
-              helperText={
-                errors.eventEndDate?.message || 'Укажите дату окончания события'
-              }
-            />
-          )}
-        /> */}
-
-        {/* Время окончания */}
         <Controller
           name='eventEndTime'
           control={control}
@@ -370,7 +343,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* Количество участников */}
         <Controller
           name='countUsers'
           control={control}
@@ -390,7 +362,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* Описание */}
         <Controller
           name='eventDescription'
           control={control}
@@ -410,7 +381,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        {/* Кнопки */}
         <Button
           type='submit'
           variant='contained'

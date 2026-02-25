@@ -45,11 +45,11 @@ export const CopyEventPage: FC = () => {
       eventStartDate,
       eventEndDate,
       eventDescription: data.eventDescription,
-      countUsers: Number(data.countUsers),
+      countUsers: data.countUsers,
       eventPhoto: '',
       coordinates: {
-        latitude: Number(data.coordinates.latitude),
-        longitude: Number(data.coordinates.longitude),
+        latitude: data.coordinates.latitude,
+        longitude: data.coordinates.longitude,
       },
     };
 
@@ -58,7 +58,6 @@ export const CopyEventPage: FC = () => {
     if (data.eventPhoto && createdEvent.eventId) {
       await uploadPhoto({
         id: createdEvent.eventId,
-        photoType: 'EVENT',
         file: data.eventPhoto,
       }).unwrap();
     }

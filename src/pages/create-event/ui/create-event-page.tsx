@@ -33,8 +33,8 @@ export const CreateEventPage = () => {
         countUsers: data.countUsers,
         eventPhoto: '',
         coordinates: {
-          latitude: Number(data.coordinates.latitude),
-          longitude: Number(data.coordinates.longitude),
+          latitude: data.coordinates.latitude,
+          longitude: data.coordinates.longitude,
         },
       };
 
@@ -43,7 +43,6 @@ export const CreateEventPage = () => {
       if (data.eventPhoto && createdEvent.eventId) {
         await uploadPhoto({
           id: createdEvent.eventId,
-          photoType: 'EVENT',
           file: data.eventPhoto,
         }).unwrap();
       }
