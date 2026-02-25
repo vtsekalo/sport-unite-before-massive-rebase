@@ -5,13 +5,20 @@ export const StyledNavBar = styled(Box)(({ theme }) => ({
   display: 'flex',
   height: '48px',
   backgroundColor: theme.palette.background.paper,
+  '& .MuiSvgIcon-root': {
+    maxWidth: '100%',
+    maxHeight: '100%',
+  },
+  '& .MuiIconButton-root': {
+    width: '100%',
+    height: '100%',
+  },
 }));
 
 export const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 40,
   height: 30,
   padding: 0,
-
   '& .MuiSwitch-switchBase': {
     marginTop: 1,
     padding: 0,

@@ -8,11 +8,12 @@ import { CancelEventButton } from '@features/cancel-event';
 import { CopyEventButton } from '@features/copy-event-button';
 import { ExitEventButton } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
-import { EventFooterMode, EventStatus, IEventDetailed } from '@shared/lib';
+import { EventFooterMode, EventStatus, IEvent } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
-type Props = {
-  event: IEventDetailed;
+type EventCardFooterProps = {
+  event: IEvent;
+  eventId?: string;
   eventStatus: EventStatus;
   isOrganizer: boolean;
   eventStartDate: string;
@@ -22,8 +23,9 @@ type Props = {
   onCanceled: () => void;
 };
 
-export const EventCardFooter: FC<Props> = ({
+export const EventCardFooter: FC<EventCardFooterProps> = ({
   event,
+  eventId,
   eventStatus,
   isOrganizer,
   isParticipant,
@@ -44,12 +46,12 @@ export const EventCardFooter: FC<Props> = ({
       </Box>
     ),
     [EventFooterMode.ORGANIZER]: (
-      <CancelEventButton eventId={event.eventId} onCanceled={onCanceled} />
+      <CancelEventButton eventId={eventId} onCanceled={onCanceled} />
     ),
-    [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={event.eventId} />,
+    [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={eventId} />,
     [EventFooterMode.GUEST]: (
       <JoinEventButton
-        eventId={event.eventId}
+        eventId={eventId}
         hasFreeSlots={hasFreeSlots}
         isError={isError}
         isParticipant={isParticipant}

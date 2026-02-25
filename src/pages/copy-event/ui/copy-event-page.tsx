@@ -22,7 +22,6 @@ export const CopyEventPage: FC = () => {
     eventLocation: newEvent?.eventLocation ?? '',
     eventStartDate: '',
     eventStartTime: '',
-    eventEndDate: '',
     eventEndTime: '',
     countUsers: newEvent?.countUsers ?? 2,
     eventDescription: newEvent?.eventDescription ?? '',

@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 
 import { useGetTypeEventsQuery } from '@shared/api';
+import { dayjs } from '@shared/lib';
 import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
 import { EventFormInitialData } from '@shared/lib';
@@ -75,11 +76,11 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
   const isFormDisabled =
     !isValid || !isDirty || isSubmitting || isUploadingPhoto;
 
-  const today = new Date();
-  const maxDate = new Date();
-  maxDate.setDate(today.getDate() + 30);
-  const formattedToday = today.toISOString().split('T')[0];
-  const formattedMaxDate = maxDate.toISOString().split('T')[0];
+  const today = dayjs();
+  const maxDate = today.add(30, 'day');
+
+  const formattedToday = today.format('YYYY-MM-DD');
+  const formattedMaxDate = maxDate.format('YYYY-MM-DD');
 
   const sortedEventTypes = useMemo(() => {
     if (!eventTypes) return [];

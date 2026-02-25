@@ -1,5 +1,5 @@
 APP_NAME: "front-app"
-APP_IMAGE_NAME: "harbor.itm-space.net/front/sport-unite-sport-unite-develop"
+APP_IMAGE_NAME: "harbor.it-mentor.space/front/sport-unite-sport-unite-develop"
 APP_IMAGE_TAG: "latest"
 INGRESS_HOST: "dev.sport-unite.it-mentor.space"
 

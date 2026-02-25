@@ -16,43 +16,52 @@ export const CreateEventPage = () => {
 
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
-      const eventStartDate = dayjs(
-        `${data.eventStartDate} ${data.eventStartTime}`,
-      ).format();
-      const eventEndDate = dayjs(
-        `${data.eventStartDate} ${data.eventEndTime}`,
-      ).format();
+      try {
+        const eventStartDate = dayjs(
+          `${data.eventStartDate} ${data.eventStartTime}`,
+        )
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      const eventData = {
-        eventType: data.eventType,
-        eventName: data.eventName,
-        eventLocation: data.eventLocation,
-        eventStartDate,
-        eventEndDate,
-        eventDescription: data.eventDescription,
-        countUsers: data.countUsers,
-        eventPhoto: '',
-        coordinates: {
-          latitude: data.coordinates.latitude,
-          longitude: data.coordinates.longitude,
-        },
-      };
+        const eventEndDate = dayjs(
+          `${data.eventStartDate} ${data.eventEndTime}`,
+        )
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      const createdEvent = await createEvent(eventData).unwrap();
+        const eventData = {
+          eventType: data.eventType,
+          eventName: data.eventName,
+          eventLocation: data.eventLocation,
+          eventStartDate,
+          eventEndDate,
+          eventDescription: data.eventDescription,
+          countUsers: data.countUsers,
+          eventPhoto: '',
+          coordinates: {
+            latitude: data.coordinates.latitude,
+            longitude: data.coordinates.longitude,
+          },
+        };
 
-      if (data.eventPhoto && createdEvent.eventId) {
-        await uploadPhoto({
-          id: createdEvent.eventId,
-          file: data.eventPhoto,
-        }).unwrap();
+        const createdEvent = await createEvent(eventData).unwrap();
+
+        if (data.eventPhoto && createdEvent.eventId) {
+          await uploadPhoto({
+            id: createdEvent.eventId,
+            file: data.eventPhoto,
+          }).unwrap();
+        }
+
+        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+      } catch (error) {
+        console.error('Error creating common-event-card-list:', error);
       }
-
-      navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
     },
     [createEvent, uploadPhoto, navigate],
   );
 
-  const handleClose = () => {
+  const handleCancel = () => {
     navigate(ROUTES.HOME);
   };
 
@@ -62,7 +71,6 @@ export const CreateEventPage = () => {
     eventLocation: '',
     eventStartDate: '',
     eventStartTime: '',
-    eventEndDate: '',
     eventEndTime: '',
     countUsers: 0,
     eventDescription: '',
@@ -83,7 +91,7 @@ export const CreateEventPage = () => {
         title='Создание события'
         defaultValues={defaultValues}
         onSubmit={onSubmit}
-        onClose={handleClose}
+        onClose={handleCancel}
         submitButtonText='СОЗДАТЬ СОБЫТИЕ'
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}

@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Button } from '@mui/material';
 
-import { IEventDetailed, ROUTES } from '@shared/lib';
+import { IEvent, ROUTES } from '@shared/lib';
 
 interface CopyEventButtonProps {
-  event: IEventDetailed;
+  event: IEvent;
 }
 
 export const CopyEventButton: FC<CopyEventButtonProps> = ({ event }) => {
@@ -24,7 +24,6 @@ export const CopyEventButton: FC<CopyEventButtonProps> = ({ event }) => {
       coordinates: event.coordinates,
       eventStartDate: '',
       eventStartTime: '',
-      eventEndDate: '',
       eventEndTime: '',
     };
 

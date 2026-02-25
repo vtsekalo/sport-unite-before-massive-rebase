@@ -66,7 +66,7 @@ export const theme = (isMobile: boolean) =>
         styleOverrides: {
           root: {
             borderRadius: 10,
-            lineHeight: 1,
+            lineHeight: 1.5,
           },
         },
         variants: [

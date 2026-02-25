@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,7 @@ import { Box, Button, Typography, useTheme } from '@mui/material';
 
 import { CommonEventListEntity } from '@entities/common-event-list';
 import { Crown } from '@shared/assets';
-import { IEventWithoutCoordinates, ROUTES } from '@shared/lib';
+import { IEventWithoutCoordinates, ROUTES, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui';
 import { SportIcon } from '@shared/ui/sport-icons';
 import { CommonEventListSkeleton } from '@widgets/common-events-list';
@@ -116,9 +115,10 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
                       lineHeight={'1.5'}
                     >
                       {eventItem.eventStartDate
-                        ? dayjs(eventItem.eventEndDate).format(
-                            'DD.MM.YYYY [в] HH:mm',
-                          )
+                        ? dayjs
+                            .utc(eventItem.eventEndDate)
+                            .local()
+                            .format('DD.MM.YYYY [в] HH:mm')
                         : ''}
                     </Typography>
                   }

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC, Fragment, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,7 @@ import { Box, Divider, Icon, Tooltip, Typography } from '@mui/material';
 
 import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { Crown } from '@shared/assets';
-import { EventStatus, IEvent, ROUTES, UserRole } from '@shared/lib';
+import { EventStatus, IEvent, ROUTES, UserRole, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
@@ -135,9 +134,10 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
                         fontSize='12px'
                       >
                         {event.eventStartDate
-                          ? dayjs(event.eventStartDate).format(
-                              'DD.MM.YYYY [в] HH:mm',
-                            )
+                          ? dayjs
+                              .utc(event.eventStartDate)
+                              .local()
+                              .format('DD.MM.YYYY [в] HH:mm')
                           : ''}
                       </Typography>
                     }
