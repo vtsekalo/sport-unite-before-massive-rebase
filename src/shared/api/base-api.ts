@@ -6,7 +6,7 @@ export const baseApi = createApi({
     baseUrl:
       import.meta.env.VITE_USE_MOCKS === 'true'
         ? ''
-        : 'https://api-gateway.dev.sport-unite.it-mentor.space',
+        : import.meta.env.VITE_BASE_URL,
     credentials: 'include',
     prepareHeaders: (headers) => {
       headers.set('Accept', 'application/json');

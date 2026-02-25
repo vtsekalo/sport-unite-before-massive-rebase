@@ -11,7 +11,7 @@ import { JoinEventButton } from '@features/join-event';
 import { EventFooterMode, EventStatus } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
-type Props = {
+type EventCardFooterProps = {
   eventId?: string;
   eventStatus: EventStatus;
   isOrganizer: boolean;
@@ -22,7 +22,7 @@ type Props = {
   onCanceled: () => void;
 };
 
-export const EventCardFooter: FC<Props> = ({
+export const EventCardFooter: FC<EventCardFooterProps> = ({
   eventId,
   eventStatus,
   isOrganizer,

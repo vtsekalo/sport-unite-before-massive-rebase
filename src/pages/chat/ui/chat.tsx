@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -13,7 +12,7 @@ import {
   useGetMyProfileQuery,
   useGetUserChatsQuery,
 } from '@shared/api';
-import { useAppSelector } from '@shared/lib';
+import { dayjs, useAppSelector } from '@shared/lib';
 import { InputSearch } from '@shared/ui/input';
 
 // import { ChatMessages } from '@widgets/chat-messages';
@@ -102,9 +101,11 @@ export const Chat: FC = () => {
   }
 
   const date =
-    chat?.eventStartDate && dayjs(chat?.eventStartDate).format('DD.MM.YYYY');
+    chat?.eventStartDate &&
+    dayjs.utc(chat?.eventStartDate).local().format('DD.MM.YYYY');
   const horse =
-    chat?.eventStartDate && dayjs(chat?.eventStartDate).format('HH:mm');
+    chat?.eventStartDate &&
+    dayjs.utc(chat?.eventStartDate).local().format('HH:mm');
 
   return (
     <ModalWrapper>

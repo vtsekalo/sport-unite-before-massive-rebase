@@ -5,11 +5,16 @@ import { providesList } from '@shared/lib/utils/provides-list';
 export const eventApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getFilteredEvents: builder.query<IEvent[], EventSearchRequest>({
-      query: (filters) => ({
-        url: ApiEndpoints.EVENTS_SEARCH,
-        method: 'POST',
-        body: filters,
-      }),
+      query: (filters) => {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        return {
+          url: ApiEndpoints.EVENTS_SEARCH,
+          method: 'POST',
+          body: filters,
+          headers: timezone ? { timezone } : undefined,
+        };
+      },
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
 
