@@ -37,7 +37,6 @@ export const EventCardEntity: FC<EventInfoProps> = ({
         md: `calc(100vh - ${theme.spacing(17)} - ${theme.spacing(11)})`,
       }}
       maxWidth={{ xs: 361, md: 440 }}
-      pb={2}
     >
       {headerNode}
       <Box
@@ -77,7 +76,7 @@ export const EventCardEntity: FC<EventInfoProps> = ({
           mt={{ xs: 'auto', md: 0 }}
           display='flex'
           justifyContent='center'
-          gap={1.25}
+          pb={2}
         >
           {footerActionsNode}
         </Box>
