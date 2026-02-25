@@ -1,4 +1,8 @@
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import * as yup from 'yup';
+
+dayjs.extend(isBetween);
 
 export const createEventSchema = yup.object({
   eventType: yup.string().required('Выберите тип события'),
@@ -20,23 +24,16 @@ export const createEventSchema = yup.object({
     .test(
       'min-future-datetime',
       'Событие должно начинаться в пределах 30 дней',
-      function (value) {
+      (value) => {
         if (!value) return false;
-
-        const [year, month, day] = value.split('-').map(Number);
-        const eventDate = new Date(year, month - 1, day);
-
-        const now = new Date();
-
-        const minDate = new Date(now);
-        minDate.setDate(minDate.getDate());
-        minDate.setHours(0, 0, 0, 0);
-
-        const maxDate = new Date(now);
-        maxDate.setDate(maxDate.getDate() + 30);
-        maxDate.setHours(23, 59, 59, 999);
-
-        return eventDate >= minDate && eventDate <= maxDate;
+        const eventDate = dayjs(value);
+        const now = dayjs();
+        return eventDate.isBetween(
+          now.startOf('day'),
+          now.add(30, 'day').endOf('day'),
+          null,
+          '[]',
+        );
       },
     ),
 
@@ -46,16 +43,16 @@ export const createEventSchema = yup.object({
     .test(
       'min-future-datetime',
       'Событие должно начаться минимум через 1 час от текущего времени',
-      function (value) {
-        if (!value) return false;
-        const { eventStartDate } = this.parent;
-        if (!eventStartDate) return true;
+      (value, { parent }) => {
+        if (!value || !parent.eventStartDate) return true;
 
-        const eventDateTime = new Date(`${eventStartDate}T${value}:00`);
-        const now = new Date();
-        const minDateTime = new Date(now.getTime() + 60 * 60 * 1000);
+        const eventDateTime = dayjs(`${parent.eventStartDate}T${value}`);
+        const minDateTime = dayjs().add(1, 'hour');
 
-        return eventDateTime >= minDateTime;
+        return (
+          eventDateTime.isAfter(minDateTime) ||
+          eventDateTime.isSame(minDateTime)
+        );
       },
     ),
 
@@ -65,20 +62,19 @@ export const createEventSchema = yup.object({
     .test(
       'min-1-hour',
       'Время окончания должно быть как минимум на 1 час позже времени начала',
-      function (value) {
-        if (!value) return false;
+      (value, { parent }) => {
+        if (!value || !parent.eventStartDate || !parent.eventStartTime)
+          return true;
 
-        const { eventStartDate, eventStartTime } = this.parent;
-        if (!eventStartDate || !eventStartTime) return true;
-
-        const startDateTime = new Date(
-          `${eventStartDate}T${eventStartTime}:00`,
+        const startDateTime = dayjs(
+          `${parent.eventStartDate}T${parent.eventStartTime}`,
         );
-        const endDateTime = new Date(`${eventStartDate}T${value}:00`);
+        const endDateTime = dayjs(`${parent.eventStartDate}T${value}`);
+        const minEndTime = startDateTime.add(1, 'hour');
 
-        const minEndTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
-
-        return endDateTime >= minEndTime;
+        return (
+          endDateTime.isAfter(minEndTime) || endDateTime.isSame(minEndTime)
+        );
       },
     ),
 

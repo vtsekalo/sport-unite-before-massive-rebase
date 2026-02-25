@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFilteredEventsQuery } from '@shared/api/event-api';
@@ -15,7 +15,7 @@ import {
 } from '@shared/store';
 
 import { EventScope, EventStatus } from '../types/enums';
-import { EventSearchRequest, IEvent } from '../types/event';
+import { EventSearchRequest } from '../types/event';
 
 export const useEventSearch = () => {
   const dispatch = useDispatch();
@@ -24,27 +24,6 @@ export const useEventSearch = () => {
 
   const { data, isLoading, error, refetch } =
     useGetFilteredEventsQuery(filters);
-
-  const filteredData = useMemo(() => {
-    if (!data || !filters.eventStartDate) return data;
-
-    try {
-      const filterDateOnly = filters.eventStartDate.split('T')[0];
-
-      return data.filter((event: IEvent) => {
-        if (!event.eventStartDate) return false;
-
-        try {
-          const eventDateOnly = event.eventStartDate.split('T')[0];
-          return eventDateOnly >= filterDateOnly;
-        } catch {
-          return false;
-        }
-      });
-    } catch {
-      return data;
-    }
-  }, [data, filters.eventStartDate]);
 
   const applyFilters = useCallback(
     (newFilters: Partial<EventSearchRequest>) => {
@@ -112,7 +91,7 @@ export const useEventSearch = () => {
     setStartDate,
     setScope,
     setRange,
-    events: filteredData || [],
+    events: data || [],
     isLoading,
     error,
     refetch,

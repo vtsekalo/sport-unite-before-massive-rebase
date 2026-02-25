@@ -23,8 +23,7 @@ import {
 
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useGetTypeEventsQuery } from '@shared/api';
-import { ROUTES } from '@shared/lib';
-import { showSnackbar } from '@shared/lib/show-snackbar';
+import { ROUTES, dayjs } from '@shared/lib';
 
 import {
   useCreateEventMutation,
@@ -80,35 +79,16 @@ export const CreateEventPage: FC = () => {
     fileInputRef.current?.click();
   };
 
-  const today = new Date();
-  const maxDate = new Date();
-  maxDate.setDate(today.getDate() + 30);
-  const formattedToday = today.toISOString().split('T')[0];
-  const formattedMaxDate = maxDate.toISOString().split('T')[0];
+  const today = dayjs();
+  const maxDate = today.add(30, 'day');
+
+  const formattedToday = today.format('YYYY-MM-DD');
+  const formattedMaxDate = maxDate.format('YYYY-MM-DD');
 
   const handlePhotoChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
-
-      if (file.size > 5 * 1024 * 1024) {
-        showSnackbar('Размер файла не должен превышать 5 МБ', 'error');
-        return;
-      }
-
-      const supportedFormats = [
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/webp',
-      ];
-      if (!supportedFormats.includes(file.type)) {
-        showSnackbar(
-          'Поддерживаются только изображения (jpg, jpeg, png, webp)',
-          'error',
-        );
-        return;
-      }
 
       setValue('eventPhoto', file, { shouldValidate: true });
 
@@ -152,8 +132,17 @@ export const CreateEventPage: FC = () => {
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
       try {
-        const eventStartDate = `${data.eventStartDate}T${data.eventStartTime}:00`;
-        const eventEndDate = `${data.eventStartDate}T${data.eventEndTime}:00`;
+        const eventStartDate = dayjs(
+          `${data.eventStartDate} ${data.eventStartTime}`,
+        )
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+        const eventEndDate = dayjs(
+          `${data.eventStartDate} ${data.eventEndTime}`,
+        )
+          .utc()
+          .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
         const eventData = {
           eventType: data.eventType,

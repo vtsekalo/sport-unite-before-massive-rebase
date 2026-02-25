@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -9,9 +8,9 @@ import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 import { EventCardEntity } from '@entities/event-card';
 import { useGetEventByIdQuery } from '@shared/api';
 import {
-  IEvent,
   IUserParticipant,
   ROUTES,
+  dayjs,
   useEventParticipantData,
   useIsEventOrganizer,
   useProfile,
@@ -65,20 +64,19 @@ export const EventCard: FC = () => {
   const renderEventContent = () => {
     if (!eventData) return null;
 
-    const event: IEvent = {
-      eventId: eventData.eventId,
-      eventName: eventData.eventName,
-      eventType: eventData.eventType,
-      eventStatus: eventData.eventStatus,
-      eventStartDate: eventData.eventStartDate,
-      eventEndDate: dayjs(eventData.eventEndDate).format('HH:mm'),
-      countUsers: eventData.countUsers,
-      eventDescription: eventData.eventDescription,
-      eventPhoto: eventData.eventPhoto,
-      eventLocation: eventData.eventLocation,
-      coordinates: eventData.coordinates,
-      users: eventData.users,
-    };
+    const {
+      eventId,
+      eventName,
+      eventType,
+      eventStatus,
+      eventStartDate,
+      eventEndDate,
+      countUsers,
+      eventDescription,
+      eventPhoto,
+      eventLocation,
+      users,
+    } = eventData;
 
     const handleClose = () => {
       if (location.state?.from === 'list') {
@@ -88,8 +86,8 @@ export const EventCard: FC = () => {
       }
     };
 
-    const usersCount = event.users?.length || 0;
-    const maxUsers = event.countUsers;
+    const usersCount = users?.length || 0;
+    const maxUsers = countUsers;
 
     return (
       <EventCardEntity
@@ -102,8 +100,8 @@ export const EventCard: FC = () => {
             flexShrink={0}
           >
             <ImageWrapper
-              key={event.eventId}
-              src={event.eventPhoto}
+              key={eventId}
+              src={eventPhoto}
               borderRadius={0}
               fontSize={100}
               width={{ xs: '361px', md: '440px' }}
@@ -112,9 +110,9 @@ export const EventCard: FC = () => {
               <Styled.EventImage
                 width='100%'
                 height='100%'
-                $status={event.eventStatus}
-                src={event.eventPhoto}
-                alt={event.eventName}
+                $status={eventStatus}
+                src={eventPhoto}
+                alt={eventName}
               />
             </ImageWrapper>
             <Box
@@ -140,7 +138,7 @@ export const EventCard: FC = () => {
               height={48}
               border={3}
               borderColor='#2269FF'
-              type={event.eventType}
+              type={eventType}
               widthIcon='26px'
               heightIcon='26px'
               filter={false}
@@ -152,7 +150,7 @@ export const EventCard: FC = () => {
               fontWeight={600}
               alignSelf='center'
             >
-              {event.eventName}
+              {eventName}
             </Typography>
             {isOrganizer && (
               <Button variant='contained' size='classicWidthAction'>
@@ -164,14 +162,14 @@ export const EventCard: FC = () => {
         dateNode={
           <>
             <Typography variant='body2' color='primary'>
-              {dayjs(event.eventStartDate).format('DD.MM.YYYY')}
+              {dayjs.utc(eventStartDate).local().format('DD.MM.YYYY')}
             </Typography>
             <Typography variant='body2' color='primary'>
-              {`${dayjs(event.eventStartDate).format('HH:mm')} - ${event.eventEndDate}`}
+              {`${dayjs.utc(eventStartDate).local().format('HH:mm')} - ${dayjs.utc(eventEndDate).local().format('HH:mm')}`}
             </Typography>
           </>
         }
-        locationNode={<>Место: {event.eventLocation}</>}
+        locationNode={<>Место: {eventLocation}</>}
         descriptionNode={
           <>
             Описание события.
@@ -182,7 +180,7 @@ export const EventCard: FC = () => {
               overflow='hidden'
               sx={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
             >
-              {event.eventDescription}
+              {eventDescription}
             </Typography>
           </>
         }
@@ -200,7 +198,7 @@ export const EventCard: FC = () => {
               {organizer?.userId && (
                 <Styled.EventAvatar
                   alt={organizer.nickName}
-                  src={`${organizer.urlUserPhoto}?v=${Math.random()}`}
+                  src={organizer.urlUserPhoto || ''}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
@@ -244,9 +242,9 @@ export const EventCard: FC = () => {
         footerActionsNode={
           <EventCardFooter
             isOrganizer={isOrganizer}
-            eventStartDate={event.eventStartDate}
-            eventStatus={event.eventStatus}
-            eventId={event.eventId}
+            eventStartDate={eventStartDate}
+            eventStatus={eventStatus}
+            eventId={eventId}
             hasFreeSlots={maxUsers > usersCount}
             onCanceled={() => navigate(ROUTES.HOME)}
             isParticipant={isParticipant}

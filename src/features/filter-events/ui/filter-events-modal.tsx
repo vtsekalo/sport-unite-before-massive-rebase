@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useGetTypeEventsQuery } from '@shared/api';
-import { IEventType, ROUTES, useEventSearch } from '@shared/lib';
+import { IEventType, ROUTES, dayjs, useEventSearch } from '@shared/lib';
 import {
   resetCustomRange,
   selectFilters,
@@ -34,8 +32,6 @@ import {
 
 import { getZoomForRadius } from '../lib/get-zoom-for-radius';
 import { Styled } from './filter-events-modal.styled';
-
-dayjs.extend(utc);
 
 interface FilterEventsModalProps {
   buttonRef: HTMLButtonElement | null;
@@ -113,8 +109,8 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
     setTypes(sportNames.length > 0 ? sportNames : undefined);
 
     const dateString = dateValue
-      ? dateValue.utc().startOf('day').toISOString()
-      : undefined;
+      ?.startOf('day')
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
     setStartDate(dateString);
 
     if (radius > 0) {

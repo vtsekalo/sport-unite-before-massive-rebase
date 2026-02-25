@@ -1,11 +1,10 @@
-import dayjs from 'dayjs';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Skeleton, Typography } from '@mui/material';
 
 import { ChatCardEntity } from '@entities/chat-card';
-import { IChat, ROUTES } from '@shared/lib';
+import { IChat, ROUTES, dayjs } from '@shared/lib';
 import { formatDateOrTime } from '@shared/lib';
 import { SportIcon } from '@shared/ui/sport-icons';
 
@@ -42,7 +41,7 @@ export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
           formatDateOrTime(chat.lastMessageDateTime),
         eventStartDate:
           chat.eventStartDate &&
-          dayjs(chat.eventStartDate).format('DD.MM.YYYY [в] HH:mm'),
+          dayjs.utc(chat.eventStartDate).local().format('DD.MM.YYYY [в] HH:mm'),
       }),
     ) ?? [];
 
