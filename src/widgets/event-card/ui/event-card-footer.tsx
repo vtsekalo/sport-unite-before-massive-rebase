@@ -6,7 +6,7 @@ import { Box, Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
 import { CancelEventButton } from '@features/cancel-event';
-import { ExitEventButton, canExitEvent } from '@features/exit-event';
+import { ExitEventButton } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
 import { EventFooterMode, EventStatus } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
@@ -25,7 +25,6 @@ type Props = {
 export const EventCardFooter: FC<Props> = ({
   eventId,
   eventStatus,
-  eventStartDate,
   isOrganizer,
   isParticipant,
   hasFreeSlots,
@@ -47,9 +46,7 @@ export const EventCardFooter: FC<Props> = ({
     [EventFooterMode.ORGANIZER]: (
       <CancelEventButton eventId={eventId} onCanceled={onCanceled} />
     ),
-    [EventFooterMode.PARTICIPANT]: (
-      <ExitEventButton eventId={eventId} eventStartDate={eventStartDate} />
-    ),
+    [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={eventId} />,
     [EventFooterMode.GUEST]: (
       <JoinEventButton
         eventId={eventId}
@@ -82,18 +79,6 @@ export const EventCardFooter: FC<Props> = ({
             </Button>
           )}
         </Box>
-        {isParticipant && !canExitEvent(eventStartDate) && (
-          <Typography
-            color='text.secondary'
-            fontSize='12px'
-            lineHeight={1.25}
-            textAlign='center'
-            width='100%'
-            whiteSpace='pre-line'
-          >
-            Нельзя покинуть событие{'\n'}менее чем за 6 часов до начала события.
-          </Typography>
-        )}
       </Stack>
     </>
   );

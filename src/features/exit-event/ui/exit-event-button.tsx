@@ -4,29 +4,22 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Button } from '@mui/material';
 
 import { useExitEventMutation } from '../api/exit-event-api';
-import { canExitEvent } from '../lib/event-time-checking';
 import { ExitEventConfirmModal } from './exit-event-confirm-modal';
 
 type ExitEventButtonProps = {
   eventId: string | undefined;
-  eventStartDate: string;
   disabled?: boolean;
 };
 
 export const ExitEventButton: FC<ExitEventButtonProps> = ({
   eventId,
-  eventStartDate,
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [exitEvent, { isLoading }] = useExitEventMutation();
 
-  const canExit = canExitEvent(eventStartDate);
-
   const handleOpen = () => {
-    if (canExit) {
-      setIsOpen(true);
-    }
+    setIsOpen(true);
   };
 
   const handleClose = () => {
@@ -46,7 +39,7 @@ export const ExitEventButton: FC<ExitEventButtonProps> = ({
       <Button
         variant='contained'
         onClick={handleOpen}
-        disabled={disabled || !canExit || isLoading}
+        disabled={disabled || isLoading}
         startIcon={<LogoutIcon />}
         size='fullWidthAction'
       >
