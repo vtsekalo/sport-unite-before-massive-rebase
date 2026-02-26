@@ -28,7 +28,6 @@ export const LocationAutocomplete: FC<LocationAutocompleteProps> = ({
   onChange,
   onCoordinatesChange,
   error,
-  errorsMassage,
 }) => {
   const [inputValue, setInputValue] = useState(value);
 
@@ -104,7 +103,6 @@ export const LocationAutocomplete: FC<LocationAutocompleteProps> = ({
           {...params}
           label={'Место проведения'}
           size={'small'}
-          helperText={errorsMassage || 'Укажите место проведения.'}
           InputLabelProps={{ shrink: true }}
           error={error}
           InputProps={{

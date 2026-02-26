@@ -1,22 +1,51 @@
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
-import {
-  CreateEventFormData,
-  EventFormInitialData,
-  ROUTES,
-  dayjs,
-} from '@shared/lib';
+import { dayjs } from '@shared/lib';
+import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
 
-export const CreateEventPage = () => {
+export const CopyEventPage: FC = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const newEvent = state?.newEvent;
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  const urlToFile = async (url: string, filename: string): Promise<File> => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  };
+
+  useEffect(() => {
+    const preparePhoto = async () => {
+      if (newEvent?.eventPhoto) {
+        const file = await urlToFile(newEvent.eventPhoto, 'copied-photo.jpg');
+        setPhotoFile(file);
+      }
+    };
+
+    preparePhoto();
+  }, [newEvent]);
+
   const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
+  const defaultValues: EventFormInitialData = {
+    eventType: newEvent?.eventType ?? '',
+    eventName: newEvent?.eventName ?? '',
+    eventLocation: newEvent?.eventLocation ?? '',
+    eventStartDate: '',
+    eventStartTime: '',
+    eventEndTime: '',
+    countUsers: newEvent?.countUsers ?? 2,
+    eventDescription: newEvent?.eventDescription ?? '',
+    eventPhoto: photoFile,
+    coordinates: newEvent?.coordinates ?? { latitude: 0, longitude: 0 },
+  };
   const onSubmit = useCallback(
     async (data: CreateEventFormData) => {
       try {
@@ -49,12 +78,13 @@ export const CreateEventPage = () => {
 
         const createdEvent = await createEvent(eventData).unwrap();
 
-        if (data.eventPhoto instanceof File && createdEvent.eventId) {
-          await uploadPhoto({
+        if (data.eventPhoto && createdEvent.eventId) {
+          const uploadResult = await uploadPhoto({
             id: createdEvent.eventId,
             photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
+          console.log('Upload result:', uploadResult);
         }
 
         navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
@@ -65,40 +95,18 @@ export const CreateEventPage = () => {
     [createEvent, uploadPhoto, navigate],
   );
 
-  const handleCancel = () => {
-    navigate(ROUTES.HOME);
-  };
-
-  const defaultValues: EventFormInitialData = {
-    eventType: '',
-    eventName: '',
-    eventLocation: '',
-    eventStartDate: '',
-    eventStartTime: '',
-    eventEndTime: '',
-    countUsers: 0,
-    eventDescription: '',
-    eventPhoto: null,
-    coordinates: {
-      latitude: 55.754167,
-      longitude: 37.620001,
-    },
-  };
-
   return (
-    <ModalWrapper
-      maxWidth={{ xs: 361, md: 480 }}
-      height='auto'
-      maxHeight='100%'
-    >
+    <ModalWrapper maxWidth={{ xs: 377, md: 480 }}>
       <EventFormEntity
-        title='Создание события'
+        key={photoFile ? 'with-photo' : 'no-photo'}
+        title='Копирование события'
         defaultValues={defaultValues}
         onSubmit={onSubmit}
-        onClose={handleCancel}
-        submitButtonText='СОЗДАТЬ СОБЫТИЕ'
+        onClose={() => navigate(-1)}
+        submitButtonText='СОХРАНИТЬ'
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
+        initialPhotoUrl={newEvent?.eventPhoto}
       />
     </ModalWrapper>
   );

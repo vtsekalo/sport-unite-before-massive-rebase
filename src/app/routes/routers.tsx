@@ -7,6 +7,7 @@ import { AuthPage } from '@pages/auth';
 import { Chat } from '@pages/chat';
 import { Chats } from '@pages/chats';
 import { CommonEventListPage } from '@pages/common-event-list';
+import { CopyEventPage } from '@pages/copy-event';
 import { CreateEventPage } from '@pages/create-event';
 import { MyEventsPage } from '@pages/my-events';
 import { NotFoundPage } from '@pages/not-found-page';
@@ -52,6 +53,7 @@ export const Routers: FC = () => {
             />
           </Route>
           <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
+          <Route path={ROUTES.COPY_EVENT} element={<CopyEventPage />} />
           <Route
             path={ROUTES.EVENT.DETAIL(':eventId')}
             element={<EventCard />}

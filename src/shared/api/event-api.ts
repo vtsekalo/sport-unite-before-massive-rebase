@@ -1,5 +1,12 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { EventSearchRequest, IEvent, IEventType } from '@shared/lib';
+import {
+  CreateEventRequest,
+  EventSearchRequest,
+  IEvent,
+  IEventType,
+  UploadPhotoRequest,
+  UploadPhotoResponse,
+} from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
 
 export const eventApi = baseApi.injectEndpoints({
@@ -25,10 +32,12 @@ export const eventApi = baseApi.injectEndpoints({
       }),
       providesTags: (result) => providesList(result, 'EventTypes', 'typeId'),
     }),
+
     getUserEvents: builder.query<IEvent[], void>({
       query: () => ({ url: ApiEndpoints.USER_EVENTS, method: 'GET' }),
       providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
+
     getEventById: builder.query<IEvent, string>({
       query: (eventId) => ({
         url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}`,
@@ -37,6 +46,34 @@ export const eventApi = baseApi.injectEndpoints({
       providesTags: (_result, _error, eventId) => [
         { type: 'EventById', id: eventId },
       ],
+    }),
+
+    createEvent: builder.mutation<IEvent, CreateEventRequest>({
+      query: (eventData) => ({
+        url: ApiEndpoints.CREATE_EVENT,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: eventData,
+      }),
+      invalidatesTags: ['Events'],
+    }),
+
+    uploadPhoto: builder.mutation<UploadPhotoResponse, UploadPhotoRequest>({
+      query: ({ id, photoType, file }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return {
+          url: `${ApiEndpoints.UPLOAD_PHOTO}/${id}?photoType=${photoType}`,
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        };
+      },
+      invalidatesTags: ['UploadImage'],
     }),
   }),
 });
@@ -47,4 +84,6 @@ export const {
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
   useGetUserEventsQuery,
+  useCreateEventMutation,
+  useUploadPhotoMutation,
 } = eventApi;

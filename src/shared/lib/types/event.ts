@@ -66,32 +66,3 @@ export interface ICoordinate {
   latitude: number;
   longitude: number;
 }
-
-/**
- * @prop eventId - Идентификатор события.
- * @prop eventName - Название события.
- * @prop eventType - Тип события.
- * @prop eventStatus - Статус события.
- * @prop eventStartDate - Дата и время начала события.
- * @prop eventEndDate - Дата и время окончания события.
- * @prop countUsers - Количество участников.
- * @prop eventDescription - Описание события.
- * @prop [eventPhoto] - Фото события.
- * @prop [eventLocation] - Место проведения.
- * @prop coordinates - Координаты события.
- * @prop users - Список участников.
- */
-export interface IEventDetailed {
-  eventId: string;
-  eventName: string;
-  eventType: string;
-  eventStatus: EventStatus;
-  eventStartDate: string;
-  eventEndDate: string;
-  countUsers: number;
-  eventDescription: string;
-  eventLocation?: string;
-  eventPhoto: string | null;
-  coordinates: ICoordinate;
-  users: IUserParticipant[];
-}

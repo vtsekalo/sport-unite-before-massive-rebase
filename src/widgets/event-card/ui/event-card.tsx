@@ -241,6 +241,7 @@ export const EventCard: FC = () => {
         }
         footerActionsNode={
           <EventCardFooter
+            event={eventData}
             isOrganizer={isOrganizer}
             eventStartDate={eventStartDate}
             eventStatus={eventStatus}
