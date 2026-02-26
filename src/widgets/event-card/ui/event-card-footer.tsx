@@ -1,17 +1,18 @@
 import { FC } from 'react';
 
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import MailIcon from '@mui/icons-material/Mail';
 import { Box, Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 
 import { CancelEventButton } from '@features/cancel-event';
+import { CopyEventButton } from '@features/copy-event-button';
 import { ExitEventButton } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
-import { EventFooterMode, EventStatus } from '@shared/lib';
+import { EventFooterMode, EventStatus, IEvent } from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
 type EventCardFooterProps = {
+  event: IEvent;
   eventId?: string;
   eventStatus: EventStatus;
   isOrganizer: boolean;
@@ -23,6 +24,7 @@ type EventCardFooterProps = {
 };
 
 export const EventCardFooter: FC<EventCardFooterProps> = ({
+  event,
   eventId,
   eventStatus,
   isOrganizer,
@@ -56,6 +58,7 @@ export const EventCardFooter: FC<EventCardFooterProps> = ({
       />
     ),
   };
+
   return (
     <>
       <Stack gap={1.25}>
@@ -65,11 +68,7 @@ export const EventCardFooter: FC<EventCardFooterProps> = ({
           justifyContent='center'
           gap={1.25}
         >
-          {isOrganizer && (
-            <Button variant='contained' size='classicWidthAction'>
-              <ContentCopyIcon />
-            </Button>
-          )}
+          {isOrganizer && <CopyEventButton event={event} />}
 
           {components[footerMode]}
 

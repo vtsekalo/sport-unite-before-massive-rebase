@@ -11,6 +11,7 @@ export const ROUTES = {
   },
 
   ADD_EVENT: '/addevent',
+  COPY_EVENT: '/copy',
   NOTIFICATIONS: '/notifications',
   LIST: '/list',
 
