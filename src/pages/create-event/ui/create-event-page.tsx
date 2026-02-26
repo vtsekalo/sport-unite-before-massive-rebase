@@ -1,12 +1,15 @@
-import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { useCreateEventMutation } from '@shared/api';
-import { useUploadPhotoMutation } from '@shared/api';
-import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
+import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
+import {
+  CreateEventFormData,
+  EventFormInitialData,
+  ROUTES,
+  dayjs,
+} from '@shared/lib';
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -46,13 +49,12 @@ export const CreateEventPage = () => {
 
         const createdEvent = await createEvent(eventData).unwrap();
 
-        if (data.eventPhoto && createdEvent.eventId) {
-          const uploadResult = await uploadPhoto({
+        if (data.eventPhoto instanceof File && createdEvent.eventId) {
+          await uploadPhoto({
             id: createdEvent.eventId,
             photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
-          console.log('Upload result:', uploadResult);
         }
 
         navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));

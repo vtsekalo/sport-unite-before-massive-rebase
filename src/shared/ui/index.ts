@@ -5,4 +5,3 @@ export * from './map';
 export * from './modal';
 export * from './marker';
 export * from './sport-icons';
-export * from './styled-text-field';

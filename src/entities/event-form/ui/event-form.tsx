@@ -21,7 +21,6 @@ import {
 
 import { useGetTypeEventsQuery } from '@shared/api';
 import { dayjs } from '@shared/lib';
-import { showSnackbar } from '@shared/lib';
 import { CreateEventFormData, createEventSchema } from '@shared/lib';
 import { EventFormInitialData } from '@shared/lib';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
@@ -117,26 +116,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
     (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
-
-      if (file.size > 5 * 1024 * 1024) {
-        showSnackbar('Размер файла не должен превышать 5 МБ', 'error');
-        return;
-      }
-
-      const supportedFormats = [
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/webp',
-      ];
-
-      if (!supportedFormats.includes(file.type)) {
-        showSnackbar(
-          'Поддерживаются только изображения (jpg, jpeg, png, webp)',
-          'error',
-        );
-        return;
-      }
 
       const reader = new FileReader();
       reader.onloadend = () => {
