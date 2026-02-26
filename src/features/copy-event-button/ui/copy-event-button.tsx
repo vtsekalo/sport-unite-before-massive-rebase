@@ -31,7 +31,7 @@ export const CopyEventButton: FC<CopyEventButtonProps> = ({ event }) => {
   };
 
   return (
-    <Button size='classicWidthAction' onClick={handleClick}>
+    <Button variant='contained' size='classicWidthAction' onClick={handleClick}>
       <ContentCopyIcon />
     </Button>
   );

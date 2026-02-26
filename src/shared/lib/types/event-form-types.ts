@@ -49,6 +49,7 @@ export interface EventFormInitialData extends BaseEventFormData {
  */
 export interface UploadPhotoRequest {
   id: string;
+  photoType: 'EVENT';
   file: File;
 }
 

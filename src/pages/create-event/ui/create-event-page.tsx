@@ -47,10 +47,12 @@ export const CreateEventPage = () => {
         const createdEvent = await createEvent(eventData).unwrap();
 
         if (data.eventPhoto && createdEvent.eventId) {
-          await uploadPhoto({
+          const uploadResult = await uploadPhoto({
             id: createdEvent.eventId,
+            photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
+          console.log('Upload result:', uploadResult); 
         }
 
         navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));

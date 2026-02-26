@@ -57,6 +57,7 @@ export const CopyEventPage: FC = () => {
     if (data.eventPhoto && createdEvent.eventId) {
       await uploadPhoto({
         id: createdEvent.eventId,
+        photoType: 'EVENT',
         file: data.eventPhoto,
       }).unwrap();
     }
