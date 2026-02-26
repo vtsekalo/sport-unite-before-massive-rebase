@@ -143,9 +143,9 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         setPhotoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      setValue('eventPhoto', file, { shouldValidate: true }); // ← ДОБАВЬ ЭТО!
+      setValue('eventPhoto', file, { shouldValidate: true });
     },
-    [setValue], // ← Добавь в dependencies
+    [setValue],
   );
 
   const handleRemovePhoto = useCallback(() => {

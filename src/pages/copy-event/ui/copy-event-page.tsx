@@ -1,10 +1,10 @@
-import { dayjs } from '@shared/lib';
 import { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
+import { dayjs } from '@shared/lib';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
 
 export const CopyEventPage: FC = () => {
@@ -30,7 +30,9 @@ export const CopyEventPage: FC = () => {
   };
 
   const onSubmit = async (data: CreateEventFormData) => {
-    const eventStartDate = dayjs(`${data.eventStartDate} ${data.eventStartTime}`)
+    const eventStartDate = dayjs(
+      `${data.eventStartDate} ${data.eventStartTime}`,
+    )
       .utc()
       .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
@@ -67,9 +69,7 @@ export const CopyEventPage: FC = () => {
   };
 
   return (
-    <ModalWrapper
-      width={{ xs: 377, md: 480 }}
-    >
+    <ModalWrapper width={{ xs: 377, md: 480 }}>
       <EventFormEntity
         title='Копирование события'
         defaultValues={defaultValues}
