@@ -69,7 +69,8 @@ export const CopyEventPage: FC = () => {
   };
 
   return (
-    <ModalWrapper width={{ xs: 377, md: 480 }}>
+    <ModalWrapper maxWidth={{ xs: 377, md: 480 }}
+    >
       <EventFormEntity
         title='Копирование события'
         defaultValues={defaultValues}
