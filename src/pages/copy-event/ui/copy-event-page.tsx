@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { dayjs } from '@shared/lib';
 import { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -25,17 +25,18 @@ export const CopyEventPage: FC = () => {
     eventEndTime: '',
     countUsers: newEvent?.countUsers ?? 2,
     eventDescription: newEvent?.eventDescription ?? '',
-    eventPhoto: newEvent?.eventPhoto ?? null,
+    eventPhoto: null,
     coordinates: newEvent?.coordinates ?? { latitude: 0, longitude: 0 },
   };
 
   const onSubmit = async (data: CreateEventFormData) => {
-    const eventStartDate = dayjs(
-      `${data.eventStartDate} ${data.eventStartTime}`,
-    ).format();
-    const eventEndDate = dayjs(
-      `${data.eventStartDate} ${data.eventEndTime}`,
-    ).format();
+    const eventStartDate = dayjs(`${data.eventStartDate} ${data.eventStartTime}`)
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+    const eventEndDate = dayjs(`${data.eventStartDate} ${data.eventEndTime}`)
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
     const eventData = {
       eventType: data.eventType,
@@ -54,7 +55,7 @@ export const CopyEventPage: FC = () => {
 
     const createdEvent = await createEvent(eventData).unwrap();
 
-    if (data.eventPhoto && createdEvent.eventId) {
+    if (data.eventPhoto instanceof File && createdEvent.eventId) {
       await uploadPhoto({
         id: createdEvent.eventId,
         photoType: 'EVENT',
@@ -67,10 +68,7 @@ export const CopyEventPage: FC = () => {
 
   return (
     <ModalWrapper
-      maxWidth={{ xs: 377, md: 480 }}
-      height='auto'
-      maxHeight={{ xs: 'calc(100vh - 176px)', md: 'calc(100vh - 168px)' }}
-      overflow='auto'
+      width={{ xs: 377, md: 480 }}
     >
       <EventFormEntity
         title='Копирование события'

@@ -53,7 +53,7 @@ export const Routers: FC = () => {
             />
           </Route>
           <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
-          <Route path={ROUTES.EVENT.COPY} element={<CopyEventPage />} />
+          <Route path={ROUTES.COPY_EVENT} element={<CopyEventPage />} />
           <Route
             path={ROUTES.EVENT.DETAIL(':eventId')}
             element={<EventCard />}

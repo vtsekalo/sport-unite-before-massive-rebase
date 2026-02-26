@@ -27,7 +27,7 @@ export const CopyEventButton: FC<CopyEventButtonProps> = ({ event }) => {
       eventEndTime: '',
     };
 
-    navigate(ROUTES.EVENT.COPY, { state: { newEvent } });
+    navigate(ROUTES.COPY_EVENT, { state: { newEvent } });
   };
 
   return (

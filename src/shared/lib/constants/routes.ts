@@ -11,6 +11,7 @@ export const ROUTES = {
   },
 
   ADD_EVENT: '/addevent',
+  COPY_EVENT: '/copy',
   NOTIFICATIONS: '/notifications',
   LIST: '/list',
 
@@ -24,7 +25,6 @@ export const ROUTES = {
 
   EVENT: {
     DETAIL: (id: string | number) => `/events/${id}`,
-    COPY: '/events/copy',
   },
 
   NOT_FOUND: '*',
