@@ -1,10 +1,10 @@
-import { dayjs } from '@shared/lib';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
+import { dayjs } from '@shared/lib';
 import { CreateEventFormData, EventFormInitialData, ROUTES } from '@shared/lib';
 
 export const CopyEventPage: FC = () => {
@@ -18,7 +18,7 @@ export const CopyEventPage: FC = () => {
     const blob = await response.blob();
     return new File([blob], filename, { type: blob.type });
   };
-  
+
   useEffect(() => {
     const preparePhoto = async () => {
       if (newEvent?.eventPhoto) {
@@ -96,9 +96,7 @@ export const CopyEventPage: FC = () => {
   );
 
   return (
-    <ModalWrapper
-      maxWidth={{ xs: 377, md: 480 }}
-    >
+    <ModalWrapper maxWidth={{ xs: 377, md: 480 }}>
       <EventFormEntity
         key={photoFile ? 'with-photo' : 'no-photo'}
         title='Копирование события'
