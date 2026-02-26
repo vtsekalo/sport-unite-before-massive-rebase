@@ -34,20 +34,3 @@ yarn dev
 2. В случае если в моках есть ошибки, можно поменять внутри .env.development  
 false на true 
 VITE_MSW_DEBUG=false
-
-3. Установка HTTPS-сертификатов
-
-MSW требует безопасного контекста (HTTPS) для корректной регистрации Service Worker,  
-если проект работает на кастомном хосте (например как у нас `https://front.dev.sport-unite.it-mentor.space:5173`).
-
-В данном случае необходимо установить сертификаты безопасности для локальной разработки используя mkcert  
-
-в vite.config.ts для них указаны следующие наименования и расположение
-
-    https: {
-
-      key: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2-key.pem'),
-
-      cert: fs.readFileSync('./front.dev.sport-unite.it-mentor.space+2.pem')
-
-}
