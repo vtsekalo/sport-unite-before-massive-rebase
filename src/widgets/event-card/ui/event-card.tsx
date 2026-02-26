@@ -224,7 +224,7 @@ export const EventCard: FC = () => {
                   <Styled.EventAvatar
                     key={user.userId}
                     alt={user.nickName}
-                    src={`${user.urlUserPhoto}?v=${Math.random()}`}
+                    src={user.urlUserPhoto || ''}
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(ROUTES.PROFILE.DETAIL(user.userId));
