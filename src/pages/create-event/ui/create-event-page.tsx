@@ -52,7 +52,7 @@ export const CreateEventPage = () => {
             photoType: 'EVENT',
             file: data.eventPhoto,
           }).unwrap();
-          console.log('Upload result:', uploadResult); 
+          console.log('Upload result:', uploadResult);
         }
 
         navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));

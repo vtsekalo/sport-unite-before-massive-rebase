@@ -143,13 +143,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         setPhotoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-    setValue('eventPhoto', file, { shouldValidate: true });  // ← ДОБАВЬ ЭТО!
-  },
-  [setValue],  // ← Добавь в dependencies
-);
+      setValue('eventPhoto', file, { shouldValidate: true }); // ← ДОБАВЬ ЭТО!
+    },
+    [setValue], // ← Добавь в dependencies
+  );
 
   const handleRemovePhoto = useCallback(() => {
-    setValue('eventPhoto', null); 
+    setValue('eventPhoto', null);
     setPhotoPreview(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -214,7 +214,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           </Button>
 
           {photoPreview && (
-            <Button size='classicWidthAction' onClick={handleRemovePhoto}>
+            <Button variant='contained' size='classicWidthAction' onClick={handleRemovePhoto}>
               <DeleteIcon />
             </Button>
           )}
