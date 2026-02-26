@@ -48,17 +48,6 @@ export const eventApi = baseApi.injectEndpoints({
       ],
     }),
 
-    deleteEvent: builder.mutation<void, string>({
-      query: (eventId) => ({
-        url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}/delete`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: (_result, _error, eventId) => [
-        { type: 'Events', id: 'LIST' },
-        { type: 'EventById', id: eventId },
-      ],
-    }),
-
     createEvent: builder.mutation<IEvent, CreateEventRequest>({
       query: (eventData) => ({
         url: ApiEndpoints.CREATE_EVENT,
