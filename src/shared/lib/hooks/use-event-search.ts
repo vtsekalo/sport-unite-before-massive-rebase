@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFilteredEventsQuery } from '@shared/api/event-api';
 import {
@@ -16,11 +15,12 @@ import {
 
 import { EventScope, EventStatus } from '../types/enums';
 import { EventSearchRequest } from '../types/event';
+import { useAppDispatch, useAppSelector } from './base-hooks';
 
 export const useEventSearch = () => {
-  const dispatch = useDispatch();
-  const filters = useSelector(selectEventSearchRequest);
-  const useCustomRange = useSelector(selectUseCustomRange);
+  const dispatch = useAppDispatch();
+  const filters = useAppSelector(selectEventSearchRequest);
+  const useCustomRange = useAppSelector(selectUseCustomRange);
 
   const { data, isLoading, error, refetch } =
     useGetFilteredEventsQuery(filters);
