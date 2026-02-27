@@ -60,25 +60,23 @@ export const EventCardFooter: FC<EventCardFooterProps> = ({
   };
 
   return (
-    <>
-      <Stack gap={1.25}>
-        <Box
-          mt={{ xs: 'auto', md: 0 }}
-          display='flex'
-          justifyContent='center'
-          gap={1.25}
-        >
-          {isOrganizer && <CopyEventButton event={event} />}
+    <Stack gap={1.25}>
+      <Box
+        mt={{ xs: 'auto', md: 0 }}
+        display='flex'
+        justifyContent='center'
+        gap={1.25}
+      >
+        {isOrganizer && <CopyEventButton event={event} />}
 
-          {components[footerMode]}
+        {components[footerMode]}
 
-          {(isOrganizer || isParticipant) && (
-            <Button variant='contained' size='classicWidthAction'>
-              <MailIcon />
-            </Button>
-          )}
-        </Box>
-      </Stack>
-    </>
+        {(isOrganizer || isParticipant) && (
+          <Button variant='contained' size='classicWidthAction'>
+            <MailIcon />
+          </Button>
+        )}
+      </Box>
+    </Stack>
   );
 };

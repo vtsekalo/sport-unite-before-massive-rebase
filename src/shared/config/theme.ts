@@ -1,5 +1,10 @@
 import { createTheme } from '@mui/material';
 
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    bodySmall: true;
+  }
+}
 declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
@@ -34,7 +39,7 @@ export const theme = (isMobile: boolean) =>
     typography: {
       fontFamily: 'Roboto, "Arial", sans-serif',
       button: {
-        fontWeight: 400,
+        fontWeight: 500,
         letterSpacing: '0.028em',
       },
     },
@@ -53,6 +58,17 @@ export const theme = (isMobile: boolean) =>
     },
 
     components: {
+      MuiTypography: {
+        variants: [
+          {
+            props: { variant: 'bodySmall' },
+            style: {
+              fontSize: '14px',
+              fontWeight: 400,
+            },
+          },
+        ],
+      },
       MuiCssBaseline: {
         styleOverrides: {
           body: {

@@ -23,13 +23,24 @@ type InputSearchProps = {
 export const InputSearch: FC<InputSearchProps> = ({
   startIcon = (
     <Box
-      component='img'
-      src={Logo}
-      alt='Logo'
       width={24}
       height={24}
-      borderRadius={'10px'}
-    />
+      borderRadius='10px'
+      overflow='hidden'
+      bgcolor='primary.main'
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+    >
+      <Box
+        component='img'
+        src={Logo}
+        alt='Logo'
+        width={19}
+        height={19}
+        style={{ margin: '-2px' }}
+      />
+    </Box>
   ),
   endIcon = <SearchIcon />,
   onClick,
