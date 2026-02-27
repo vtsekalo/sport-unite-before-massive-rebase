@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
@@ -46,54 +46,45 @@ export const CopyEventPage: FC = () => {
     eventPhoto: photoFile,
     coordinates: newEvent?.coordinates ?? { latitude: 0, longitude: 0 },
   };
-  const onSubmit = useCallback(
-    async (data: CreateEventFormData) => {
-      try {
-        const eventStartDate = dayjs(
-          `${data.eventStartDate} ${data.eventStartTime}`,
-        )
-          .utc()
-          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+  const onSubmit = async (data: CreateEventFormData) => {
+    const eventStartDate = dayjs(
+      `${data.eventStartDate} ${data.eventStartTime}`,
+    )
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-        const eventEndDate = dayjs(
-          `${data.eventStartDate} ${data.eventEndTime}`,
-        )
-          .utc()
-          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const eventEndDate = dayjs(`${data.eventStartDate} ${data.eventEndTime}`)
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-        const eventData = {
-          eventType: data.eventType,
-          eventName: data.eventName,
-          eventLocation: data.eventLocation,
-          eventStartDate,
-          eventEndDate,
-          eventDescription: data.eventDescription,
-          countUsers: data.countUsers,
-          eventPhoto: '',
-          coordinates: {
-            latitude: data.coordinates.latitude,
-            longitude: data.coordinates.longitude,
-          },
-        };
+    const eventData = {
+      eventType: data.eventType,
+      eventName: data.eventName,
+      eventLocation: data.eventLocation,
+      eventStartDate,
+      eventEndDate,
+      eventDescription: data.eventDescription,
+      countUsers: data.countUsers,
+      eventPhoto: '',
+      coordinates: {
+        latitude: data.coordinates.latitude,
+        longitude: data.coordinates.longitude,
+      },
+    };
 
-        const createdEvent = await createEvent(eventData).unwrap();
+    const createdEvent = await createEvent(eventData).unwrap();
 
-        if (data.eventPhoto && createdEvent.eventId) {
-          const uploadResult = await uploadPhoto({
-            id: createdEvent.eventId,
-            photoType: 'EVENT',
-            file: data.eventPhoto,
-          }).unwrap();
-          console.log('Upload result:', uploadResult);
-        }
+    if (data.eventPhoto && createdEvent.eventId) {
+      const uploadResult = await uploadPhoto({
+        id: createdEvent.eventId,
+        photoType: 'EVENT',
+        file: data.eventPhoto,
+      }).unwrap();
+      console.log('Upload result:', uploadResult);
+    }
 
-        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
-      } catch (error) {
-        console.error('Error creating common-event-card-list:', error);
-      }
-    },
-    [createEvent, uploadPhoto, navigate],
-  );
+    navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+  };
 
   return (
     <ModalWrapper maxWidth={{ xs: 377, md: 480 }}>
@@ -103,7 +94,7 @@ export const CopyEventPage: FC = () => {
         defaultValues={defaultValues}
         onSubmit={onSubmit}
         onClose={() => navigate(-1)}
-        submitButtonText='СОХРАНИТЬ'
+        submitButtonText='СОЗДАТЬ СОБЫТИЕ'
         isSubmitting={isCreating}
         isUploadingPhoto={isUploadingPhoto}
         initialPhotoUrl={newEvent?.eventPhoto}

@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EventIcon from '@mui/icons-material/Event';
 import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
@@ -18,11 +19,17 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useGetTypeEventsQuery } from '@shared/api';
-import { dayjs } from '@shared/lib';
-import { CreateEventFormData, createEventSchema } from '@shared/lib';
-import { EventFormInitialData } from '@shared/lib';
+import {
+  CreateEventFormData,
+  EventFormInitialData,
+  createEventSchema,
+  dayjs,
+} from '@shared/lib';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 
 import { PhotoPreview } from './event-form.styled';
@@ -77,9 +84,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
 
   const today = dayjs();
   const maxDate = today.add(30, 'day');
-
-  const formattedToday = today.format('YYYY-MM-DD');
-  const formattedMaxDate = maxDate.format('YYYY-MM-DD');
 
   const sortedEventTypes = useMemo(() => {
     if (!eventTypes) return [];
@@ -270,27 +274,45 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           placeholder='Начните вводить адрес или название места'
         />
 
-        <Controller
-          name='eventStartDate'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Дата начала мероприятия'
-              type='date'
-              InputLabelProps={{ shrink: true }}
-              inputProps={{
-                min: formattedToday,
-                max: formattedMaxDate,
-              }}
-              error={Boolean(errors.eventStartDate)}
-              helperText={
-                errors.eventStartDate?.message || 'Укажите дату начала события'
-              }
-            />
-          )}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Controller
+            name='eventStartDate'
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <DatePicker
+                label='Дата начала мероприятия'
+                minDate={today}
+                maxDate={maxDate}
+                value={
+                  field.value && field.value !== 'invalid'
+                    ? dayjs(field.value)
+                    : null
+                }
+                onChange={(newDate) => {
+                  if (newDate && newDate.isValid()) {
+                    field.onChange(newDate.format('YYYY-MM-DD'));
+                  } else {
+                    field.onChange(newDate === null ? '' : 'invalid');
+                  }
+                }}
+                slots={{ openPickerIcon: EventIcon, toolbar: () => null }}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                    error: !!error,
+                    helperText:
+                      error?.message ||
+                      (field.value || ''
+                        ? 'Данные введены корректно.'
+                        : 'Укажите дату начала события'),
+                    fullWidth: true,
+                  },
+                }}
+                format='DD.MM.YYYY'
+              />
+            )}
+          />
+        </LocalizationProvider>
 
         <Controller
           name='eventStartTime'

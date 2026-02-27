@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { EventFormEntity } from '@entities/event-form';
@@ -17,53 +16,44 @@ export const CreateEventPage = () => {
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
-  const onSubmit = useCallback(
-    async (data: CreateEventFormData) => {
-      try {
-        const eventStartDate = dayjs(
-          `${data.eventStartDate} ${data.eventStartTime}`,
-        )
-          .utc()
-          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+  const onSubmit = async (data: CreateEventFormData) => {
+    const eventStartDate = dayjs(
+      `${data.eventStartDate} ${data.eventStartTime}`,
+    )
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-        const eventEndDate = dayjs(
-          `${data.eventStartDate} ${data.eventEndTime}`,
-        )
-          .utc()
-          .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const eventEndDate = dayjs(`${data.eventStartDate} ${data.eventEndTime}`)
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-        const eventData = {
-          eventType: data.eventType,
-          eventName: data.eventName,
-          eventLocation: data.eventLocation,
-          eventStartDate,
-          eventEndDate,
-          eventDescription: data.eventDescription,
-          countUsers: data.countUsers,
-          eventPhoto: '',
-          coordinates: {
-            latitude: data.coordinates.latitude,
-            longitude: data.coordinates.longitude,
-          },
-        };
+    const eventData = {
+      eventType: data.eventType,
+      eventName: data.eventName,
+      eventLocation: data.eventLocation,
+      eventStartDate,
+      eventEndDate,
+      eventDescription: data.eventDescription,
+      countUsers: data.countUsers,
+      eventPhoto: '',
+      coordinates: {
+        latitude: data.coordinates.latitude,
+        longitude: data.coordinates.longitude,
+      },
+    };
 
-        const createdEvent = await createEvent(eventData).unwrap();
+    const createdEvent = await createEvent(eventData).unwrap();
 
-        if (data.eventPhoto instanceof File && createdEvent.eventId) {
-          await uploadPhoto({
-            id: createdEvent.eventId,
-            photoType: 'EVENT',
-            file: data.eventPhoto,
-          }).unwrap();
-        }
+    if (data.eventPhoto instanceof File && createdEvent.eventId) {
+      await uploadPhoto({
+        id: createdEvent.eventId,
+        photoType: 'EVENT',
+        file: data.eventPhoto,
+      }).unwrap();
+    }
 
-        navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
-      } catch (error) {
-        console.error('Error creating common-event-card-list:', error);
-      }
-    },
-    [createEvent, uploadPhoto, navigate],
-  );
+    navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+  };
 
   const handleCancel = () => {
     navigate(ROUTES.HOME);
