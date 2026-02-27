@@ -2,13 +2,10 @@ import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import CreateIcon from '@mui/icons-material/Create';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import StarIcon from '@mui/icons-material/Star';
 import {
   Box,
   Button,
-  MenuItem,
   Skeleton,
   Typography,
   useMediaQuery,
@@ -16,30 +13,20 @@ import {
 } from '@mui/material';
 
 import { ProfileInfo } from '@entities/profile-info';
-import { QueryInfo } from '@entities/query-info';
 import { LogoutConfirmationModal } from '@features/logout';
-import { ROUTES, useProfile } from '@shared/lib';
+import { ROUTES, dayjs, useProfile } from '@shared/lib';
 
 import { Styled } from './profile.styled';
 
 export const Profile: FC = () => {
-  const [contactsAnchorEl, setContactsAnchorEl] = useState<null | HTMLElement>(
-    null,
-  );
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const { profile, isLoading, isAuthError, isError } = useProfile();
+  const { profile, isLoading, isAuthError } = useProfile();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  const renderMenuItem = (text: string, divider = false) => (
-    <MenuItem dense disableGutters divider={divider}>
-      {text}
-    </MenuItem>
-  );
 
   useEffect(() => {
     if (isAuthError) {
@@ -47,167 +34,132 @@ export const Profile: FC = () => {
     }
   }, [isAuthError, navigate]);
 
-  if (isError) {
-    return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
-  }
-
-  const buttonsNode = (
-    <>
-      <Button
-        fullWidth
-        variant='outlined'
-        color='primary'
-        endIcon={<KeyboardArrowDownIcon />}
-        onClick={(e) => setContactsAnchorEl(e.currentTarget)}
-      >
-        Мои контакты
-      </Button>
-      <Button
-        fullWidth
-        variant='outlined'
-        color='primary'
-        onClick={() => navigate(ROUTES.PROFILE.MY_EVENTS)}
-      >
-        Мои события
-      </Button>
-      <Button
-        fullWidth
-        variant='outlined'
-        color='primary'
-        startIcon={<CreateIcon fontSize='small' />}
-        onClick={() => navigate(ROUTES.PROFILE.EDIT)}
-      >
-        Редактировать профиль
-      </Button>
-    </>
-  );
-
-  const logoutNode = (
-    <Button
-      fullWidth={isMobile}
-      variant='contained'
-      size='medium'
-      color='primary'
-      onClick={() => setIsLogoutOpen(true)}
-    >
-      Выйти из профиля
-    </Button>
-  );
-
-  const renderContent = () => {
-    if (isLoading) {
-      return {
-        avatarNode: <Skeleton variant='circular' width={160} height={160} />,
-        mobileNicknameNode: <Skeleton width={133} height={48} />,
-        personalNode: (
+  if (isLoading) {
+    return (
+      <ProfileInfo
+        avatarNode={<Skeleton variant='circular' width={160} height={160} />}
+        personalNode={
           <>
             <Skeleton width={isMobile ? 131 : 180} height={24} />
             <Skeleton width={100} height={20} />
             <Skeleton width='70%' height={20} />
             <Skeleton width='100%' height={32} variant='rectangular' />
           </>
-        ),
-        nicknameNode: <Skeleton width={280} height={48} />,
-        ratingNode: <Skeleton width={170} height={46} variant='rectangular' />,
-        contactsMenuNode: null,
-      };
-    }
-
-    if (!profile) {
-      return null;
-    }
-
-    return {
-      avatarNode: profile.profilePicture ? (
-        <Styled.AvatarImage src={`${profile.profilePicture}`} alt='Avatar' />
-      ) : (
-        <Styled.StyledPhotoCameraFrontIcon color='primary' />
-      ),
-      mobileNicknameNode: (
-        <Typography fontWeight={700} fontSize='18px'>
-          {profile.nickname}
-        </Typography>
-      ),
-      personalNode: (
-        <>
-          <Typography fontWeight={700} fontSize={{ xs: '16px', md: '20px' }}>
-            {profile.firstName} {profile.lastName}
-          </Typography>
-          <Typography fontSize='14px'>
-            {new Date(profile.dateOfBirth).toLocaleDateString('ru-RU')}
-          </Typography>
-          <Styled.TypographyBiography
-            fontSize='14px'
-            width='100%'
-            maxWidth='100%'
-            whiteSpace='pre-line'
-          >
-            {profile.biography}
-          </Styled.TypographyBiography>
-          <Box display='flex' alignItems='center'>
-            <LocationOnIcon fontSize='small' color='primary' />
-            <Typography fontSize='12px'>{profile.city}</Typography>
-          </Box>
-        </>
-      ),
-      nicknameNode: (
-        <Typography fontWeight={700} fontSize='32px' lineHeight='1.6'>
-          {profile.nickname}
-        </Typography>
-      ),
-      ratingNode: (
-        <>
-          <StarIcon fontSize='large' htmlColor='#ffb400' />
-          <Typography fontWeight={500} fontSize='14px'>
-            Рейтинг:
-          </Typography>
-          <Typography fontWeight={700} fontSize='20px'>
-            {profile.averageRating.toFixed(1)}
-          </Typography>
-        </>
-      ),
-      contactsMenuNode: contactsAnchorEl ? (
-        <Styled.StyledMenu
-          anchorEl={contactsAnchorEl}
-          open={Boolean(contactsAnchorEl)}
-          onClose={() => setContactsAnchorEl(null)}
-          disableAutoFocusItem
-          slotProps={{
-            paper: {
-              style: {
-                width: contactsAnchorEl?.clientWidth || 'auto',
-              },
-            },
-          }}
-        >
-          {renderMenuItem(`Email: ${profile.email}`, true)}
-        </Styled.StyledMenu>
-      ) : null,
-    };
-  };
-
-  const content = renderContent();
-
-  if (!content) {
-    return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
+        }
+        buttonsNode={
+          <>
+            <Skeleton width={280} height={48} />
+            <Skeleton variant='button' width='100%' height={56} />
+            <Skeleton variant='button' width='100%' height={56} />
+            <Skeleton variant='button' width='100%' height={56} />
+          </>
+        }
+      />
+    );
   }
 
+  if (!profile) {
+    return null;
+  }
+  const {
+    nickname,
+    dateOfBirth,
+    firstName,
+    lastName,
+    city,
+    biography,
+    profilePicture,
+  } = profile;
+
   return (
-    <>
+    <Box width='100%' height='100%' px={{ xs: 'none', md: '75.5px' }}>
       <ProfileInfo
-        avatarNode={content.avatarNode}
-        mobileNicknameNode={content.mobileNicknameNode}
-        personalNode={content.personalNode}
-        nicknameNode={content.nicknameNode}
-        buttonsNode={buttonsNode}
-        ratingNode={content.ratingNode}
-        logoutNode={logoutNode}
-        contactsMenuNode={content.contactsMenuNode}
+        avatarNode={
+          profilePicture ? (
+            <Styled.AvatarImage src={profilePicture || ''} alt='Avatar' />
+          ) : (
+            <Styled.StyledPhotoCameraFrontIcon color='primary' />
+          )
+        }
+        personalNode={
+          <Box display='flex' flexDirection='column' gap={{ xs: 2, md: 1 }}>
+            <Box display='flex' flexDirection='column' gap={2}>
+              <Typography
+                fontWeight={700}
+                lineHeight='20px'
+                fontSize={{ xs: '16px', md: '24px' }}
+              >
+                {nickname}
+              </Typography>
+              <Styled.ProfileTypography
+                fontWeight={{ xs: 500, md: 700 }}
+                lineHeight='20px'
+                fontSize={{ xs: '14px', md: '20px' }}
+              >
+                {`${firstName} ${lastName}`}
+              </Styled.ProfileTypography>
+            </Box>
+            <Typography fontSize='14px' lineHeight='20px'>
+              {dayjs().diff(dayjs(dateOfBirth), 'year')} лет
+            </Typography>
+            <Styled.ProfileTypography
+              fontSize='14px'
+              width='100%'
+              maxWidth='100%'
+              whiteSpace='pre-line'
+              lineHeight='20px'
+            >
+              {biography}
+            </Styled.ProfileTypography>
+            <Box
+              display='flex'
+              alignItems='center'
+              justifyContent='center'
+              gap='10px'
+            >
+              <LocationOnIcon fontSize='small' color='primary' />
+              <Styled.ProfileTypography lineHeight='40px' fontSize='12px'>
+                {city}
+              </Styled.ProfileTypography>
+            </Box>
+          </Box>
+        }
+        buttonsNode={
+          <>
+            <Button
+              fullWidth
+              variant='outlined'
+              color='primary'
+              onClick={() => navigate(ROUTES.PROFILE.MY_EVENTS)}
+            >
+              Мои события
+            </Button>
+            <Button
+              fullWidth
+              variant='outlined'
+              color='primary'
+              startIcon={<CreateIcon fontSize='small' />}
+              onClick={() => navigate(ROUTES.PROFILE.EDIT)}
+            >
+              Редактировать профиль
+            </Button>
+
+            <Button
+              fullWidth
+              variant='contained'
+              size='medium'
+              color='primary'
+              onClick={() => setIsLogoutOpen(true)}
+            >
+              Выйти из профиля
+            </Button>
+          </>
+        }
       />
       <LogoutConfirmationModal
         open={isLogoutOpen}
         onClose={() => setIsLogoutOpen(false)}
       />
-    </>
+    </Box>
   );
 };
