@@ -279,37 +279,38 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           <Controller
             name='eventStartDate'
             control={control}
-            render={({ field, fieldState: { error } }) => (
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
               <DatePicker
+                {...field}
                 label='Дата начала мероприятия'
                 minDate={today}
                 maxDate={maxDate}
-                value={
-                  field.value && field.value !== 'invalid'
-                    ? dayjs(field.value)
-                    : null
-                }
-                onChange={(newDate) => {
-                  if (newDate && newDate.isValid()) {
-                    field.onChange(newDate.format('YYYY-MM-DD'));
-                  } else {
-                    field.onChange(newDate === null ? '' : 'invalid');
-                  }
+                format='DD.MM.YYYY'
+                value={value && value !== 'invalid' ? dayjs(value) : null}
+                onChange={(date) => {
+                  const formatted = date?.isValid()
+                    ? date.format('YYYY-MM-DD')
+                    : date === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
                 }}
                 slots={{ openPickerIcon: EventIcon, toolbar: () => null }}
                 slotProps={{
                   textField: {
                     size: 'small',
+                    fullWidth: true,
                     error: !!error,
                     helperText:
                       error?.message ||
-                      (field.value || ''
+                      (value
                         ? 'Данные введены корректно.'
                         : 'Укажите дату начала события'),
-                    fullWidth: true,
                   },
                 }}
-                format='DD.MM.YYYY'
               />
             )}
           />
@@ -317,32 +318,36 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           <Controller
             name='eventStartTime'
             control={control}
-            render={({ field, fieldState: { error } }) => (
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
               <TimePicker
+                {...field}
                 label='Время начала события'
+                ampm={false}
+                format='HH:mm'
                 value={
-                  field.value && field.value !== 'invalid'
-                    ? dayjs(`2000-01-01T${field.value}`)
-                    : null
+                  value && value !== 'invalid' ? dayjs(value, 'HH:mm') : null
                 }
-                onChange={(newTime) => {
-                  if (newTime && newTime.isValid()) {
-                    field.onChange(newTime.format('HH:mm'));
-                  } else {
-                    field.onChange(newTime === null ? '' : 'invalid');
-                  }
+                onChange={(time) => {
+                  const formatted = time?.isValid()
+                    ? time.format('HH:mm')
+                    : time === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
                 }}
                 slots={{ openPickerButton: () => null, toolbar: () => null }}
                 slotProps={{
                   textField: {
                     size: 'small',
+                    fullWidth: true,
                     error: !!error,
                     helperText:
                       error?.message || 'Укажите время начала события',
-                    fullWidth: true,
                   },
                 }}
-                format='HH:mm'
               />
             )}
           />
@@ -350,32 +355,41 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           <Controller
             name='eventEndTime'
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <DatePicker
-                label='Время окончания события'
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
+              <TimePicker
+                {...field}
+                label='Время окончания'
+                ampm={false}
+                format='HH:mm'
                 value={
-                  field.value && field.value !== 'invalid'
-                    ? dayjs(`2000-01-01T${field.value}`)
-                    : null
+                  value && value !== 'invalid' ? dayjs(value, 'HH:mm') : null
                 }
-                onChange={(newTime) => {
-                  if (newTime && newTime.isValid()) {
-                    field.onChange(newTime.format('HH:mm'));
-                  } else {
-                    field.onChange(newTime === null ? '' : 'invalid');
-                  }
+                minTime={
+                  watch('eventStartTime')
+                    ? dayjs(watch('eventStartTime'), 'HH:mm')
+                    : undefined
+                }
+                onChange={(time) => {
+                  const formatted = time?.isValid()
+                    ? time.format('HH:mm')
+                    : time === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
                 }}
                 slots={{ openPickerButton: () => null, toolbar: () => null }}
                 slotProps={{
                   textField: {
                     size: 'small',
+                    fullWidth: true,
                     error: !!error,
                     helperText:
                       error?.message || 'Укажите время окончания события',
-                    fullWidth: true,
                   },
                 }}
-                format='HH:mm'
               />
             )}
           />
