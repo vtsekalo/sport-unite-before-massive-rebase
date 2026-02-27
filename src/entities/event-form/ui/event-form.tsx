@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useGetTypeEventsQuery } from '@shared/api';
@@ -312,44 +313,65 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               />
             )}
           />
-        </LocalizationProvider>
+
 
         <Controller
-          name='eventStartTime'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Время начала события'
-              type='time'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventStartTime)}
-              helperText={
-                errors.eventStartTime?.message || 'Укажите время начала события'
-              }
-            />
-          )}
-        />
+  name='eventStartTime'
+  control={control}
+  render={({ field, fieldState: { error } }) => (
+    <TimePicker
+      label='Время начала события'
+      value={field.value && field.value !== 'invalid' ? dayjs(`2000-01-01T${field.value}`) : null}
+      onChange={(newTime) => {
+        if (newTime && newTime.isValid()) {
+          field.onChange(newTime.format('HH:mm'));
+        } else {
+          field.onChange(newTime === null ? '' : 'invalid');
+        }
+      }}
+      slots={{ openPickerButton: () => null, toolbar: () => null }}
+      slotProps={{
+        textField: {
+          size: 'small',
+          error: !!error,
+          helperText: error?.message || 'Укажите время начала события',
+          fullWidth: true,
+        },
+      }}
+      format='HH:mm'
+    />
+  )}
+/>
+
 
         <Controller
           name='eventEndTime'
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
+          render={({ field, fieldState: { error } }) => (
+            <DatePicker
               label='Время окончания события'
-              type='time'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventEndTime)}
-              helperText={
-                errors.eventEndTime?.message ||
-                'Должно быть после времени начала'
-              }
-            />
-          )}
-        />
+              value={field.value && field.value !== 'invalid' ? dayjs(`2000-01-01T${field.value}`) : null}
+              onChange={(newTime) => {
+        if (newTime && newTime.isValid()) {
+          field.onChange(newTime.format('HH:mm'));
+        } else {
+          field.onChange(newTime === null ? '' : 'invalid');
+        }
+      }}
+      slots={{ openPickerButton: () => null, toolbar: () => null }}
+      slotProps={{
+        textField: {
+          size: 'small',
+          error: !!error,
+          helperText: error?.message || 'Укажите время окончания события',
+          fullWidth: true,
+        },
+      }}
+      format='HH:mm'
+    />
+  )}
+/>
+</LocalizationProvider>
 
         <Controller
           name='countUsers'
