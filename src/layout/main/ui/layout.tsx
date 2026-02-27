@@ -8,7 +8,7 @@ import { FilterEventsModal } from '@features/filter-events';
 import { useEventSearch, useProfile } from '@shared/lib';
 import { ROUTES } from '@shared/lib/constants';
 import { PageModal } from '@shared/ui/modal';
-import { HeaderDesktop, HeaderMobile } from '@widgets/header';
+import { Header } from '@widgets/header';
 import { EventsMap } from '@widgets/map';
 import { MapControls } from '@widgets/map-controls';
 import { NavBar } from '@widgets/navbar';
@@ -19,17 +19,24 @@ export const Layout = () => {
   const hasOutlet = useOutlet();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { pathname } = useLocation();
   const location = useLocation();
+  const { pathname } = location;
   const { events, isLoading, hasAppliedFilters } = useEventSearch();
 
   const handleCloseModal = () => {
     navigate(ROUTES.HOME);
   };
-
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { isAuthenticated } = useProfile({ __meta: { toast: false } });
   const isHomePage = location.pathname === ROUTES.HOME;
+
+  const handleOpenFilter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseFilter = () => {
+    setAnchorEl(null);
+  };
 
   const showNoEventsModal =
     (pathname === ROUTES.HOME || pathname === ROUTES.LIST) &&
@@ -50,13 +57,13 @@ export const Layout = () => {
     >
       <EventsMap />
 
-      {isMobile ? (
-        <HeaderMobile buttonRef={setAnchorEl} />
-      ) : (
-        <HeaderDesktop buttonRef={setAnchorEl} />
-      )}
+      <Header
+        onFilterClick={handleOpenFilter}
+        isFilterOpen={Boolean(anchorEl)}
+      />
 
-      <FilterEventsModal buttonRef={anchorEl} />
+      <FilterEventsModal anchorEl={anchorEl} onClose={handleCloseFilter} />
+
       <MapControls />
       <PageModal open={Boolean(hasOutlet)} onClose={handleCloseModal}>
         <Outlet />

@@ -1,14 +1,18 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import ClearIcon from '@mui/icons-material/Clear';
 import {
+  Box,
+  Button,
   Checkbox,
+  Collapse,
+  IconButton,
   InputAdornment,
   ListItem,
+  Stack,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,14 +38,14 @@ import { getZoomForRadius } from '../lib/get-zoom-for-radius';
 import { Styled } from './filter-events-modal.styled';
 
 interface FilterEventsModalProps {
-  buttonRef: HTMLButtonElement | null;
+  anchorEl: HTMLElement | null;
+  onClose: () => void;
 }
 
 export const FilterEventsModal: FC<FilterEventsModalProps> = ({
-  buttonRef,
+  anchorEl,
+  onClose,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,36 +74,21 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
     hasTempSportFilter || hasTempDateFilter || hasTempRangeFilter;
   const hasAnyFilter = hasAnyTempFilter || hasAppliedFilters;
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [sportAnchorEl, setSportAnchorEl] = useState<HTMLElement | null>(null);
-  const [dateAnchorEl, setDateAnchorEl] = useState<HTMLElement | null>(null);
-  const [locationAnchorEl, setLocationAnchorEl] = useState<HTMLElement | null>(
-    null,
-  );
-  const sportButtonRef = useRef<HTMLButtonElement | null>(null);
-  const dateButtonRef = useRef<HTMLButtonElement | null>(null);
-  const locationButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [isSportOpen, setIsSportOpen] = useState(false);
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   const dateValue = tempDateValue ? dayjs(tempDateValue) : null;
+  const toggleSport = () => setIsSportOpen((prev) => !prev);
+  const toggleDate = () => setIsDateOpen((prev) => !prev);
+  const toggleLocation = () => setIsLocationOpen((prev) => !prev);
 
-  useEffect(() => {
-    const button = buttonRef;
-    if (!button) return;
-
-    const handleClick = () => setAnchorEl(button);
-    button.addEventListener('click', handleClick);
-    return () => button.removeEventListener('click', handleClick);
-  }, [buttonRef]);
-
-  const handleSportClick = () => setSportAnchorEl(sportButtonRef.current);
-  const handleDateClick = () => setDateAnchorEl(dateButtonRef.current);
-  const handleLocationClick = () =>
-    setLocationAnchorEl(locationButtonRef.current);
-
-  const closeMain = () => setAnchorEl(null);
-  const closeSport = () => setSportAnchorEl(null);
-  const closeDate = () => setDateAnchorEl(null);
-  const closeLocation = () => setLocationAnchorEl(null);
+  const closeMain = useCallback(() => {
+    setIsSportOpen(false);
+    setIsDateOpen(false);
+    setIsLocationOpen(false);
+    onClose();
+  }, [onClose]);
 
   const applyFilters = useCallback(() => {
     const sportNames = selectedSports.map((id) => {
@@ -136,32 +125,27 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
     ) {
       navigate(ROUTES.HOME);
     }
+    closeMain();
   }, [
     selectedSports,
-    dateValue,
-    radius,
-    eventTypes,
     setTypes,
+    dateValue,
     setStartDate,
+    radius,
+    location.pathname,
+    closeMain,
+    eventTypes,
     setRange,
     filters.latitude,
     dispatch,
-    location.pathname,
     navigate,
   ]);
-
-  const handleApplyDate = useCallback(() => {
-    applyFilters();
-    closeDate();
-    closeMain();
-  }, [applyFilters]);
 
   const handleResetDate = useCallback(() => {
     setStartDate(undefined);
     dispatch(setTempDateValue(null));
-    closeDate();
     closeMain();
-  }, [setStartDate, dispatch]);
+  }, [setStartDate, dispatch, closeMain]);
 
   const handleToggleSport = useCallback(
     (sportId: string) => {
@@ -170,30 +154,16 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
     [dispatch],
   );
 
-  const handleApplySport = useCallback(() => {
-    applyFilters();
-    closeSport();
-    closeMain();
-  }, [applyFilters]);
-
   const handleResetSport = useCallback(() => {
     setTypes(undefined);
     dispatch(setSelectedSportIds([]));
-    closeSport();
     closeMain();
-  }, [setTypes, dispatch]);
-
-  const handleApplyLocation = useCallback(() => {
-    applyFilters();
-    closeLocation();
-    closeMain();
-  }, [applyFilters]);
+  }, [setTypes, dispatch, closeMain]);
 
   const handleResetLocation = useCallback(() => {
     dispatch(resetCustomRange());
-    closeLocation();
     closeMain();
-  }, [dispatch]);
+  }, [closeMain, dispatch]);
 
   const handleSliderChange = useCallback(
     (_: Event, value: number | number[]) => {
@@ -207,7 +177,7 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
   const handleResetAll = useCallback(() => {
     resetFilters();
     closeMain();
-  }, [resetFilters]);
+  }, [closeMain, resetFilters]);
 
   const formatDisplayValue = useCallback((value: number) => `${value} км`, []);
 
@@ -218,277 +188,263 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
       ),
     [eventTypes, searchTerm],
   );
+  const paperStyle = useMemo(() => {
+    if (!anchorEl) return {};
+    return {
+      maxHeight: `calc(100vh - ${anchorEl.getBoundingClientRect().bottom + 112}px)`,
+    };
+  }, [anchorEl]);
 
   return (
-    <>
-      <Styled.MainPopover
-        open={Boolean(anchorEl)}
-        anchorEl={buttonRef}
-        onClose={closeMain}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Styled.MainStack>
-          <Styled.FilterButton
-            ref={sportButtonRef}
-            color='primary'
-            variant='outlined'
-            onClick={handleSportClick}
-          >
-            КАТЕГОРИИ СПОРТА
-            <Styled.ArrowIcon />
-          </Styled.FilterButton>
-
-          <Styled.FilterButton
-            ref={dateButtonRef}
-            color='primary'
-            variant='outlined'
-            onClick={handleDateClick}
-          >
-            ДАТА И ВРЕМЯ
-            <Styled.ArrowIcon />
-          </Styled.FilterButton>
-
-          <Styled.FilterButton
-            ref={locationButtonRef}
-            color='primary'
-            variant='outlined'
-            onClick={handleLocationClick}
-          >
-            МЕСТО И УДАЛЕННОСТЬ
-            <Styled.ArrowIcon />
-          </Styled.FilterButton>
-        </Styled.MainStack>
-        <Styled.PrimaryButton
-          fullWidth
-          variant='contained'
+    <Styled.MainPopover
+      open={Boolean(anchorEl)}
+      anchorEl={anchorEl}
+      onClose={closeMain}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      marginThreshold={null}
+      elevation={6}
+      slotProps={{ paper: { style: paperStyle } }}
+    >
+      <Stack direction='column' gap={1} width='100%' alignItems='stretch'>
+        <Styled.FilterSectionButton
+          size='mediumFixed'
           color='primary'
-          onClick={handleResetAll}
-          disabled={!hasAnyFilter}
+          variant={'outlined'}
+          className={isSportOpen ? 'opened' : ''}
+          onClick={toggleSport}
         >
-          Сбросить все фильтры
-        </Styled.PrimaryButton>
-      </Styled.MainPopover>
+          КАТЕГОРИИ СПОРТА
+          <Styled.ArrowIcon />
+        </Styled.FilterSectionButton>
 
-      <Styled.SportPopover
-        open={Boolean(sportAnchorEl)}
-        anchorEl={sportButtonRef.current}
-        onClose={closeSport}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: isMobile ? 'right' : 'left',
-        }}
-      >
-        {isMobile && (
-          <Styled.BackButton
-            color='primary'
-            variant='outlined'
-            onClick={closeSport}
-          >
-            <Styled.ArrowIconRotate />
-            КАТЕГОРИИ СПОРТА
-          </Styled.BackButton>
-        )}
-        <Styled.SportContainer>
-          <Styled.SearchField
-            fullWidth
-            placeholder='Search...'
-            value={searchTerm}
-            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
-            size='small'
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <Styled.SportSearchIcon />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            variant='outlined'
-          />
+        <Collapse in={isSportOpen} unmountOnExit>
+          <Stack maxHeight='318px' direction='column' gap={1}>
+            <Styled.SearchField
+              fullWidth
+              placeholder='Search...'
+              value={searchTerm}
+              onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+              size='small'
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      {searchTerm && (
+                        <IconButton
+                          size='small'
+                          onClick={() => dispatch(setSearchTerm(''))}
+                        >
+                          <ClearIcon fontSize='small' />
+                        </IconButton>
+                      )}
+                      <Styled.SportSearchIcon color='primary' />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              variant='outlined'
+            />
 
-          <Styled.SportList>
-            {filteredSports.length > 0 ? (
-              filteredSports.map((sport: IEventType) => (
-                <ListItem key={sport.typeId} dense disablePadding>
-                  <Styled.SportFormControlLabel
-                    control={
-                      <Checkbox
-                        checked={selectedSports.includes(
-                          sport.typeId.toString(),
-                        )}
-                        onChange={() =>
-                          handleToggleSport(sport.typeId.toString())
-                        }
-                        color='primary'
-                        size='medium'
-                      />
-                    }
-                    label={sport.typeName}
-                  />
-                </ListItem>
-              ))
-            ) : (
-              <Styled.NoSportsBox>
-                <Typography variant='body1' color='textSecondary'>
-                  Виды спорта не найдены
-                </Typography>
-              </Styled.NoSportsBox>
-            )}
-          </Styled.SportList>
-        </Styled.SportContainer>
+            <Styled.SportList disablePadding>
+              {filteredSports.length > 0 ? (
+                filteredSports.map((sport: IEventType) => (
+                  <ListItem key={sport.typeId} dense disablePadding>
+                    <Styled.SportFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedSports.includes(
+                            sport.typeId.toString(),
+                          )}
+                          onChange={() =>
+                            handleToggleSport(sport.typeId.toString())
+                          }
+                          color='primary'
+                          size='medium'
+                        />
+                      }
+                      label={sport.typeName}
+                    />
+                  </ListItem>
+                ))
+              ) : (
+                <Box p='2px' textAlign='center'>
+                  <Typography variant='body1' color='textSecondary'>
+                    Виды спорта не найдены
+                  </Typography>
+                </Box>
+              )}
+            </Styled.SportList>
+          </Stack>
 
-        <Styled.SportButtonStack spacing={2}>
-          <Styled.SportResetButton
-            onClick={handleResetSport}
-            variant='contained'
-            color='primary'
-            disabled={!hasTempSportFilter && !hasAppliedSportFilter}
+          <Stack
+            alignItems='center'
+            justifyContent='center'
+            width='100%'
+            mt={1}
           >
-            Сбросить
-          </Styled.SportResetButton>
+            <Box width={'120px'}>
+              <Button
+                fullWidth
+                size='mediumFixed'
+                variant='contained'
+                color='primary'
+                onClick={handleResetSport}
+                disabled={!hasTempSportFilter && !hasAppliedSportFilter}
+              >
+                Сбросить
+              </Button>
+            </Box>
+          </Stack>
+        </Collapse>
 
-          <Styled.SportApplyButton
-            onClick={handleApplySport}
-            variant='contained'
-            color='primary'
-            disabled={!hasAnyFilter}
-          >
-            Показать события
-          </Styled.SportApplyButton>
-        </Styled.SportButtonStack>
-      </Styled.SportPopover>
+        <Styled.FilterSectionButton
+          size='mediumFixed'
+          color='primary'
+          variant='outlined'
+          className={isDateOpen ? 'opened' : ''}
+          onClick={toggleDate}
+        >
+          ДАТА И ВРЕМЯ
+          <Styled.ArrowIcon />
+        </Styled.FilterSectionButton>
 
-      <Styled.DatePopover
-        open={Boolean(dateAnchorEl)}
-        anchorEl={dateButtonRef.current}
-        onClose={closeDate}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: isMobile ? 'right' : 'left',
-        }}
-        disableRestoreFocus
-      >
-        {isMobile && (
-          <Styled.BackButton
-            color='primary'
-            variant='outlined'
-            onClick={closeDate}
-          >
-            <Styled.ArrowIconRotate />
-            ДАТА И ВРЕМЯ
-          </Styled.BackButton>
-        )}
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='ru'>
-          <Styled.SportDataCalendar
-            value={dateValue}
-            onChange={(newValue) => {
-              dispatch(
-                setTempDateValue(newValue ? newValue.toISOString() : null),
-              );
-            }}
-          />
-        </LocalizationProvider>
-        <Styled.DateButtonStack spacing={2}>
-          <Styled.DateResetButton
-            onClick={handleResetDate}
-            variant='contained'
-            color='primary'
-            disabled={!hasTempDateFilter && !hasAppliedDateFilter}
-          >
-            Сбросить
-          </Styled.DateResetButton>
+        <Collapse in={isDateOpen} unmountOnExit>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='ru'>
+            <Styled.SportDataCalendar
+              value={dateValue}
+              reduceAnimations
+              disablePast
+              onChange={(newValue) => {
+                dispatch(
+                  setTempDateValue(newValue ? newValue.toISOString() : null),
+                );
+              }}
+            />
+          </LocalizationProvider>
 
-          <Styled.DateApplyButton
-            onClick={handleApplyDate}
-            variant='contained'
-            color='primary'
-            disabled={!hasAnyFilter}
+          <Stack
+            alignItems='center'
+            justifyContent='center'
+            width='100%'
+            mt={1}
           >
-            Показать события
-          </Styled.DateApplyButton>
-        </Styled.DateButtonStack>
-      </Styled.DatePopover>
+            <Box width={'120px'}>
+              <Button
+                fullWidth
+                size='mediumFixed'
+                variant='contained'
+                color='primary'
+                onClick={handleResetDate}
+                disabled={!hasTempSportFilter && !hasAppliedDateFilter}
+              >
+                Сбросить
+              </Button>
+            </Box>
+          </Stack>
+        </Collapse>
 
-      <Styled.LocationPopover
-        open={Boolean(locationAnchorEl)}
-        anchorEl={locationButtonRef.current}
-        onClose={closeLocation}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: isMobile ? 'right' : 'left',
-        }}
-      >
-        {isMobile && (
-          <Styled.BackButton
-            color='primary'
-            variant='outlined'
-            onClick={closeLocation}
+        <Styled.FilterSectionButton
+          size='mediumFixed'
+          color='primary'
+          variant='outlined'
+          className={isLocationOpen ? 'opened' : ''}
+          onClick={toggleLocation}
+        >
+          МЕСТО И УДАЛЕННОСТЬ
+          <Styled.ArrowIcon />
+        </Styled.FilterSectionButton>
+
+        <Collapse in={isLocationOpen} unmountOnExit>
+          <Box my={1}>
+            <Stack direction='row' justifyContent='space-between'>
+              <Typography variant='bodySmall'>Радиус поиска</Typography>
+              <Typography
+                variant='bodySmall'
+                fontWeight={700}
+                color={radius === 0 ? 'text.disabled' : 'primary'}
+              >
+                {radius} км
+              </Typography>
+            </Stack>
+
+            <Box mt={1}>
+              <Styled.RadiusSlider
+                size='small'
+                aria-label='Small'
+                value={radius}
+                onChange={handleSliderChange}
+                min={0}
+                max={50}
+                step={1}
+                valueLabelDisplay='auto'
+                valueLabelFormat={formatDisplayValue}
+              />
+            </Box>
+
+            <Stack direction='row' justifyContent='space-between'>
+              <Typography variant='bodySmall' color='textSecondary'>
+                0 км
+              </Typography>
+              <Typography variant='bodySmall' color='textSecondary'>
+                50 км
+              </Typography>
+            </Stack>
+          </Box>
+
+          <Stack
+            alignItems='center'
+            justifyContent='center'
+            width='100%'
+            mt={1}
           >
-            <Styled.ArrowIconRotate />
-            МЕСТО И УДАЛЕННОСТЬ
-          </Styled.BackButton>
-        )}
-        <Styled.SliderContainer>
-          <Styled.SliderHeader>
-            <Typography variant='body1' fontWeight={500}>
-              Радиус поиска
-            </Typography>
-            <Typography
-              variant='body1'
-              fontWeight={600}
-              color={radius === 0 ? 'text.disabled' : 'primary'}
+            <Box width={'120px'}>
+              <Button
+                fullWidth
+                size='mediumFixed'
+                variant='contained'
+                color='primary'
+                onClick={handleResetLocation}
+                disabled={!hasTempSportFilter && !hasAppliedRangeFilter}
+              >
+                Сбросить
+              </Button>
+            </Box>
+          </Stack>
+        </Collapse>
+        <Stack
+          alignItems='center'
+          justifyContent='center'
+          width='100%'
+          mt={1}
+          gap={1}
+        >
+          <Box width={'220px'} m={'8px auto 0'}>
+            <Button
+              fullWidth
+              size='mediumFixed'
+              onClick={applyFilters}
+              variant='contained'
+              color='primary'
+              disabled={!hasAnyFilter}
             >
-              {radius} км
-            </Typography>
-          </Styled.SliderHeader>
-
-          <Styled.RadiusSlider
-            size='small'
-            aria-label='Small'
-            value={radius}
-            onChange={handleSliderChange}
-            min={0}
-            max={50}
-            step={0.5}
-            valueLabelDisplay='auto'
-            valueLabelFormat={formatDisplayValue}
-          />
-
-          <Styled.SliderLabels>
-            <Typography variant='body1' fontWeight={500} color='textSecondary'>
-              0 км
-            </Typography>
-            <Typography variant='body1' fontWeight={500} color='textSecondary'>
-              50 км
-            </Typography>
-          </Styled.SliderLabels>
-        </Styled.SliderContainer>
-
-        <Styled.LocationButtonStack spacing={2}>
-          <Styled.LocationResetButton
-            onClick={handleResetLocation}
-            variant='contained'
-            color='primary'
-            disabled={!hasTempRangeFilter && !hasAppliedRangeFilter}
-          >
-            Сбросить
-          </Styled.LocationResetButton>
-
-          <Styled.LocationApplyButton
-            onClick={handleApplyLocation}
-            variant='contained'
-            color='primary'
-            disabled={!hasAnyFilter}
-          >
-            Показать события
-          </Styled.LocationApplyButton>
-        </Styled.LocationButtonStack>
-      </Styled.LocationPopover>
-    </>
+              Показать события
+            </Button>
+          </Box>
+          <Box width={'220px'} m={'8px auto 0'}>
+            <Styled.ActionButton
+              fullWidth
+              size='mediumFixed'
+              variant='contained'
+              color='primary'
+              onClick={handleResetAll}
+              disabled={!hasAnyFilter}
+            >
+              Сбросить все фильтры
+            </Styled.ActionButton>
+          </Box>
+        </Stack>
+      </Stack>
+    </Styled.MainPopover>
   );
 };
