@@ -11,7 +11,6 @@ import {
   Button,
   CircularProgress,
   FormControl,
-  FormHelperText,
   MenuItem,
   Select,
   TextField,
@@ -226,10 +225,16 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                 displayEmpty
                 disabled={isLoadingTypes}
                 size='small'
+                renderValue={(selected) => {
+                  if (!selected)
+                    return (
+                      <Typography color='text.secondary'>
+                        Тип события
+                      </Typography>
+                    );
+                  return selected as string;
+                }}
               >
-                <MenuItem value='' disabled>
-                  Выберите тип события
-                </MenuItem>
                 {isLoadingTypes ? (
                   <MenuItem value=''>
                     <CircularProgress size={20} />
@@ -244,9 +249,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               </Select>
             )}
           />
-          <FormHelperText>
-            {errors.eventType?.message || 'Выберите тип события'}
-          </FormHelperText>
         </FormControl>
 
         <Controller
@@ -257,11 +259,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               {...field}
               size='small'
               label='Название события'
-              InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventName)}
-              helperText={
-                errors.eventName?.message || 'Введите название события'
-              }
             />
           )}
         />
@@ -304,11 +302,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                     size: 'small',
                     fullWidth: true,
                     error: !!error,
-                    helperText:
-                      error?.message ||
-                      (value
-                        ? 'Данные введены корректно.'
-                        : 'Укажите дату начала события'),
                   },
                 }}
               />
@@ -344,8 +337,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                     size: 'small',
                     fullWidth: true,
                     error: !!error,
-                    helperText:
-                      error?.message || 'Укажите время начала события',
                   },
                 }}
               />
@@ -386,8 +377,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                     size: 'small',
                     fullWidth: true,
                     error: !!error,
-                    helperText:
-                      error?.message || 'Укажите время окончания события',
                   },
                 }}
               />
@@ -404,12 +393,7 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               size='small'
               label='Количество участников'
               type='number'
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ min: 2, max: 1000 }}
               error={Boolean(errors.countUsers)}
-              helperText={
-                errors.countUsers?.message || 'От 2 до 1000 участников'
-              }
             />
           )}
         />
@@ -422,13 +406,8 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               {...field}
               size='small'
               label='Описание'
-              InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventDescription)}
               multiline
-              rows={8}
-              helperText={
-                errors.eventDescription?.message || 'Опишите событие подробнее'
-              }
             />
           )}
         />

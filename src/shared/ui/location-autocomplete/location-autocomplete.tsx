@@ -103,7 +103,6 @@ export const LocationAutocomplete: FC<LocationAutocompleteProps> = ({
           {...params}
           label={'Место проведения'}
           size={'small'}
-          InputLabelProps={{ shrink: true }}
           error={error}
           InputProps={{
             ...params.InputProps,

@@ -66,7 +66,7 @@ export const CreateEventPage = () => {
     eventStartDate: '',
     eventStartTime: '',
     eventEndTime: '',
-    countUsers: 0,
+    countUsers: undefined,
     eventDescription: '',
     eventPhoto: null,
     coordinates: {
