@@ -1,9 +1,14 @@
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import CreateIcon from '@mui/icons-material/Create';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {
+  Avatar,
   Box,
   Button,
   Skeleton,
@@ -13,10 +18,12 @@ import {
 } from '@mui/material';
 
 import { ProfileInfo } from '@entities/profile-info';
+import { QueryInfo } from '@entities/query-info';
 import { LogoutConfirmationModal } from '@features/logout';
-import { ROUTES, dayjs, useProfile } from '@shared/lib';
+import { ROUTES, useProfile } from '@shared/lib';
 
-import { Styled } from './profile.styled';
+dayjs.extend(relativeTime);
+dayjs.locale('ru');
 
 export const Profile: FC = () => {
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
@@ -36,30 +43,59 @@ export const Profile: FC = () => {
 
   if (isLoading) {
     return (
-      <ProfileInfo
-        avatarNode={<Skeleton variant='circular' width={160} height={160} />}
-        personalNode={
-          <>
-            <Skeleton width={isMobile ? 131 : 180} height={24} />
-            <Skeleton width={100} height={20} />
-            <Skeleton width='70%' height={20} />
-            <Skeleton width='100%' height={32} variant='rectangular' />
-          </>
-        }
-        buttonsNode={
-          <>
-            <Skeleton width={280} height={48} />
-            <Skeleton variant='button' width='100%' height={56} />
-            <Skeleton variant='button' width='100%' height={56} />
-            <Skeleton variant='button' width='100%' height={56} />
-          </>
-        }
-      />
+      <Box width='100%' height='100%' px={{ xs: 'none', md: '75.5px' }}>
+        <ProfileInfo
+          avatarNode={
+            <Skeleton
+              variant='circular'
+              width={isMobile ? 160 : 400}
+              height={isMobile ? 160 : 400}
+            />
+          }
+          personalNode={
+            <Box
+              display='flex'
+              width='100%'
+              height='100%'
+              alignItems='center'
+              flexDirection='column'
+              gap={{ xs: 2, md: 1 }}
+            >
+              <Skeleton width='50%' height={24} />
+              <Skeleton width='70%' height={24} />
+              <Skeleton width='30%' height={24} />
+              <Skeleton width='100%' height={24} />
+              <Skeleton width='50%' height={24} />
+            </Box>
+          }
+          buttonsNode={
+            <>
+              <Skeleton
+                variant='button'
+                width='100%'
+                height={isMobile ? 40 : 56}
+              />
+              <Skeleton
+                variant='button'
+                width='100%'
+                height={isMobile ? 40 : 56}
+              />
+              <Skeleton
+                variant='button'
+                width='100%'
+                height={isMobile ? 40 : 56}
+              />
+            </>
+          }
+        />
+      </Box>
     );
   }
 
   if (!profile) {
-    return null;
+    return (
+      <QueryInfo type='error' title='Невозможно загрузить данные профиля' />
+    );
   }
   const {
     nickname,
@@ -72,14 +108,32 @@ export const Profile: FC = () => {
   } = profile;
 
   return (
-    <Box width='100%' height='100%' px={{ xs: 'none', md: '75.5px' }}>
+    <Box width='100%' px={{ xs: 'none', md: '75.5px' }}>
       <ProfileInfo
         avatarNode={
-          profilePicture ? (
-            <Styled.AvatarImage src={profilePicture || ''} alt='Avatar' />
-          ) : (
-            <Styled.StyledPhotoCameraFrontIcon color='primary' />
-          )
+          <Box
+            width={{ xs: 160, md: 400 }}
+            height={{ xs: 160, md: 400 }}
+            borderRadius='50%'
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+            bgcolor={'rgba(243, 245, 249, 1)'}
+          >
+            {profilePicture ? (
+              <Avatar
+                width={{ xs: 160, md: 400 }}
+                height={{ xs: 160, md: 400 }}
+                src={profilePicture || ''}
+                alt='Avatar'
+              />
+            ) : (
+              <AccountCircleOutlinedIcon
+                color='rgba(90, 157, 222, 1)'
+                width={{ xs: 60, md: 200 }}
+              />
+            )}
+          </Box>
         }
         personalNode={
           <Box display='flex' flexDirection='column' gap={{ xs: 2, md: 1 }}>
@@ -91,26 +145,30 @@ export const Profile: FC = () => {
               >
                 {nickname}
               </Typography>
-              <Styled.ProfileTypography
-                fontWeight={{ xs: 500, md: 700 }}
-                lineHeight='20px'
-                fontSize={{ xs: '14px', md: '20px' }}
-              >
-                {`${firstName} ${lastName}`}
-              </Styled.ProfileTypography>
+              {(firstName || lastName) && (
+                <Typography
+                  fontWeight={{ xs: 500, md: 700 }}
+                  lineHeight='20px'
+                  fontSize={{ xs: '14px', md: '20px' }}
+                >
+                  {[firstName, lastName].filter(Boolean).join(' ')}
+                </Typography>
+              )}
             </Box>
             <Typography fontSize='14px' lineHeight='20px'>
-              {dayjs().diff(dayjs(dateOfBirth), 'year')} лет
+              {dayjs(dateOfBirth).fromNow(true)}
             </Typography>
-            <Styled.ProfileTypography
-              fontSize='14px'
-              width='100%'
-              maxWidth='100%'
-              whiteSpace='pre-line'
-              lineHeight='20px'
-            >
-              {biography}
-            </Styled.ProfileTypography>
+            {biography && (
+              <Typography
+                fontSize='14px'
+                width='100%'
+                maxWidth='100%'
+                whiteSpace='pre-line'
+                lineHeight='20px'
+              >
+                {biography}
+              </Typography>
+            )}
             <Box
               display='flex'
               alignItems='center'
@@ -118,9 +176,9 @@ export const Profile: FC = () => {
               gap='10px'
             >
               <LocationOnIcon fontSize='small' color='primary' />
-              <Styled.ProfileTypography lineHeight='40px' fontSize='12px'>
+              <Typography lineHeight='40px' fontSize='12px'>
                 {city}
-              </Styled.ProfileTypography>
+              </Typography>
             </Box>
           </Box>
         }

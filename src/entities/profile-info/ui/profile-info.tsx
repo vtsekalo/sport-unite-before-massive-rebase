@@ -1,25 +1,25 @@
 import { FC, ReactNode } from 'react';
 
-import { Box, useTheme } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
 type ProfileInfoProps = {
   avatarNode: ReactNode;
   personalNode: ReactNode;
   buttonsNode?: ReactNode;
-};
+} & BoxProps;
 
 const ProfileInfo: FC<ProfileInfoProps> = ({
   avatarNode,
   personalNode,
   buttonsNode,
+  ...rest
 }) => {
-  const theme = useTheme();
-
   return (
     <Box
       display='grid'
       columnGap={{ xs: 2, md: 10 }}
       width='100%'
+      height='100%'
       rowGap={{
         xs: 2,
         md: 5,
@@ -35,6 +35,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           "info    ."
         `,
       }}
+      {...rest}
     >
       <Box
         gridArea='avatar'
@@ -43,17 +44,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         alignItems='center'
         justifyContent='start'
       >
-        <Box
-          width={{ xs: 160, md: 400 }}
-          height={{ xs: 160, md: 400 }}
-          borderRadius='50%'
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-          bgcolor={theme.palette.grey[100]}
-        >
-          {avatarNode}
-        </Box>
+        {avatarNode}
       </Box>
 
       <Box

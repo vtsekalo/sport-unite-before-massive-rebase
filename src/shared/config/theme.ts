@@ -1,8 +1,24 @@
 import { createTheme } from '@mui/material';
+import { ResponsiveStyleValue } from '@mui/system';
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     bodySmall: true;
+  }
+}
+declare module '@mui/material/Avatar' {
+  interface AvatarOwnProps {
+    width?: ResponsiveStyleValue<number | string>;
+    height?: ResponsiveStyleValue<number | string>;
+  }
+}
+declare module '@mui/material/SvgIcon' {
+  interface SvgIconPropsColorOverrides {
+    [key: string]: true;
+  }
+  interface SvgIconOwnProps {
+    width?: ResponsiveStyleValue<number | string>;
+    height?: ResponsiveStyleValue<number | string>;
   }
 }
 declare module '@mui/material/Button' {
@@ -33,6 +49,7 @@ export const theme = (isMobile: boolean) =>
         main: 'rgba(54, 119, 255, 1)',
         dark: '#0056b3',
       },
+
       info: {
         main: '#3677FF',
       },
@@ -60,6 +77,12 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiTypography: {
+        styleOverrides: {
+          root: {
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-word',
+          },
+        },
         variants: [
           {
             props: { variant: 'bodySmall' },
@@ -77,6 +100,30 @@ export const theme = (isMobile: boolean) =>
             MozOsxFontSmoothing: 'grayscale',
             textRendering: 'optimizeLegibility',
           },
+        },
+      },
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) => {
+            const resolvedColor = ownerState.color;
+
+            return theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+              fontSize: ownerState.width,
+              color: resolvedColor,
+            });
+          },
+        },
+      },
+      MuiAvatar: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+              fontSize: ownerState.width,
+            }),
         },
       },
       MuiButton: {
@@ -173,6 +220,13 @@ export const theme = (isMobile: boolean) =>
         },
       },
       MuiSkeleton: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+            }),
+        },
         variants: [
           {
             props: { variant: 'base' },
