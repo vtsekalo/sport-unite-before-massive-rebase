@@ -9,7 +9,7 @@ export const ROUTES = {
     INDEX: '/chats',
     DETAIL: (id: string | number) => `/chats/${id}`,
   },
-
+  CREATE_EVENT: '/create-event',
   ADD_EVENT: '/addevent',
   COPY_EVENT: '/copy',
   NOTIFICATIONS: '/notifications',

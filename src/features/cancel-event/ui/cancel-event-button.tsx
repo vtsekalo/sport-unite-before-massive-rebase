@@ -11,12 +11,14 @@ type CancelEventButtonProps = {
   eventId: string | undefined;
   disabled?: boolean;
   onCanceled: () => void;
+  isProcess: boolean;
 };
 
 export const CancelEventButton: FC<CancelEventButtonProps> = ({
   eventId,
   disabled = false,
   onCanceled,
+  isProcess,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [deleteEvent, { isLoading }] = useDeleteEventMutation();
@@ -44,7 +46,7 @@ export const CancelEventButton: FC<CancelEventButtonProps> = ({
         variant='contained'
         size='fullWidthAction'
         onClick={handleOpen}
-        disabled={disabled || isOpen || isLoading}
+        disabled={disabled || isOpen || isLoading || !isProcess}
         startIcon={<CancelIcon />}
       >
         ОТМЕНИТЬ СОБЫТИЕ

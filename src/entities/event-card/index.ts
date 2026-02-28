@@ -1,1 +1,1 @@
-export * from './ui/event-card-entity';
+export { EventCardEntity } from './ui/event-card-entity';

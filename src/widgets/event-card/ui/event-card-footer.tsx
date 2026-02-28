@@ -1,5 +1,6 @@
 import { FC } from 'react';
 
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import MailIcon from '@mui/icons-material/Mail';
 import { Box, Button, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
@@ -8,12 +9,17 @@ import { CancelEventButton } from '@features/cancel-event';
 import { CopyEventButton } from '@features/copy-event-button';
 import { ExitEventButton } from '@features/exit-event';
 import { JoinEventButton } from '@features/join-event';
-import { EventFooterMode, EventStatus, IEvent } from '@shared/lib';
+import {
+  EventFooterMode,
+  EventStatus,
+  IEvent,
+  useIsEventInProcess,
+} from '@shared/lib';
 import { getEventFooterMode } from '@widgets/event-card';
 
 type EventCardFooterProps = {
   event: IEvent;
-  eventId?: string;
+  eventId: string;
   eventStatus: EventStatus;
   isOrganizer: boolean;
   eventStartDate: string;
@@ -34,19 +40,20 @@ export const EventCardFooter: FC<EventCardFooterProps> = ({
   isError,
 }) => {
   const footerMode: EventFooterMode = getEventFooterMode({
-    isEventPlanned: eventStatus === EventStatus.PLANNED,
+    eventStatus,
     isOrganizer,
     isParticipant,
   });
 
+  const isProcess = useIsEventInProcess(event);
+
   const components = {
-    [EventFooterMode.IN_PROCESS]: (
-      <Box flex={1} display='flex' justifyContent='center'>
-        <Typography>Событие уже идет</Typography>
-      </Box>
-    ),
     [EventFooterMode.ORGANIZER]: (
-      <CancelEventButton eventId={eventId} onCanceled={onCanceled} />
+      <CancelEventButton
+        eventId={eventId}
+        onCanceled={onCanceled}
+        isProcess={isProcess}
+      />
     ),
     [EventFooterMode.PARTICIPANT]: <ExitEventButton eventId={eventId} />,
     [EventFooterMode.GUEST]: (
@@ -55,28 +62,55 @@ export const EventCardFooter: FC<EventCardFooterProps> = ({
         hasFreeSlots={hasFreeSlots}
         isError={isError}
         isParticipant={isParticipant}
+        isProcess={isProcess}
       />
+    ),
+    [EventFooterMode.COMPLETED]: (
+      <Button
+        disabled
+        variant='contained'
+        size='fullWidthAction'
+        startIcon={<CheckCircleRoundedIcon />}
+        loadingPosition='start'
+      >
+        ЗАВЕРШЕНО
+      </Button>
     ),
   };
 
   return (
-    <Stack gap={1.25}>
-      <Box
-        mt={{ xs: 'auto', md: 0 }}
-        display='flex'
-        justifyContent='center'
-        gap={1.25}
-      >
-        {isOrganizer && <CopyEventButton event={event} />}
+    <Box flex={'flex'}>
+      <Stack gap={1.25} alignItems={'center'}>
+        <Box
+          mt={{ xs: 'auto', md: 0 }}
+          display='flex'
+          justifyContent='center'
+          gap={1.25}
+        >
+          {isOrganizer && <CopyEventButton event={event} />}
 
-        {components[footerMode]}
+          {components[footerMode]}
 
-        {(isOrganizer || isParticipant) && (
-          <Button variant='contained' size='classicWidthAction'>
+          <Button
+            variant='contained'
+            size='classicWidthAction'
+            disabled={!(isParticipant || isOrganizer)}
+          >
             <MailIcon />
           </Button>
+        </Box>
+
+        {!isProcess && (
+          <Typography
+            variant='body2'
+            color='text.disabled'
+            fontSize='12px'
+            mr={1}
+          >
+            Событие началось.
+          </Typography>
         )}
-      </Box>
-    </Stack>
+      </Stack>
+    </Box>
   );
 };

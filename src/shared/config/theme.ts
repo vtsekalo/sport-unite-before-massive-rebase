@@ -12,6 +12,7 @@ declare module '@mui/material/Button' {
     adaptive: true;
     classicWidthAction: true;
     fullWidthAction: true;
+    littleSquare: true;
   }
   interface ButtonPropsVariantOverrides {
     lightBlue: true;
@@ -125,6 +126,15 @@ export const theme = (isMobile: boolean) =>
               minHeight: theme.spacing(5),
               maxWidth: theme.spacing(5),
               maxHeight: theme.spacing(5),
+            }),
+          },
+          {
+            props: { size: 'littleSquare' },
+            style: ({ theme }) => ({
+              minWidth: theme.spacing(4),
+              minHeight: theme.spacing(4),
+              maxWidth: theme.spacing(4),
+              maxHeight: theme.spacing(4),
             }),
           },
           {

@@ -354,14 +354,13 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           render={({ field }) => (
             <TextField
               {...field}
-              size='small'
+              size={'small'}
               label='Описание'
               InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventDescription)}
               multiline
-              rows={8}
               helperText={
-                errors.eventDescription?.message || 'Опишите событие подробнее'
+                errors.eventDescription?.message || 'Опишите событие подробнее.'
               }
             />
           )}
