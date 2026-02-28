@@ -321,6 +321,7 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
               value={dateValue}
               reduceAnimations
               disablePast
+              showDaysOutsideCurrentMonth
               onChange={(newValue) => {
                 dispatch(
                   setTempDateValue(newValue ? newValue.toISOString() : null),

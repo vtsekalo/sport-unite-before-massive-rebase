@@ -95,6 +95,28 @@ const SportDataCalendar = styled(DateCalendar)`
   width: 100%;
   height: auto;
 
+  & .MuiPickersCalendarHeader-root {
+    padding: 0;
+    margin: 16px 0 8px;
+  }
+  & .MuiPickersDay-dayOutsideMonth {
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.38);
+  }
+  & .MuiDayCalendar-weekDayLabel {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  & .MuiDayCalendar-root {
+    margin-bottom: 18px;
+  }
+  & .MuiPickersDay-root {
+    font-size: 14px;
+  }
+  & .MuiPickersArrowSwitcher-spacer {
+    width: 34px;
+  }
+
   & .MuiDayCalendar-monthContainer {
     position: relative;
   }
