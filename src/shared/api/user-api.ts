@@ -4,7 +4,7 @@ import { WithMeta } from '@shared/lib/types/general';
 import { ApiEndpoints } from './api-endpoints';
 import { baseApi } from './base-api';
 
-export const usersApi = baseApi.injectEndpoints({
+export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserById: builder.query<IUserProfile, string>({
       query: (id) => ({
@@ -24,4 +24,4 @@ export const usersApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetMyProfileQuery, useGetUserByIdQuery } = usersApi;
+export const { useGetMyProfileQuery, useGetUserByIdQuery } = userApi;

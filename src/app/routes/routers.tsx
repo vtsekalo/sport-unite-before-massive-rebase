@@ -14,7 +14,6 @@ import { NotFoundPage } from '@pages/not-found-page';
 import { Notifications } from '@pages/notifications';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
-import { TestPage } from '@pages/test-page';
 import { DeletionGuard, ROUTES } from '@shared/lib';
 import { EventCard } from '@widgets/event-card';
 import { Profile } from '@widgets/profile';
@@ -61,7 +60,6 @@ export const Routers: FC = () => {
         </Route>
       </Route>
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
-      <Route path={ROUTES.TEST_PAGE} element={<TestPage />} />
     </Routes>
   );
 };

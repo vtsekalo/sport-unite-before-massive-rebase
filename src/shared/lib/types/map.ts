@@ -24,6 +24,14 @@ export interface CoordinateFilterDto extends Coordinates {
  */
 export type CoordinatesTuple = [longitude: number, latitude: number];
 
+/**
+ * Маркер на карте
+ * @prop id - Уникальный идентификатор маркера
+ * @prop coordinates - Координаты в формате [lat, lon]
+ * @prop icon - React-компонент иконки
+ * @prop onClick - Обработчик клика по маркеру
+ * @prop zIndex - Порядок наложения (высота) слоя
+ */
 export interface MapMarker {
   id: string;
   coordinates: CoordinatesTuple;
@@ -33,7 +41,12 @@ export interface MapMarker {
 }
 
 /**
- * Элемент ответа от 2GIS API (внутренний тип)
+ * Объект справочника 2GIS (филиал, здание, геообъект)
+ * @prop id - Идентификатор объекта в базе 2GIS
+ * @prop name - Краткое название объекта
+ * @prop full_name - Полное название (включая тип объекта)
+ * @prop address_name - Адресация объекта (улица, номер дома)
+ * @prop point - Геометрический центр объекта
  */
 export interface TwoGisApiItem {
   id: string;
@@ -47,7 +60,9 @@ export interface TwoGisApiItem {
 }
 
 /**
- * Ответ от 2GIS API (внутренний тип)
+ * Обобщенный ответ от API 2GIS
+ * @prop result - Контейнер с данными ответа
+ * @prop result.items - Список найденных объектов справочника
  */
 export interface TwoGisApiResponse {
   result?: {
@@ -56,7 +71,12 @@ export interface TwoGisApiResponse {
 }
 
 /**
- * Элемент подсказки для автокомплита адресов
+ * Элемент списка подсказок поискового сервиса (Suggest)
+ * @prop id - Идентификатор для получения подробной информации через Items API
+ * @prop name - Текст основной подсказки
+ * @prop full_name - Полный текст подсказки с уточнением региона
+ * @prop address_name - Сокращенный адрес объекта
+ * @prop point - Координаты для позиционирования на карте
  */
 export interface SuggestionItem {
   id: string;
