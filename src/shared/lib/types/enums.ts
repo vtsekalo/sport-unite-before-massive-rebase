@@ -43,8 +43,8 @@ export enum EventScope {
  * GUEST - Неавторизированный пользователь
  */
 export enum EventFooterMode {
-  IN_PROCESS = 'IN_PROCESS',
   ORGANIZER = 'ORGANIZER',
   PARTICIPANT = 'PARTICIPANT',
   GUEST = 'GUEST',
+  COMPLETED = 'COMPLETED',
 }

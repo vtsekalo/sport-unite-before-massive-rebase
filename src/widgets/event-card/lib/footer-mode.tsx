@@ -1,18 +1,23 @@
-import { EventFooterMode } from '@shared/lib';
+import { EventFooterMode, EventStatus } from '@shared/lib';
 
 type Params = {
-  isEventPlanned: boolean;
   isOrganizer: boolean;
   isParticipant: boolean;
+  eventStatus: EventStatus;
 };
 
 export const getEventFooterMode = ({
-  isEventPlanned,
   isOrganizer,
   isParticipant,
+  eventStatus,
 }: Params): EventFooterMode => {
-  if (!isEventPlanned) return EventFooterMode.IN_PROCESS;
-  if (isOrganizer) return EventFooterMode.ORGANIZER;
+  const organizer = isOrganizer && eventStatus == EventStatus.PLANNED;
+  const canceled = eventStatus == EventStatus.CANCELLED;
+  const completed = eventStatus == EventStatus.COMPLETED;
+
+  if (completed) return EventFooterMode.COMPLETED;
+  if (canceled) return EventFooterMode.COMPLETED;
+  if (organizer) return EventFooterMode.ORGANIZER;
   if (isParticipant) return EventFooterMode.PARTICIPANT;
   return EventFooterMode.GUEST;
 };

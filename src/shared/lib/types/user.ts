@@ -45,5 +45,5 @@ export interface IUserParticipant {
   userId: string;
   nickName: string;
   userRole: UserRole;
-  urlUserPhoto: string | null;
+  urlUserPhoto: string;
 }

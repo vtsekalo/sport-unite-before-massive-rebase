@@ -10,6 +10,7 @@ type Props = {
   isError: boolean;
   hasFreeSlots: boolean;
   isParticipant: boolean;
+  isProcess: boolean;
 };
 
 export const JoinEventButton = ({
@@ -17,20 +18,17 @@ export const JoinEventButton = ({
   hasFreeSlots,
   isError,
   isParticipant,
+  isProcess,
 }: Props) => {
   const [joinEvent, { isLoading: isLoadingJoin }] = useJoinInEventsMutation();
 
   const [isWaitingForParticipant, setIsWaitingForParticipant] = useState(false);
 
   useEffect(() => {
-    setIsWaitingForParticipant(false);
-  }, [eventId]);
-
-  useEffect(() => {
-    if (isParticipant || isError) {
+    if (!eventId || isParticipant || isError) {
       setIsWaitingForParticipant(false);
     }
-  }, [isParticipant, isError]);
+  }, [eventId, isParticipant, isError]);
 
   const handleJoinEvent = async () => {
     if (!eventId || isWaitingForParticipant) return;
@@ -45,7 +43,7 @@ export const JoinEventButton = ({
     <Button
       variant='contained'
       size='fullWidthAction'
-      disabled={isLoading}
+      disabled={isLoading || !isProcess}
       onClick={handleJoinEvent}
       loading={isLoadingJoin}
       startIcon={<PlayCircleOutlineIcon />}
