@@ -3,7 +3,6 @@ export const ROUTES = {
   AUTH: '/auth',
   REGISTRATION: '/registration',
   SEND_EMAIL: '/send-email',
-  TEST_PAGE: '/testPage',
 
   CHATS: {
     INDEX: '/chats',

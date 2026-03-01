@@ -3,7 +3,7 @@ import * as yup from 'yup';
 
 const NICKNAME_REGEX = /^[A-Za-z0-9._-]+$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,32}$/;
-const CITY_REGEX = /^[А-Яа-яЁё\s-]*$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const registrationSchema = yup.object({
   nickname: yup
@@ -19,18 +19,19 @@ export const registrationSchema = yup.object({
     .trim()
     .required('Обязательное поле!')
     .email('Некорректный email')
+    .matches(EMAIL_REGEX, 'Некорректный email')
     .max(254, 'Максимум 254 символа'),
 
   password: yup
     .string()
     .required('Обязательное поле!')
-    .min(3, 'Пароль должен содержать от 8 до 32 символов')
-    .max(30, 'Пароль должен содержать от 8 до 32 символов')
+    .min(8, 'Пароль должен содержать от 8 до 32 символов')
+    .max(32, 'Пароль должен содержать от 8 до 32 символов')
     .matches(PASSWORD_REGEX, 'Ошибка: недопустимый пароль.'),
 
   confirmPassword: yup
     .string()
-    .required('Обязательное поле')
+    .required('Обязательное поле!')
     .oneOf(
       [yup.ref('password')],
       'Пароли не совпадают, пожалуйста, повторите ввод',
@@ -38,7 +39,7 @@ export const registrationSchema = yup.object({
 
   dateOfBirth: yup
     .string()
-    .required('Обязательное поле')
+    .required('Обязательное поле!')
     .test('is-valid-date', 'Дата рождения указана неверно', (value) => {
       if (!value || value === 'invalid') return false;
       return dayjs(value).isValid();
@@ -74,10 +75,7 @@ export const registrationSchema = yup.object({
     .trim()
     .nullable()
     .transform((value) => (value === '' ? null : value))
-    .optional()
-    .min(3, 'Название города должно содержать от 3 до 50 символов')
-    .max(50, 'Название города должно содержать от 3 до 50 символов')
-    .matches(CITY_REGEX, 'Название города содержит недопустимые символы'),
+    .optional(),
 
   agree: yup.boolean().oneOf([true], 'Обязательное поле!'),
 });
