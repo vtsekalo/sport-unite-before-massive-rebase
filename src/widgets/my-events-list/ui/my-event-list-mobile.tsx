@@ -1,12 +1,11 @@
-import dayjs from 'dayjs';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Tab, Typography } from '@mui/material';
 
 import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { Crown } from '@shared/assets';
-import { EventStatus, IEvent, ROUTES } from '@shared/lib';
+import { EventStatus, IEvent, ROUTES, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
@@ -25,12 +24,10 @@ export const MyEventListMobile: FC<EventsListProps> = ({ events, loading }) => {
 
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
 
-  const handleOpenCard = useCallback(
-    (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
-    },
-    [navigate],
-  );
+  const handleOpenCard = (eventId: string) => {
+    navigate(ROUTES.EVENT.DETAIL(eventId));
+  };
+
   const handleChange = (_event: unknown, newValue: number) => {
     setValue(newValue);
   };
@@ -123,7 +120,10 @@ export const MyEventListMobile: FC<EventsListProps> = ({ events, loading }) => {
                   lineHeight={1.5}
                 >
                   {event.eventStartDate
-                    ? dayjs(event.eventStartDate).format('DD.MM.YYYY [в] HH:mm')
+                    ? dayjs
+                        .utc(event.eventStartDate)
+                        .local()
+                        .format('DD.MM.YYYY [в] HH:mm')
                     : ''}
                 </Typography>
               }

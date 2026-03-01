@@ -69,18 +69,14 @@ export const NavBar = () => {
 
   return (
     <StyledNavBar
-      display='none'
       alignItems='center'
       justifyContent='center'
       position='absolute'
-      width={'360px'}
-      height={'56px'}
+      minWidth={'361px'}
       borderRadius={'10px'}
       padding={'0 16px'}
-      boxShadow={`0px 3px 5px -1px #00000033;
-                  0px 6px 10px 0px #00000024;
-                  0px 1px 18px 0px #0000001F;`}
-      bottom={'24px'}
+      boxShadow={6}
+      bottom={'32px'}
       bgcolor={theme.palette.background.paper}
       zIndex={20}
     >

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFilteredEventsQuery } from '@shared/api/event-api';
@@ -6,32 +6,24 @@ import {
   applyFilters as applyFiltersAction,
   resetFilters as resetFiltersAction,
   selectEventSearchRequest,
+  selectUseCustomRange,
   setEventScope,
-  setEventStartDateTime,
+  setEventStartDate,
   setEventStatuses,
   setEventTypes,
+  setFilterRange,
 } from '@shared/store';
 
 import { EventScope, EventStatus } from '../types/enums';
-import { EventSearchRequest, IEvent } from '../types/event';
+import { EventSearchRequest } from '../types/event';
 
 export const useEventSearch = () => {
   const dispatch = useDispatch();
   const filters = useSelector(selectEventSearchRequest);
+  const useCustomRange = useSelector(selectUseCustomRange);
 
   const { data, isLoading, error, refetch } =
     useGetFilteredEventsQuery(filters);
-
-  const filteredData = useMemo(() => {
-    if (!data || !filters.eventStartDate) return data;
-
-    const filterDateOnly = filters.eventStartDate.split('T')[0];
-
-    return data.filter((event: IEvent) => {
-      if (!event.eventStartDate) return false;
-      return event.eventStartDate.split('T')[0] >= filterDateOnly;
-    });
-  }, [data, filters.eventStartDate]);
 
   const applyFilters = useCallback(
     (newFilters: Partial<EventSearchRequest>) => {
@@ -58,9 +50,16 @@ export const useEventSearch = () => {
     [dispatch],
   );
 
-  const setStartDateTime = useCallback(
+  const setStartDate = useCallback(
     (dateTime: string | undefined) => {
-      dispatch(setEventStartDateTime(dateTime));
+      dispatch(setEventStartDate(dateTime));
+    },
+    [dispatch],
+  );
+
+  const setRange = useCallback(
+    (range: number, fromUser: boolean = false) => {
+      dispatch(setFilterRange({ range, fromUser }));
     },
     [dispatch],
   );
@@ -72,15 +71,27 @@ export const useEventSearch = () => {
     [dispatch],
   );
 
+  const hasAppliedSportFilter = Boolean(filters.eventTypes?.length);
+  const hasAppliedDateFilter = Boolean(filters.eventStartDate);
+  const hasAppliedRangeFilter = useCustomRange;
+  const hasAppliedFilters =
+    hasAppliedSportFilter || hasAppliedDateFilter || hasAppliedRangeFilter;
+
   return {
     filters,
+    hasAppliedFilters,
+    hasAppliedSportFilter,
+    hasAppliedDateFilter,
+    hasAppliedRangeFilter,
+
     applyFilters,
     resetFilters,
     setTypes,
     setStatuses,
-    setStartDateTime,
+    setStartDate,
     setScope,
-    events: filteredData || [],
+    setRange,
+    events: data || [],
     isLoading,
     error,
     refetch,

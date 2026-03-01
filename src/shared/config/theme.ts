@@ -1,13 +1,19 @@
-import { Theme, createTheme } from '@mui/material';
+import { createTheme } from '@mui/material';
 
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    bodySmall: true;
+  }
+}
 declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
     veryBig: true;
-  }
-  interface ButtonPropsVariantOverrides {
+    adaptive: true;
     classicWidthAction: true;
     fullWidthAction: true;
+  }
+  interface ButtonPropsVariantOverrides {
     lightBlue: true;
   }
 }
@@ -17,17 +23,6 @@ declare module '@mui/material/Skeleton' {
     button: true;
   }
 }
-
-const getActionButtonCommonStyles = (theme: Theme) => ({
-  borderRadius: theme.shape.borderRadius * 3,
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  textTransform: 'uppercase' as const,
-  fontWeight: 600,
-  '&:hover': {
-    backgroundColor: theme.palette.primary.dark,
-  },
-});
 
 export const theme = (isMobile: boolean) =>
   createTheme({
@@ -39,6 +34,13 @@ export const theme = (isMobile: boolean) =>
       },
       info: {
         main: '#3677FF',
+      },
+    },
+    typography: {
+      fontFamily: 'Roboto, "Arial", sans-serif',
+      button: {
+        fontWeight: 500,
+        letterSpacing: '0.028em',
       },
     },
     shape: {
@@ -56,10 +58,31 @@ export const theme = (isMobile: boolean) =>
     },
 
     components: {
+      MuiTypography: {
+        variants: [
+          {
+            props: { variant: 'bodySmall' },
+            style: {
+              fontSize: '14px',
+              fontWeight: 400,
+            },
+          },
+        ],
+      },
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            textRendering: 'optimizeLegibility',
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           root: {
             borderRadius: 10,
+            lineHeight: 1.5,
           },
         },
         variants: [
@@ -88,35 +111,30 @@ export const theme = (isMobile: boolean) =>
             },
           },
           {
-            props: { variant: 'classicWidthAction' },
+            props: { size: 'adaptive' },
+            style: {
+              minHeight: isMobile ? 48 : 40,
+            },
+          },
+          {
+            props: { size: 'classicWidthAction' },
             style: ({ theme }) => ({
-              ...getActionButtonCommonStyles(theme),
               width: theme.spacing(5),
               height: theme.spacing(5),
               minWidth: theme.spacing(5),
               minHeight: theme.spacing(5),
               maxWidth: theme.spacing(5),
               maxHeight: theme.spacing(5),
-              '&.Mui-disabled': {
-                backgroundColor: theme.palette.grey[400],
-                color: theme.palette.text.disabled,
-              },
             }),
           },
           {
-            props: { variant: 'fullWidthAction' },
+            props: { size: 'fullWidthAction' },
             style: ({ theme }) => ({
-              ...getActionButtonCommonStyles(theme),
               width: 'auto',
               height: theme.spacing(5),
               minHeight: theme.spacing(5),
               maxHeight: theme.spacing(5),
-              gap: theme.spacing(1),
               padding: theme.spacing(1, 2),
-              '&.Mui-disabled': {
-                backgroundColor: theme.palette.grey[400],
-                color: theme.palette.text.disabled,
-              },
             }),
           },
           {

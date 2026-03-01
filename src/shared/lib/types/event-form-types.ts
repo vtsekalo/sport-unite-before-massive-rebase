@@ -19,9 +19,8 @@ interface BaseEventFormData {
   eventLocation: string;
   eventStartDate: string;
   eventStartTime: string;
-  eventEndDate: string;
   eventEndTime: string;
-  countUsers: number;
+  countUsers?: number;
   eventDescription: string;
   coordinates: ICoordinate;
 }
@@ -81,7 +80,7 @@ export interface CreateEventRequest {
   eventStartDate: string;
   eventEndDate: string;
   eventDescription: string;
-  countUsers: number;
+  countUsers?: number;
   eventPhoto: string;
   coordinates: {
     latitude: number;

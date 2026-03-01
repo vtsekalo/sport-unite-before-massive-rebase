@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +23,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import { ROUTES } from '@shared/lib';
+import { ROUTES, dayjs } from '@shared/lib';
 
 import { useRegistrationUserMutation } from '../api/registration-api';
 import { RegistrationFormData, registrationSchema } from '../lib/schema';
@@ -80,7 +79,7 @@ export const RegistrationForm = () => {
       flexDirection='column'
       justifyContent='space-between'
       gap='16px'
-      maxWidth={{ xs: '360px', md: '480px' }}
+      maxWidth={{ xs: '361px', md: '480px' }}
       p={{ xs: '16px', md: '24px 32px' }}
       onSubmit={handleSubmit(onSubmit)}
     >

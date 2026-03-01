@@ -14,8 +14,14 @@ export const CommonEventListPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const events: IEventWithoutCoordinates[] = (data ?? []).map((event) => {
-    return {
+  const events: IEventWithoutCoordinates[] = (data ?? [])
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(a.eventStartDate).getTime() -
+        new Date(b.eventStartDate).getTime(),
+    )
+    .map((event) => ({
       eventId: event.eventId,
       eventName: event.eventName,
       eventType: event.eventType,
@@ -27,11 +33,16 @@ export const CommonEventListPage = () => {
       eventStatus: event.eventStatus,
       countUsers: event.countUsers,
       users: event.users,
-    };
-  });
+    }));
+
+  const noEvents = !isLoading && events.length === 0;
+
+  if (noEvents) {
+    return null;
+  }
 
   return (
-    <ModalWrapper>
+    <ModalWrapper height={'100%'}>
       {isMobile ? (
         <CommonEventsListMobile events={events} isLoading={isLoading} />
       ) : (

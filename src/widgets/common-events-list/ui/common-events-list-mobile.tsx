@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC, SyntheticEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,7 @@ import { Box, Tab, Tabs, Typography, useTheme } from '@mui/material';
 
 import { CommonEventListEntity } from '@entities/common-event-list';
 import { Crown } from '@shared/assets';
-import { IEventWithoutCoordinates, ROUTES } from '@shared/lib';
+import { IEventWithoutCoordinates, ROUTES, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui';
 import { SportIcon } from '@shared/ui/sport-icons';
 import { CommonEventListSkeleton } from '@widgets/common-events-list';
@@ -28,6 +27,10 @@ export const CommonEventsListMobile: FC<CommonEventsListProps> = ({
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleOpenCard = (eventId: string) => () => {
+    navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'list' } });
   };
 
   return (
@@ -68,7 +71,7 @@ export const CommonEventsListMobile: FC<CommonEventsListProps> = ({
                 display={'flex'}
                 flexDirection={'column'}
                 key={eventItem.eventId}
-                onClick={() => navigate(ROUTES.EVENT.DETAIL(eventItem.eventId))}
+                onClick={handleOpenCard(eventItem.eventId)}
               >
                 <CommonEventListEntity
                   key={eventItem.eventId}
@@ -125,9 +128,10 @@ export const CommonEventsListMobile: FC<CommonEventsListProps> = ({
                       lineHeight={'1.5'}
                     >
                       {eventItem.eventStartDate
-                        ? dayjs(eventItem.eventEndDate).format(
-                            'DD.MM.YYYY [в] HH:mm',
-                          )
+                        ? dayjs
+                            .utc(eventItem.eventEndDate)
+                            .local()
+                            .format('DD.MM.YYYY [в] HH:mm')
                         : ''}
                     </Typography>
                   }

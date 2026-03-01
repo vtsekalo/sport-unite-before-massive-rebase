@@ -1,33 +1,48 @@
-import { useCallback, useState } from 'react';
-import { Outlet, useNavigate, useOutlet } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet, useLocation, useNavigate, useOutlet } from 'react-router-dom';
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 
-import { CreateEventFab } from '@features/create-event/ui/create-event-fab';
+import { LoginButton } from '@features/auth';
 import { FilterEventsModal } from '@features/filter-events';
+import { useEventSearch, useProfile } from '@shared/lib';
 import { ROUTES } from '@shared/lib/constants';
 import { PageModal } from '@shared/ui/modal';
-import { HeaderDesktop, HeaderMobile } from '@widgets/header';
+import { Header } from '@widgets/header';
 import { EventsMap } from '@widgets/map';
 import { MapControls } from '@widgets/map-controls';
 import { NavBar } from '@widgets/navbar';
+import { NoEventsModal } from '@widgets/no-events-modal';
 
 export const Layout = () => {
   const navigate = useNavigate();
   const hasOutlet = useOutlet();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const location = useLocation();
+  const { pathname } = location;
+  const { events, isLoading, hasAppliedFilters } = useEventSearch();
 
   const handleCloseModal = () => {
     navigate(ROUTES.HOME);
   };
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const { isAuthenticated } = useProfile({ __meta: { toast: false } });
+  const isHomePage = location.pathname === ROUTES.HOME;
 
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const buttonRefCallback = useCallback((node: HTMLButtonElement | null) => {
-    setAnchorEl(node);
-  }, []);
+  const handleOpenFilter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const showFab = location.pathname === ROUTES.HOME;
+  const handleCloseFilter = () => {
+    setAnchorEl(null);
+  };
+
+  const showNoEventsModal =
+    (pathname === ROUTES.HOME || pathname === ROUTES.LIST) &&
+    !isLoading &&
+    events.length === 0 &&
+    (pathname === ROUTES.LIST || hasAppliedFilters);
 
   return (
     <Box
@@ -42,20 +57,35 @@ export const Layout = () => {
     >
       <EventsMap />
 
-      {isMobile ? (
-        <HeaderMobile buttonRef={buttonRefCallback} />
-      ) : (
-        <HeaderDesktop buttonRef={buttonRefCallback} />
-      )}
-      <FilterEventsModal buttonRef={anchorEl} />
+      <Header
+        onFilterClick={handleOpenFilter}
+        isFilterOpen={Boolean(anchorEl)}
+      />
+
+      <FilterEventsModal anchorEl={anchorEl} onClose={handleCloseFilter} />
+
       <MapControls />
       <PageModal open={Boolean(hasOutlet)} onClose={handleCloseModal}>
         <Outlet />
       </PageModal>
 
-      <NavBar />
+      {showNoEventsModal && (
+        <Box
+          position='absolute'
+          zIndex={20}
+          top={isMobile ? 88 : 112}
+          left={isMobile ? 0 : 80}
+          {...(isMobile && {
+            right: 0,
+            display: 'flex',
+            justifyContent: 'center',
+          })}
+        >
+          <NoEventsModal />
+        </Box>
+      )}
 
-      {showFab && <CreateEventFab />}
+      {isAuthenticated ? <NavBar /> : isHomePage && <LoginButton />}
     </Box>
   );
 };

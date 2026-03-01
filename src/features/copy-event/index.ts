@@ -1,1 +1,0 @@
-export { CopyEventModal } from './ui/copy-event-modal';

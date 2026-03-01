@@ -1,19 +1,19 @@
-import React from 'react';
+import { FC, ReactNode } from 'react';
 
 import { Box, Typography, useTheme } from '@mui/material';
 
 type EventInfoProps = {
-  headerNode: React.ReactNode;
-  titleNode: React.ReactNode;
-  dateNode: React.ReactNode;
-  locationNode: React.ReactNode;
-  descriptionNode: React.ReactNode;
-  organizerNode: React.ReactNode;
-  participantsNode: React.ReactNode;
-  footerActionsNode: React.ReactNode;
+  headerNode: ReactNode;
+  titleNode: ReactNode;
+  dateNode: ReactNode;
+  locationNode: ReactNode;
+  descriptionNode: ReactNode;
+  organizerNode: ReactNode;
+  participantsNode: ReactNode;
+  footerActionsNode: ReactNode;
 };
 
-export const EventCardEntity: React.FC<EventInfoProps> = ({
+export const EventCardEntity: FC<EventInfoProps> = ({
   headerNode,
   titleNode,
   dateNode,
@@ -33,6 +33,9 @@ export const EventCardEntity: React.FC<EventInfoProps> = ({
       gap={{ xs: theme.spacing(2), md: theme.spacing(3) }}
       height={'100%'}
       width={'100%'}
+      maxHeight={{
+        md: `calc(100vh - ${theme.spacing(17)} - ${theme.spacing(11)})`,
+      }}
       maxWidth={{ xs: 361, md: 440 }}
     >
       {headerNode}
@@ -71,10 +74,9 @@ export const EventCardEntity: React.FC<EventInfoProps> = ({
 
         <Box
           mt={{ xs: 'auto', md: 0 }}
-          pb={3}
           display='flex'
           justifyContent='center'
-          gap={1.2}
+          pb={2}
         >
           {footerActionsNode}
         </Box>

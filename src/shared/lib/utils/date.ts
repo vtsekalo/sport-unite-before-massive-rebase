@@ -1,13 +1,15 @@
-import dayjs from 'dayjs';
+import { dayjs } from './dayjs';
 
 export function formatDateOrTime(iso: string) {
   if (typeof iso !== 'string') {
     return '';
   }
 
-  const d = dayjs(iso);
+  const date = dayjs.utc(iso).local();
 
-  return d.isSame(dayjs(), 'day') ? d.format('HH:mm') : d.format('DD.MM.YYYY');
+  const isToday = date.isSame(dayjs(), 'day');
+
+  return isToday ? date.format('HH:mm') : date.format('DD.MM.YYYY');
 }
 
 export const formatToTime = (iso: string) => {
@@ -15,7 +17,5 @@ export const formatToTime = (iso: string) => {
     return '';
   }
 
-  const d = dayjs(iso);
-
-  return d.format('HH:mm');
+  return dayjs.utc(iso).local().format('HH:mm');
 };

@@ -2,7 +2,6 @@ import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as mapglAPI from '@2gis/mapgl/types';
-import { Box } from '@mui/material';
 
 import { MAP_API_KEY } from '@shared/config';
 import {
@@ -21,10 +20,11 @@ import {
   setFilterRange,
   setMapView,
 } from '@shared/store';
-import { BaseMap } from '@shared/ui';
-import { Marker } from '@shared/ui/marker';
+import { selectPendingZoom, setPendingZoom } from '@shared/store';
+import { BaseMap, Marker } from '@shared/ui';
 
 import { getBoundsRadius } from '../lib/map-utils';
+import { Styled } from './events-map.styled';
 
 interface EventsMapProps {
   onMapReady?: (map: mapglAPI.Map) => void;
@@ -39,11 +39,19 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
   const useCustomRange = useAppSelector(selectUseCustomRange);
 
   const mapInstanceRef = useRef<mapglAPI.Map | null>(null);
+  const pendingZoom = useAppSelector(selectPendingZoom);
   const useCustomRangeRef = useRef(useCustomRange);
 
   const lastDispatchedCoordsRef = useRef<{ lat: number; lng: number } | null>(
     null,
   );
+
+  useEffect(() => {
+    if (pendingZoom !== null && mapInstanceRef.current) {
+      mapInstanceRef.current.setZoom(pendingZoom, { duration: 1500 });
+      dispatch(setPendingZoom(null));
+    }
+  }, [pendingZoom, dispatch]);
 
   useEffect(() => {
     useCustomRangeRef.current = useCustomRange;
@@ -81,7 +89,7 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
 
   const handleMarkerClick = useCallback(
     (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
+      navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'map' } });
     },
     [navigate],
   );
@@ -149,7 +157,7 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
   );
 
   return (
-    <Box
+    <Styled.MapWrapper
       zIndex={1}
       width='100%'
       height='100%'
@@ -158,6 +166,7 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
       left={0}
       right={0}
       bottom={0}
+      data-testid='base-map'
     >
       <BaseMap
         markers={markers}
@@ -167,6 +176,6 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
         onCameraChange={handleCameraChange}
         onMapReady={handleMapReady}
       />
-    </Box>
+    </Styled.MapWrapper>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -111,7 +111,7 @@ export const ProfileEdit: FC = () => {
     }
   }, [profile, reset]);
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -172,7 +172,8 @@ export const ProfileEdit: FC = () => {
     return <QueryInfo type='error' title='Ошибка загрузки профиля' />;
   }
 
-  const avatarSrc = `${updateImageData?.photoUrl || profile.profilePicture || avatarPreview}?v=${updateImageData?.fileName}${updateImageData?.fileSize}_${Math.random()}`;
+  const avatarSrc =
+    updateImageData?.photoUrl || profile.profilePicture || avatarPreview;
 
   return (
     <>
@@ -361,48 +362,6 @@ export const ProfileEdit: FC = () => {
                   )}
                 />
 
-                {/* <Controller
-                name='interestIds'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='demo-multiple-checkbox-label'>
-                      Мои интересы
-                    </InputLabel>
-                    <Select
-                      {...field}
-                      multiple
-                      input={
-                        <OutlinedInput
-                          placeholder='Например: бег, плавание, чтение'
-                          label='Мои интересы'
-                        />
-                      }
-                      renderValue={(selected) =>  (
-                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => {
-                              const type = typeEvents?.find((t) => t.typeId === value);
-
-                              return (
-                              <Chip key={value} label={type ? type.typeName : value} />
-                            )})}
-                          </Box>
-                        )
-                      }
-                    >
-                      {typeEvents?.map((name) => (
-                        <MenuItem key={name.typeId} value={name.typeId}>
-                          <Checkbox
-                            checked={interestsValue.includes(name.typeId)}
-                          />
-                          <ListItemText primary={name.typeName} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              /> */}
-
                 <Controller
                   name='biography'
                   control={control}
@@ -486,25 +445,29 @@ export const ProfileEdit: FC = () => {
             gap={2}
             flexDirection={{ xs: 'column', md: 'row' }}
           >
-            <Button
-              size='mediumFixed'
-              fullWidth={isMobile}
-              variant='outlined'
-              onClick={() => navigate(ROUTES.PROFILE.INDEX)}
-            >
-              Отмена
-            </Button>
-            <Button
-              loading={isSaving}
-              fullWidth={isMobile}
-              size='mediumFixed'
-              variant='contained'
-              type='submit'
-              onClick={handleSubmit(onSubmit)}
-              disabled={!canSave}
-            >
-              Сохранить
-            </Button>
+            <Box width={{ xs: '100%', md: '160px' }}>
+              <Button
+                size='mediumFixed'
+                fullWidth
+                variant='outlined'
+                onClick={() => navigate(ROUTES.PROFILE.INDEX)}
+              >
+                Отмена
+              </Button>
+            </Box>
+            <Box width={{ xs: '100%', md: '160px' }}>
+              <Button
+                loading={isSaving}
+                fullWidth
+                size='mediumFixed'
+                variant='contained'
+                type='submit'
+                onClick={handleSubmit(onSubmit)}
+                disabled={!canSave}
+              >
+                Сохранить
+              </Button>
+            </Box>
           </Box>
         </Box>
       </StyledGridContainer>

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,7 @@ import { Box, Button, Typography, useTheme } from '@mui/material';
 
 import { CommonEventListEntity } from '@entities/common-event-list';
 import { Crown } from '@shared/assets';
-import { IEventWithoutCoordinates, ROUTES } from '@shared/lib';
+import { IEventWithoutCoordinates, ROUTES, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui';
 import { SportIcon } from '@shared/ui/sport-icons';
 import { CommonEventListSkeleton } from '@widgets/common-events-list';
@@ -25,16 +24,23 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
   const navigate = useNavigate();
   const theme = useTheme();
 
+  const handleOpenCard = (eventId: string) => () => {
+    navigate(ROUTES.EVENT.DETAIL(eventId), { state: { from: 'list' } });
+  };
+
   return (
     <Styled.ListCardsContainer
       display={'flex'}
       borderRadius={'10px'}
       flexDirection={'column'}
-      width={'100%'}
       height={'100%'}
+      width={'100%'}
+      maxHeight={{
+        md: `calc(100vh - ${theme.spacing(17)} - ${theme.spacing(11)})`,
+      }}
     >
       <Box
-        width={380}
+        width={399}
         display='flex'
         gap={1}
         flexDirection={'column'}
@@ -109,9 +115,10 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
                       lineHeight={'1.5'}
                     >
                       {eventItem.eventStartDate
-                        ? dayjs(eventItem.eventEndDate).format(
-                            'DD.MM.YYYY [в] HH:mm',
-                          )
+                        ? dayjs
+                            .utc(eventItem.eventEndDate)
+                            .local()
+                            .format('DD.MM.YYYY [в] HH:mm')
                         : ''}
                     </Typography>
                   }
@@ -149,9 +156,7 @@ export const CommonEventsListDesktop: FC<CommonEventsListProps> = ({
                       variant='contained'
                       fullWidth
                       size='mediumFixed'
-                      onClick={() =>
-                        navigate(ROUTES.EVENT.DETAIL(eventItem.eventId))
-                      }
+                      onClick={handleOpenCard(eventItem.eventId)}
                     >
                       Подробнее
                     </Button>

@@ -3,7 +3,6 @@ import {
   CreateEventRequest,
   EventSearchRequest,
   IEvent,
-  IEventDetailed,
   IEventType,
   UploadPhotoRequest,
   UploadPhotoResponse,
@@ -13,20 +12,17 @@ import { providesList } from '@shared/lib/utils/provides-list';
 export const eventApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getFilteredEvents: builder.query<IEvent[], EventSearchRequest>({
-      query: (filters) => ({
-        url: ApiEndpoints.EVENTS_SEARCH,
-        method: 'POST',
-        body: filters,
-      }),
-      providesTags: (result) => providesList(result, 'Events', 'eventId'),
-    }),
+      query: (filters) => {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    getJoinInEvents: builder.mutation<IEvent, string>({
-      query: (eventId) => ({
-        url: `/event-service/api/v1/events/${eventId}/join`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Events', 'EventById'],
+        return {
+          url: ApiEndpoints.EVENTS_SEARCH,
+          method: 'POST',
+          body: filters,
+          headers: timezone ? { timezone } : undefined,
+        };
+      },
+      providesTags: (result) => providesList(result, 'Events', 'eventId'),
     }),
 
     getTypeEvents: builder.query<IEventType[], void>({
@@ -52,18 +48,7 @@ export const eventApi = baseApi.injectEndpoints({
       ],
     }),
 
-    deleteEvent: builder.mutation<void, string>({
-      query: (eventId) => ({
-        url: `${ApiEndpoints.EVENT_BY_ID}/${eventId}/delete`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: (_result, _error, eventId) => [
-        { type: 'Events', id: 'LIST' },
-        { type: 'EventById', id: eventId },
-      ],
-    }),
-
-    createEvent: builder.mutation<IEventDetailed, CreateEventRequest>({
+    createEvent: builder.mutation<IEvent, CreateEventRequest>({
       query: (eventData) => ({
         url: ApiEndpoints.CREATE_EVENT,
         method: 'POST',
@@ -98,9 +83,7 @@ export const {
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
-  useDeleteEventMutation,
   useGetUserEventsQuery,
-  useGetJoinInEventsMutation,
   useCreateEventMutation,
   useUploadPhotoMutation,
 } = eventApi;

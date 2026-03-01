@@ -1,18 +1,17 @@
-import dayjs from 'dayjs';
-import { FC, Fragment, useCallback, useMemo } from 'react';
+import { FC, Fragment, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Divider, Icon, Tooltip, Typography } from '@mui/material';
 
 import { MyEventListCardEntity } from '@entities/my-event-list-card';
 import { Crown } from '@shared/assets';
-import { EventStatus, IEvent, ROUTES, UserRole } from '@shared/lib';
+import { EventStatus, IEvent, ROUTES, UserRole, dayjs } from '@shared/lib';
 import { ImageWrapper } from '@shared/ui/image-wrapper';
 import { SportIcon } from '@shared/ui/sport-icons';
 
 import { groupEventsByStatus } from '../lib/group-events-by-status';
-import { MyEventListSkeleton } from './my-event-list-skeleton.tsx';
-import { Styled } from './my-event-list.style.ts';
+import { MyEventListSkeleton } from './my-event-list-skeleton';
+import { Styled } from './my-event-list.style';
 
 interface EventsListProps {
   loading?: boolean;
@@ -26,12 +25,9 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
   const grouped = useMemo(() => groupEventsByStatus(events), [events]);
   const navigate = useNavigate();
 
-  const handleOpenCard = useCallback(
-    (eventId: string) => {
-      navigate(ROUTES.EVENT.DETAIL(eventId));
-    },
-    [navigate],
-  );
+  const handleOpenCard = (eventId: string) => {
+    navigate(ROUTES.EVENT.DETAIL(eventId));
+  };
 
   const titles = [
     { title: 'Активные', data: grouped.active },
@@ -138,9 +134,10 @@ export const MyEventListDesktop: FC<EventsListProps> = ({
                         fontSize='12px'
                       >
                         {event.eventStartDate
-                          ? dayjs(event.eventStartDate).format(
-                              'DD.MM.YYYY [в] HH:mm',
-                            )
+                          ? dayjs
+                              .utc(event.eventStartDate)
+                              .local()
+                              .format('DD.MM.YYYY [в] HH:mm')
                           : ''}
                       </Typography>
                     }

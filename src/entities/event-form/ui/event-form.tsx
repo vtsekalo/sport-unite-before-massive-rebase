@@ -4,13 +4,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EventIcon from '@mui/icons-material/Event';
 import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
   Button,
   CircularProgress,
   FormControl,
-  FormHelperText,
   MenuItem,
   Select,
   TextField,
@@ -18,11 +18,18 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 import { useGetTypeEventsQuery } from '@shared/api';
-import { showSnackbar } from '@shared/lib';
-import { CreateEventFormData, createEventSchema } from '@shared/lib';
-import { EventFormInitialData } from '@shared/lib';
+import {
+  CreateEventFormData,
+  EventFormInitialData,
+  createEventSchema,
+  dayjs,
+} from '@shared/lib';
 import { LocationAutocomplete } from '@shared/ui/location-autocomplete';
 
 import { PhotoPreview } from './event-form.styled';
@@ -75,11 +82,8 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
   const isFormDisabled =
     !isValid || !isDirty || isSubmitting || isUploadingPhoto;
 
-  const today = new Date();
-  const maxDate = new Date();
-  maxDate.setDate(today.getDate() + 30);
-  const formattedToday = today.toISOString().split('T')[0];
-  const formattedMaxDate = maxDate.toISOString().split('T')[0];
+  const today = dayjs();
+  const maxDate = today.add(30, 'day');
 
   const sortedEventTypes = useMemo(() => {
     if (!eventTypes) return [];
@@ -117,41 +121,23 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
       const file = event.target.files?.[0];
       if (!file) return;
 
-      if (file.size > 5 * 1024 * 1024) {
-        showSnackbar('Размер файла не должен превышать 5 МБ', 'error');
-        return;
-      }
-
-      const supportedFormats = [
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/webp',
-      ];
-
-      if (!supportedFormats.includes(file.type)) {
-        showSnackbar(
-          'Поддерживаются только изображения (jpg, jpeg, png, webp)',
-          'error',
-        );
-        return;
-      }
-
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+      setValue('eventPhoto', file, { shouldValidate: true });
     },
-    [],
+    [setValue],
   );
 
   const handleRemovePhoto = useCallback(() => {
+    setValue('eventPhoto', null);
     setPhotoPreview(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  }, []);
+  }, [setValue]);
 
   return (
     <Box
@@ -167,7 +153,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         {title}
       </Typography>
 
-      {/* Фото */}
       <Box display='flex' flexDirection='column' gap={theme.spacing(2)}>
         <input
           ref={fileInputRef}
@@ -212,14 +197,17 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           </Button>
 
           {photoPreview && (
-            <Button variant='classicWidthAction' onClick={handleRemovePhoto}>
+            <Button
+              variant='contained'
+              size='classicWidthAction'
+              onClick={handleRemovePhoto}
+            >
               <DeleteIcon />
             </Button>
           )}
         </Box>
       </Box>
 
-      {/* Форма */}
       <Box
         component='form'
         onSubmit={handleSubmit(onSubmit)}
@@ -227,7 +215,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
         flexDirection='column'
         gap={theme.spacing(2)}
       >
-        {/* Тип события */}
         <FormControl error={Boolean(errors.eventType)}>
           <Controller
             name='eventType'
@@ -238,10 +225,16 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
                 displayEmpty
                 disabled={isLoadingTypes}
                 size='small'
+                renderValue={(selected) => {
+                  if (!selected)
+                    return (
+                      <Typography color='text.secondary'>
+                        Тип события
+                      </Typography>
+                    );
+                  return selected as string;
+                }}
               >
-                <MenuItem value='' disabled>
-                  Выберите тип события
-                </MenuItem>
                 {isLoadingTypes ? (
                   <MenuItem value=''>
                     <CircularProgress size={20} />
@@ -256,12 +249,8 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               </Select>
             )}
           />
-          <FormHelperText>
-            {errors.eventType?.message || 'Выберите тип события'}
-          </FormHelperText>
         </FormControl>
 
-        {/* Название */}
         <Controller
           name='eventName'
           control={control}
@@ -270,16 +259,11 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               {...field}
               size='small'
               label='Название события'
-              InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventName)}
-              helperText={
-                errors.eventName?.message || 'Введите название события'
-              }
             />
           )}
         />
 
-        {/* Место проведения */}
         <LocationAutocomplete
           value={eventLocation ?? ''}
           onChange={handleLocationChange}
@@ -289,88 +273,117 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           placeholder='Начните вводить адрес или название места'
         />
 
-        {/* Дата начала */}
-        <Controller
-          name='eventStartDate'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Дата начала мероприятия'
-              type='date'
-              InputLabelProps={{ shrink: true }}
-              inputProps={{
-                min: formattedToday,
-                max: formattedMaxDate,
-              }}
-              error={Boolean(errors.eventStartDate)}
-              helperText={
-                errors.eventStartDate?.message || 'Укажите дату начала события'
-              }
-            />
-          )}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Controller
+            name='eventStartDate'
+            control={control}
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
+              <DatePicker
+                {...field}
+                label='Дата начала мероприятия'
+                minDate={today}
+                maxDate={maxDate}
+                format='DD.MM.YYYY'
+                value={value && value !== 'invalid' ? dayjs(value) : null}
+                onChange={(date) => {
+                  const formatted = date?.isValid()
+                    ? date.format('YYYY-MM-DD')
+                    : date === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
+                }}
+                slots={{ openPickerIcon: EventIcon, toolbar: () => null }}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                    fullWidth: true,
+                    error: !!error,
+                  },
+                }}
+              />
+            )}
+          />
 
-        {/* Время начала */}
-        <Controller
-          name='eventStartTime'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Время начала события'
-              type='time'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventStartTime)}
-              helperText={
-                errors.eventStartTime?.message || 'Укажите время начала события'
-              }
-            />
-          )}
-        />
+          <Controller
+            name='eventStartTime'
+            control={control}
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
+              <TimePicker
+                {...field}
+                label='Время начала события'
+                ampm={false}
+                format='HH:mm'
+                value={
+                  value && value !== 'invalid' ? dayjs(value, 'HH:mm') : null
+                }
+                onChange={(time) => {
+                  const formatted = time?.isValid()
+                    ? time.format('HH:mm')
+                    : time === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
+                }}
+                slots={{ openPickerButton: () => null, toolbar: () => null }}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                    fullWidth: true,
+                    error: !!error,
+                  },
+                }}
+              />
+            )}
+          />
 
-        {/* TODO: вернуть когда пользователь сможет выбирать дату окончания (до МВП отложено)
-        <Controller
-          name='eventEndDate'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Дата окончания события'
-              type='date'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventEndDate)}
-              helperText={
-                errors.eventEndDate?.message || 'Укажите дату окончания события'
-              }
-            />
-          )}
-        /> */}
+          <Controller
+            name='eventEndTime'
+            control={control}
+            render={({
+              field: { onChange, value, ...field },
+              fieldState: { error },
+            }) => (
+              <TimePicker
+                {...field}
+                label='Время окончания'
+                ampm={false}
+                format='HH:mm'
+                value={
+                  value && value !== 'invalid' ? dayjs(value, 'HH:mm') : null
+                }
+                minTime={
+                  watch('eventStartTime')
+                    ? dayjs(watch('eventStartTime'), 'HH:mm')
+                    : undefined
+                }
+                onChange={(time) => {
+                  const formatted = time?.isValid()
+                    ? time.format('HH:mm')
+                    : time === null
+                      ? ''
+                      : 'invalid';
+                  onChange(formatted);
+                }}
+                slots={{ openPickerButton: () => null, toolbar: () => null }}
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                    fullWidth: true,
+                    error: !!error,
+                  },
+                }}
+              />
+            )}
+          />
+        </LocalizationProvider>
 
-        {/* Время окончания */}
-        <Controller
-          name='eventEndTime'
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size='small'
-              label='Время окончания события'
-              type='time'
-              InputLabelProps={{ shrink: true }}
-              error={Boolean(errors.eventEndTime)}
-              helperText={
-                errors.eventEndTime?.message ||
-                'Должно быть после времени начала'
-              }
-            />
-          )}
-        />
-
-        {/* Количество участников */}
         <Controller
           name='countUsers'
           control={control}
@@ -380,17 +393,11 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               size='small'
               label='Количество участников'
               type='number'
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ min: 2, max: 1000 }}
               error={Boolean(errors.countUsers)}
-              helperText={
-                errors.countUsers?.message || 'От 2 до 1000 участников'
-              }
             />
           )}
         />
 
-        {/* Описание */}
         <Controller
           name='eventDescription'
           control={control}
@@ -399,18 +406,12 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
               {...field}
               size='small'
               label='Описание'
-              InputLabelProps={{ shrink: true }}
               error={Boolean(errors.eventDescription)}
               multiline
-              rows={8}
-              helperText={
-                errors.eventDescription?.message || 'Опишите событие подробнее'
-              }
             />
           )}
         />
 
-        {/* Кнопки */}
         <Button
           type='submit'
           variant='contained'

@@ -10,21 +10,41 @@ interface FiltersState {
   calculateRange: number;
   eventTypes?: string[];
   eventStatuses: EventStatus[];
-  eventStartDateTime?: string;
+  eventStartDate?: string;
   scope: EventScope;
   useCustomRange: boolean;
+  selectedSportIds: string[];
+  tempRadius: number;
+  searchTerm: string;
+  tempDateValue: string | null;
 }
+
+interface FilterParams {
+  latitude?: number;
+  longitude?: number;
+  range?: number;
+  eventTypes?: string[];
+  eventStatuses?: EventStatus[];
+  eventStartDate?: string;
+  scope?: EventScope;
+}
+
+type ApplyFiltersPayload = Partial<EventSearchRequest> | FilterParams;
 
 const initialState: FiltersState = {
   latitude: DEFAULT_MAP_CENTER[1],
   longitude: DEFAULT_MAP_CENTER[0],
   range: BASE_RADIUS,
   calculateRange: BASE_RADIUS,
-  eventTypes: undefined,
   eventStatuses: [EventStatus.PLANNED, EventStatus.IN_PROCESS],
-  eventStartDateTime: undefined,
   scope: EventScope.ALL,
+  eventTypes: undefined,
+  eventStartDate: undefined,
   useCustomRange: false,
+  selectedSportIds: [],
+  tempRadius: 0,
+  searchTerm: '',
+  tempDateValue: null,
 };
 
 const filtersSlice = createSlice({
@@ -59,24 +79,42 @@ const filtersSlice = createSlice({
       state.eventStatuses = action.payload;
     },
 
-    setEventStartDateTime: (
-      state,
-      action: PayloadAction<string | undefined>,
-    ) => {
-      state.eventStartDateTime = action.payload;
+    setEventStartDate: (state, action: PayloadAction<string | undefined>) => {
+      state.eventStartDate = action.payload;
     },
 
     setEventScope: (state, action: PayloadAction<EventScope>) => {
       state.scope = action.payload;
     },
 
-    applyFilters: (
-      state,
-      action: PayloadAction<
-        | Partial<Omit<FiltersState, 'useCustomRange'>>
-        | Partial<EventSearchRequest>
-      >,
-    ) => {
+    setSelectedSportIds: (state, action: PayloadAction<string[]>) => {
+      state.selectedSportIds = action.payload;
+    },
+
+    toggleSportId: (state, action: PayloadAction<string>) => {
+      const sportId = action.payload;
+      if (state.selectedSportIds.includes(sportId)) {
+        state.selectedSportIds = state.selectedSportIds.filter(
+          (id) => id !== sportId,
+        );
+      } else {
+        state.selectedSportIds.push(sportId);
+      }
+    },
+
+    setTempRadius: (state, action: PayloadAction<number>) => {
+      state.tempRadius = action.payload;
+    },
+
+    setSearchTerm: (state, action: PayloadAction<string>) => {
+      state.searchTerm = action.payload;
+    },
+
+    setTempDateValue: (state, action: PayloadAction<string | null>) => {
+      state.tempDateValue = action.payload;
+    },
+
+    applyFilters: (state, action: PayloadAction<ApplyFiltersPayload>) => {
       const payload = action.payload;
 
       if ('coordinateFilterDto' in payload) {
@@ -92,49 +130,48 @@ const filtersSlice = createSlice({
         if (eventSearchPayload.eventStatuses !== undefined)
           state.eventStatuses = eventSearchPayload.eventStatuses;
         if (eventSearchPayload.eventStartDate !== undefined)
-          state.eventStartDateTime = eventSearchPayload.eventStartDate;
+          state.eventStartDate = eventSearchPayload.eventStartDate;
         if (eventSearchPayload.scope !== undefined)
           state.scope = eventSearchPayload.scope;
         return;
       }
 
-      const {
-        latitude,
-        longitude,
-        range,
-        eventTypes,
-        eventStatuses,
-        eventStartDateTime,
-        scope,
-      } = payload as Partial<Omit<FiltersState, 'useCustomRange'>>;
+      const filterParams = payload as FilterParams;
 
-      if (latitude !== undefined) state.latitude = latitude;
-      if (longitude !== undefined) state.longitude = longitude;
-      if (range !== undefined) {
-        state.range = range;
+      if (filterParams.latitude !== undefined)
+        state.latitude = filterParams.latitude;
+      if (filterParams.longitude !== undefined)
+        state.longitude = filterParams.longitude;
+      if (filterParams.range !== undefined) {
+        state.range = filterParams.range;
         state.useCustomRange = true;
       }
-      if (eventTypes !== undefined) state.eventTypes = eventTypes;
-      if (eventStatuses !== undefined) state.eventStatuses = eventStatuses;
-      if (eventStartDateTime !== undefined)
-        state.eventStartDateTime = eventStartDateTime;
-      if (scope !== undefined) state.scope = scope;
-    },
-
-    resetFilters: (state) => {
-      state.latitude = initialState.latitude;
-      state.longitude = initialState.longitude;
-      state.eventTypes = initialState.eventTypes;
-      state.eventStatuses = initialState.eventStatuses;
-      state.eventStartDateTime = initialState.eventStartDateTime;
-      state.scope = initialState.scope;
-      state.range = state.calculateRange;
-      state.useCustomRange = false;
+      if (filterParams.eventTypes !== undefined)
+        state.eventTypes = filterParams.eventTypes;
+      if (filterParams.eventStatuses !== undefined)
+        state.eventStatuses = filterParams.eventStatuses;
+      if (filterParams.eventStartDate !== undefined)
+        state.eventStartDate = filterParams.eventStartDate;
+      if (filterParams.scope !== undefined) state.scope = filterParams.scope;
     },
 
     resetCustomRange: (state) => {
       state.useCustomRange = false;
       state.range = state.calculateRange;
+      state.tempRadius = 0;
+    },
+
+    resetFilters: (state) => {
+      state.eventTypes = initialState.eventTypes;
+      state.eventStatuses = initialState.eventStatuses;
+      state.eventStartDate = initialState.eventStartDate;
+      state.scope = initialState.scope;
+      state.range = state.calculateRange;
+      state.useCustomRange = false;
+      state.selectedSportIds = [];
+      state.tempRadius = 0;
+      state.searchTerm = '';
+      state.tempDateValue = null;
     },
   },
 });
@@ -144,33 +181,42 @@ export const {
   setFilterRange,
   setEventTypes,
   setEventStatuses,
-  setEventStartDateTime,
+  setEventStartDate,
   setEventScope,
+  setSelectedSportIds,
+  toggleSportId,
+  setTempRadius,
+  setSearchTerm,
+  setTempDateValue,
   applyFilters,
-  resetFilters,
   resetCustomRange,
+  resetFilters,
 } = filtersSlice.actions;
 
 export const selectFilters = (state: { filters: FiltersState }) =>
   state.filters;
 
-export const selectFilterCoordinates = (state: { filters: FiltersState }) => ({
-  latitude: state.filters.latitude,
-  longitude: state.filters.longitude,
-});
-
-export const selectFilterRange = (state: { filters: FiltersState }) =>
-  state.filters.range;
-
 export const selectUseCustomRange = (state: { filters: FiltersState }) =>
   state.filters.useCustomRange;
+
+export const selectSportIds = (state: { filters: FiltersState }) =>
+  state.filters.selectedSportIds;
+
+export const selectTempRadius = (state: { filters: FiltersState }) =>
+  state.filters.tempRadius;
+
+export const selectSearchTerm = (state: { filters: FiltersState }) =>
+  state.filters.searchTerm;
+
+export const selectTempDateValue = (state: { filters: FiltersState }) =>
+  state.filters.tempDateValue;
 
 export const selectEventSearchRequest = createSelector(
   [selectFilters],
   (filters): EventSearchRequest => ({
     eventTypes: filters.eventTypes,
     eventStatuses: filters.eventStatuses,
-    eventStartDate: filters.eventStartDateTime,
+    eventStartDate: filters.eventStartDate,
     scope: filters.scope,
     coordinateFilterDto: {
       latitude: filters.latitude,

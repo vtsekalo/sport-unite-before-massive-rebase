@@ -2,11 +2,16 @@ import { Box, styled } from '@mui/material';
 import Switch from '@mui/material/Switch';
 
 export const StyledNavBar = styled(Box)(({ theme }) => ({
-  display: 'none',
+  display: 'flex',
+  height: '48px',
   backgroundColor: theme.palette.background.paper,
-  [theme.breakpoints.down('md')]: {
-    display: 'flex',
-    height: '48px',
+  '& .MuiSvgIcon-root': {
+    maxWidth: '100%',
+    maxHeight: '100%',
+  },
+  '& .MuiIconButton-root': {
+    width: '100%',
+    height: '100%',
   },
 }));
 
@@ -14,7 +19,6 @@ export const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 40,
   height: 30,
   padding: 0,
-
   '& .MuiSwitch-switchBase': {
     marginTop: 1,
     padding: 0,

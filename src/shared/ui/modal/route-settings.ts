@@ -29,5 +29,6 @@ export const ROUTE_SETTINGS: Record<string, RouteConfig> = {
     backdropFilter: 'none',
     alignItems: 'start',
     width: { xs: '100%', md: 'auto' },
+    height: { xs: '100%', md: 'auto' },
   },
 };

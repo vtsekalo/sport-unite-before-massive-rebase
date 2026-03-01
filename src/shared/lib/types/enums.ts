@@ -35,3 +35,16 @@ export enum EventScope {
   ORGANIZER = 'ORGANIZER',
   PARTICIPANT = 'PARTICIPANT',
 }
+
+/**
+ * IN_PROGRESS - В процессе.
+ * ORGANIZER - Организатор.
+ * PARTICIPANT - Участник
+ * GUEST - Неавторизированный пользователь
+ */
+export enum EventFooterMode {
+  IN_PROCESS = 'IN_PROCESS',
+  ORGANIZER = 'ORGANIZER',
+  PARTICIPANT = 'PARTICIPANT',
+  GUEST = 'GUEST',
+}
