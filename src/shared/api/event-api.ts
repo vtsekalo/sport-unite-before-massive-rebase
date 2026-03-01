@@ -75,9 +75,18 @@ export const eventApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['UploadImage'],
     }),
+    getCityByFilter: builder.query<{ city: string; country: string }[], string>(
+      {
+        query: (filter) => ({
+          url: ApiEndpoints.SEARCH_CITY,
+          method: 'GET',
+          credentials: 'include',
+          params: { filter: filter },
+        }),
+      },
+    ),
   }),
 });
-
 export const {
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
@@ -86,4 +95,5 @@ export const {
   useGetUserEventsQuery,
   useCreateEventMutation,
   useUploadPhotoMutation,
+  useGetCityByFilterQuery,
 } = eventApi;

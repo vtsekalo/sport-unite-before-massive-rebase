@@ -22,6 +22,9 @@ declare module '@mui/material/SvgIcon' {
   }
 }
 declare module '@mui/material/Button' {
+  interface ButtonOwnProps {
+    borderRadius?: ResponsiveStyleValue<number | string>;
+  }
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
     veryBig: true;
@@ -29,6 +32,7 @@ declare module '@mui/material/Button' {
     classicWidthAction: true;
     fullWidthAction: true;
     littleSquare: true;
+    miniRadius: true;
   }
   interface ButtonPropsVariantOverrides {
     lightBlue: true;
@@ -126,14 +130,29 @@ export const theme = (isMobile: boolean) =>
             }),
         },
       },
-      MuiButton: {
+      MuiFormHelperText: {
         styleOverrides: {
           root: {
-            borderRadius: 10,
-            lineHeight: 1.5,
+            height: '20px',
+            lineHeight: '20px',
           },
         },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              borderRadius: ownerState.borderRadius ?? '10px',
+              lineHeight: 1.5,
+            }),
+        },
         variants: [
+          {
+            props: { size: 'miniRadius' },
+            style: {
+              borderRadius: 4,
+            },
+          },
           {
             props: { size: 'medium' },
             style: {

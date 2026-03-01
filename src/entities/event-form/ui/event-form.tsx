@@ -63,15 +63,11 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
     handleSubmit,
     formState: { errors, isValid, isDirty },
     setValue,
-    watch,
   } = useForm<CreateEventFormData>({
     resolver: yupResolver(createEventSchema),
     mode: 'onChange',
     defaultValues: defaultValues as CreateEventFormData,
   });
-
-  const eventLocation = watch('eventLocation');
-
   const isFormDisabled =
     !isValid || !isDirty || isSubmitting || isUploadingPhoto;
 
@@ -87,26 +83,6 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
       a.typeName.localeCompare(b.typeName, 'ru'),
     );
   }, [eventTypes]);
-
-  const handleLocationChange = useCallback(
-    (
-      location: string,
-      coordinates?: { latitude: number; longitude: number },
-    ) => {
-      setValue('eventLocation', location, { shouldValidate: true });
-      if (coordinates) {
-        setValue('coordinates', coordinates, { shouldValidate: true });
-      }
-    },
-    [setValue],
-  );
-
-  const handleCoordinatesChange = useCallback(
-    (coordinates: { latitude: number; longitude: number }) => {
-      setValue('coordinates', coordinates, { shouldValidate: true });
-    },
-    [setValue],
-  );
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
@@ -261,13 +237,25 @@ export const EventFormEntity: FC<EventFormEntityProps> = ({
           )}
         />
 
-        <LocationAutocomplete
-          value={eventLocation ?? ''}
-          onChange={handleLocationChange}
-          onCoordinatesChange={handleCoordinatesChange}
-          error={Boolean(errors.eventLocation)}
-          errorsMassage={errors.eventLocation?.message}
-          placeholder='Начните вводить адрес или название места'
+        <Controller
+          name='eventLocation'
+          control={control}
+          render={({ field }) => (
+            <LocationAutocomplete
+              value={field.value ?? ''}
+              onChange={(location, coordinates) => {
+                field.onChange(location);
+                if (coordinates) {
+                  setValue('coordinates', coordinates, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }
+              }}
+              error={Boolean(errors.eventLocation)}
+              errorsMassage={errors.eventLocation?.message}
+            />
+          )}
         />
 
         <Controller
