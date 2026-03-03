@@ -127,7 +127,7 @@ export const UserProfile: FC = () => {
             justifyContent='center'
             bgcolor={'rgba(243, 245, 249, 1)'}
           >
-            {!profilePicture ? (
+            {profilePicture ? (
               <Avatar
                 width={{ xs: 160, md: 400 }}
                 height={{ xs: 160, md: 400 }}
