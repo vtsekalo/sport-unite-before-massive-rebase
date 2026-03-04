@@ -40,10 +40,16 @@ export interface IUserProfile {
   averageRating: number;
   interests?: string[];
 }
-
+/**
+ * Данные пользователя — участника события включая организатора
+ * @prop userId - Уникальный идентификатор пользователя
+ * @prop nickName - Публичное имя (никнейм) для отображения
+ * @prop userRole - Роль пользователя в контексте события (организатор, участник)
+ * @prop urlUserPhoto - Ссылка на аватар пользователя (null, если фото не установлено)
+ */
 export interface IUserParticipant {
   userId: string;
   nickName: string;
   userRole: UserRole;
-  urlUserPhoto: string | null;
+  urlUserPhoto: string;
 }

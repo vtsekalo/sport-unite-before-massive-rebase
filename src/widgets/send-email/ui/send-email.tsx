@@ -1,46 +1,72 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { ROUTES } from '@shared/lib';
 
 export const SendEmail = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return (
     <ModalWrapper
-      p={2}
       justifyContent='center'
       alignItems='center'
-      gap='32px'
+      gap={{ xs: 2, md: 5 }}
+      px={4}
+      py={3}
       height='auto'
       maxHeight='100%'
-      maxWidth={500}
+      maxWidth={{ xs: 361, md: 480 }}
     >
-      <Typography
+      <Box
         display='flex'
+        flexDirection='column'
         alignItems='center'
         justifyContent='center'
-        fontWeight={700}
-        fontSize='24px'
+        width='100%'
+        gap={2}
       >
-        Регистрация
-      </Typography>
+        <Typography
+          display='flex'
+          alignItems='center'
+          justifyContent='center'
+          fontWeight={700}
+          fontSize='24px'
+          lineHeight='56px'
+        >
+          Регистрация
+        </Typography>
 
-      <Typography align='center' fontWeight={400} fontSize='16px'>
-        Письмо отправлено на указанную почту. Перейдите по ссылке, чтобы
-        завершить регистрацию.
-      </Typography>
-      <Button
-        variant='contained'
-        fullWidth={isMobile}
-        size='mediumFixed'
-        onClick={() => navigate(ROUTES.HOME)}
+        <Typography
+          align='center'
+          fontWeight={400}
+          fontSize='16px'
+          lineHeight='24px'
+        >
+          Письмо отправлено на указанную почту. Перейдите по ссылке, чтобы
+          завершить регистрацию.
+        </Typography>
+      </Box>
+      <Box
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+        justifyContent='center'
+        width='100%'
+        gap={{ xs: 2, md: 3 }}
       >
-        Главная страница
-      </Button>
+        <Button variant='contained' fullWidth borderRadius={'4px'}>
+          Отправить письмо повторно
+        </Button>
+        <Button
+          variant='contained'
+          fullWidth
+          borderRadius={'4px'}
+          onClick={() => navigate(ROUTES.HOME)}
+        >
+          Главная страница
+        </Button>
+      </Box>
     </ModalWrapper>
   );
 };

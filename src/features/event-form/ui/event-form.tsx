@@ -64,13 +64,6 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
     [setValue],
   );
 
-  const handleCoordinatesChange = useCallback(
-    (coordinates: { latitude: number; longitude: number }) => {
-      setValue('coordinates', coordinates, { shouldValidate: true });
-    },
-    [setValue],
-  );
-
   return (
     <Box
       display='flex'
@@ -128,7 +121,6 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
       <LocationAutocomplete
         value={eventLocation ?? ''}
         onChange={handleLocationChange}
-        onCoordinatesChange={handleCoordinatesChange}
         error={Boolean(errors.eventLocation)}
         errorsMassage={errors.eventLocation?.message}
         placeholder='Начните вводить адрес или название места'

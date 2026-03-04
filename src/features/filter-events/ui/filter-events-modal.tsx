@@ -1,5 +1,4 @@
 import { FC, useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ClearIcon from '@mui/icons-material/Clear';
@@ -18,7 +17,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useGetTypeEventsQuery } from '@shared/api';
-import { IEventType, ROUTES, dayjs, useEventSearch } from '@shared/lib';
+import {
+  IEventType,
+  ROUTES,
+  dayjs,
+  useAppDispatch,
+  useAppSelector,
+  useEventSearch,
+} from '@shared/lib';
 import {
   resetCustomRange,
   selectFilters,
@@ -46,7 +52,7 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
   anchorEl,
   onClose,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -61,11 +67,11 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
   } = useEventSearch();
   const { data: eventTypes = [] } = useGetTypeEventsQuery();
 
-  const selectedSports = useSelector(selectSportIds);
-  const radius = useSelector(selectTempRadius);
-  const searchTerm = useSelector(selectSearchTerm);
-  const tempDateValue = useSelector(selectTempDateValue);
-  const filters = useSelector(selectFilters);
+  const selectedSports = useAppSelector(selectSportIds);
+  const radius = useAppSelector(selectTempRadius);
+  const searchTerm = useAppSelector(selectSearchTerm);
+  const tempDateValue = useAppSelector(selectTempDateValue);
+  const filters = useAppSelector(selectFilters);
 
   const hasTempSportFilter = selectedSports.length > 0;
   const hasTempDateFilter = tempDateValue !== null;
@@ -315,6 +321,7 @@ export const FilterEventsModal: FC<FilterEventsModalProps> = ({
               value={dateValue}
               reduceAnimations
               disablePast
+              showDaysOutsideCurrentMonth
               onChange={(newValue) => {
                 dispatch(
                   setTempDateValue(newValue ? newValue.toISOString() : null),

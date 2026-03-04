@@ -69,7 +69,7 @@ export const ChatsList: FC<ChatsListProps> = ({ chats, loading }) => {
       {!loading &&
         mappedChats.map((chat) => (
           <CardWrapper
-            key={chat.id}
+            key={chat.eventId}
             onClick={() => navigate(ROUTES.CHATS.DETAIL(chat.eventId))}
           >
             <ChatCardEntity

@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as mapglAPI from '@2gis/mapgl/types';
@@ -30,7 +30,7 @@ interface EventsMapProps {
   onMapReady?: (map: mapglAPI.Map) => void;
 }
 
-export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
+export const EventsMap: FC<EventsMapProps> = memo(({ onMapReady }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const coordinatesCenter = useAppSelector(selectMapCenter);
@@ -149,7 +149,6 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
       updateRangeFromBounds();
       map.on('moveend', updateRangeFromBounds);
       map.on('zoomend', updateRangeFromBounds);
-      map.on('resize', updateRangeFromBounds);
 
       onMapReady?.(map);
     },
@@ -178,4 +177,4 @@ export const EventsMap: FC<EventsMapProps> = ({ onMapReady }) => {
       />
     </Styled.MapWrapper>
   );
-};
+});

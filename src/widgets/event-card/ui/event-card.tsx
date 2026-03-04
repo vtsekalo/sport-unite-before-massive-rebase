@@ -6,9 +6,9 @@ import CreateIcon from '@mui/icons-material/Create';
 import { AvatarGroup, Box, Button, Typography, useTheme } from '@mui/material';
 
 import { EventCardEntity } from '@entities/event-card';
+import { EventParticipantsList } from '@entities/event-participants-list';
 import { useGetEventByIdQuery } from '@shared/api';
 import {
-  IUserParticipant,
   ROUTES,
   dayjs,
   useEventParticipantData,
@@ -44,10 +44,7 @@ export const EventCard: FC = () => {
 
   const [isOrganizer, organizer] = useIsEventOrganizer(eventData, profile?.id);
 
-  const { isParticipant, usersParticipant } = useEventParticipantData(
-    eventData,
-    profile?.id,
-  );
+  const { isParticipant } = useEventParticipantData(eventData, profile?.id);
 
   useEffect(() => {
     if (!profile) {
@@ -118,7 +115,7 @@ export const EventCard: FC = () => {
             <Box
               position={'absolute'}
               top={theme.spacing(2)}
-              right={theme.spacing(2)}
+              right={{ xs: `${theme.spacing(2)}`, md: `${theme.spacing(4)}` }}
             >
               <Button
                 variant='contained'
@@ -190,6 +187,7 @@ export const EventCard: FC = () => {
             flexDirection='row'
             alignItems={'center'}
             gap={5}
+            height={44}
           >
             <Typography variant='body2' color='text.disabled' fontSize='12px'>
               Организатор:
@@ -198,7 +196,7 @@ export const EventCard: FC = () => {
               {organizer?.userId && (
                 <Styled.EventAvatar
                   alt={organizer.nickName}
-                  src={organizer.urlUserPhoto || ''}
+                  src={organizer.urlUserPhoto}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(ROUTES.PROFILE.DETAIL(organizer.userId));
@@ -209,35 +207,12 @@ export const EventCard: FC = () => {
           </Box>
         }
         participantsNode={
-          <Box
-            display={'flex'}
-            flexDirection='row'
-            gap={2}
-            alignItems={'center'}
-          >
-            <Typography variant='body2' color='text.disabled' fontSize='12px'>
-              Участники ({usersCount}/{maxUsers}):
-            </Typography>
-            {usersCount > 1 ? (
-              <AvatarGroup>
-                {usersParticipant.slice(0, 4).map((user: IUserParticipant) => (
-                  <Styled.EventAvatar
-                    key={user.userId}
-                    alt={user.nickName}
-                    src={user.urlUserPhoto || ''}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(ROUTES.PROFILE.DETAIL(user.userId));
-                    }}
-                  />
-                ))}
-              </AvatarGroup>
-            ) : (
-              <Typography fontSize={12}>
-                Пока никто не присоединился к событию.
-              </Typography>
-            )}
-          </Box>
+          <EventParticipantsList
+            profileId={profile?.id}
+            eventData={eventData}
+            usersCount={usersCount}
+            maxUsers={maxUsers}
+          />
         }
         footerActionsNode={
           <EventCardFooter

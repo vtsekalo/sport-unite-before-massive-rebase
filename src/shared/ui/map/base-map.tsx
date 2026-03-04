@@ -49,9 +49,8 @@ export const BaseMap = memo(
           zoom,
           key: apiKey,
           zoomControl: false,
+          enableTrackResize: true,
         });
-
-        map.invalidateSize();
 
         lastCenterRef.current = center;
         lastZoomRef.current = zoom;
@@ -81,20 +80,6 @@ export const BaseMap = memo(
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiKey]);
-
-    useEffect(() => {
-      if (!instance) return;
-
-      const handleResize = () => {
-        instance.map.invalidateSize();
-      };
-
-      window.addEventListener('resize', handleResize);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }, [instance]);
 
     useEffect(() => {
       if (!instance) return;

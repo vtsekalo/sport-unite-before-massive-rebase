@@ -40,13 +40,24 @@ export const eventApi = baseApi.injectEndpoints({
         { type: 'EventById', id: eventId },
       ],
     }),
+
+    getCityByFilter: builder.query<{ city: string; country: string }[], string>(
+      {
+        query: (filter) => ({
+          url: ApiEndpoints.SEARCH_CITY,
+          method: 'GET',
+          credentials: 'include',
+          params: { filter: filter },
+        }),
+      },
+    ),
   }),
 });
-
 export const {
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
   useGetUserEventsQuery,
+  useGetCityByFilterQuery,
 } = eventApi;

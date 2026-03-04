@@ -1,8 +1,13 @@
+/**
+ * Пол
+ */
 export enum GenderVariant {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
-
+/**
+ * Статус профиля
+ */
 export enum UserStatusVariant {
   ACTIVE = 'ACTIVE',
   NOT_ACTIVE = 'NOT_ACTIVE',
@@ -43,8 +48,22 @@ export enum EventScope {
  * GUEST - Неавторизированный пользователь
  */
 export enum EventFooterMode {
-  IN_PROCESS = 'IN_PROCESS',
   ORGANIZER = 'ORGANIZER',
   PARTICIPANT = 'PARTICIPANT',
   GUEST = 'GUEST',
+  COMPLETED = 'COMPLETED',
+}
+
+/**
+ * Жизненный цикл (статусы) уведомления
+ * @enum NEW - Новое уведомление, созданное в системе
+ * @enum DELIVERED - Уведомление успешно доставлено на устройство пользователя
+ * @enum READ - Уведомление было открыто или прочитано пользователем
+ * @enum DELETED - Уведомление удалено или отправлено в архив
+ */
+export enum StatusNotification {
+  new = 'NEW',
+  delivered = 'DELIVERED',
+  read = 'READ',
+  deleted = 'DELETED',
 }

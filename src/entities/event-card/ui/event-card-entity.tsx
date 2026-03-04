@@ -2,6 +2,8 @@ import { FC, ReactNode } from 'react';
 
 import { Box, Typography, useTheme } from '@mui/material';
 
+import { Styled } from './event-card-entity.styled';
+
 type EventInfoProps = {
   headerNode: ReactNode;
   titleNode: ReactNode;
@@ -25,7 +27,7 @@ export const EventCardEntity: FC<EventInfoProps> = ({
 }) => {
   const theme = useTheme();
   return (
-    <Box
+    <Styled.CardBox
       padding={0}
       left={0}
       display={'flex'}
@@ -61,26 +63,21 @@ export const EventCardEntity: FC<EventInfoProps> = ({
         </Typography>
 
         <Box fontSize='14px'>{descriptionNode}</Box>
+        <Box>
+          {organizerNode}
 
-        <Box display='flex' flexDirection='column' alignItems='start' gap={2}>
-          <Box display='flex' alignItems='center' gap={2}>
-            {organizerNode}
-          </Box>
-
-          <Box display='flex' alignItems='center' gap={2}>
-            {participantsNode}
-          </Box>
+          {participantsNode}
         </Box>
 
         <Box
+          pb={2}
           mt={{ xs: 'auto', md: 0 }}
           display='flex'
           justifyContent='center'
-          pb={2}
         >
           {footerActionsNode}
         </Box>
       </Box>
-    </Box>
+    </Styled.CardBox>
   );
 };

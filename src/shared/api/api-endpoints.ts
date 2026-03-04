@@ -16,6 +16,7 @@ export const ApiEndpoints = {
   CREATE_EVENT: `/${API_PATHS.EVENT_SERVICE}/events`,
   UPLOAD_PHOTO: `/${API_PATHS.IMAGE_SERVICE}/resources/images`,
   DELETE_PHOTO: `/${API_PATHS.IMAGE_SERVICE}/resources/images`,
+  SEARCH_CITY: `/${API_PATHS.USER_SERVICE}/dictionary/search`,
 } as const;
 
 export const TWO_GIS_API_BASE_URL = 'https://catalog.api.2gis.com/3.0';

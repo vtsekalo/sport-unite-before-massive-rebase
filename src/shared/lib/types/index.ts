@@ -1,7 +1,6 @@
 export * from './enums';
 export * from './map';
 export * from './user';
-export * from './api';
 export * from './chat';
 export * from './event';
 export * from './general';
