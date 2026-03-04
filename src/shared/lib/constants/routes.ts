@@ -25,6 +25,8 @@ export const ROUTES = {
 
   EVENT: {
     DETAIL: (id: string | number) => `/events/${id}`,
+    CREATE: '/events/create',
+    COPY: (id: string | number) => `/events/copy/${id}`,
   },
 
   NOT_FOUND: '*',

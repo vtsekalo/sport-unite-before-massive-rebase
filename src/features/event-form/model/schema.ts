@@ -98,3 +98,5 @@ export const createEventSchema = yup.object({
     longitude: yup.number().required(),
   }),
 });
+
+export type EventFormValues = yup.InferType<typeof createEventSchema>;

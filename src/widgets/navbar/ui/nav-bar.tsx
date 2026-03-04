@@ -144,7 +144,7 @@ export const NavBar = () => {
           <IconButton
             color='inherit'
             size='large'
-            onClick={() => toggleNavigate(ROUTES.ADD_EVENT)}
+            onClick={() => toggleNavigate(ROUTES.EVENT.CREATE)}
           >
             <AddOutlinedIcon fontSize='large' />
           </IconButton>

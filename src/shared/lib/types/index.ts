@@ -7,4 +7,4 @@ export * from './event';
 export * from './general';
 export * from './image';
 export * from './notification';
-export * from './event-form-types';
+export * from './types-event-form';
