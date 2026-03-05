@@ -80,6 +80,7 @@ export const createEventSchema = yup.object({
 
   countUsers: yup
     .number()
+    .required('Укажите количество участников')
     .typeError('Введите число')
     .min(2, 'Минимум 2 участника')
     .max(1000, 'Максимум 1000 участников')

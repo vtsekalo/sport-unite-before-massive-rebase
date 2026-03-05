@@ -1,3 +1,5 @@
+import { Coordinates } from './map';
+
 /**
  * Запрос на загрузку фото
  * @prop id - Идентификатор сущности (события или пользователя)
@@ -24,6 +26,7 @@ export interface UploadPhotoResponse {
  * @prop eventName - Название события
  * @prop eventLocation - Место проведения события
  * @prop eventStartDate - Дата и время начала события (ISO 8601)
+ * @prop eventEndDate - Дата и время окончания события (ISO 8601)
  * @prop eventDescription - Описание события
  * @prop countUsers - Максимальное количество участников
  * @prop eventPhoto - URL фото события
@@ -34,11 +37,19 @@ export interface CreateEventRequest {
   eventName: string;
   eventLocation: string;
   eventStartDate: string;
+  eventEndDate: string;
   eventDescription: string;
-  countUsers?: number;
+  countUsers: number;
   eventPhoto: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
+  coordinates: Coordinates;
+}
+
+/**
+ * Запрос на обновление события
+ * @prop id - Идентификатор события
+ * @prop data - Частичные данные для обновления события
+ */
+export interface UpdateEventRequest {
+  id: string;
+  data: Partial<CreateEventRequest>;
 }

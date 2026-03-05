@@ -14,22 +14,8 @@ export interface RouteConfig {
 }
 
 export const ROUTE_SETTINGS: Record<string, RouteConfig> = {
-  [ROUTES.EVENT.CREATE]: {
-    bgcolor: { xs: 'rgba(54, 119, 255, 0.6)', md: 'transparent' },
-    justifyContent: 'center',
-    alignItems: 'center',
-    backdropFilter: 'blur(4px)',
-    width: '100%',
-    height: '100%',
-  },
-  [ROUTES.EVENT.COPY('')]: {
-    bgcolor: { xs: 'rgba(54, 119, 255, 0.6)', md: 'transparent' },
-    justifyContent: 'center',
-    alignItems: 'center',
-    backdropFilter: 'blur(4px)',
-    width: '100%',
-    height: '100%',
-  },
+  [ROUTES.EVENT.CREATE]: {},
+  [ROUTES.EVENT.COPY('')]: {},
   [ROUTES.EVENT.DETAIL('')]: {
     bgcolor: { xs: 'rgba(54, 119, 255, 0.6)', md: 'transparent' },
     justifyContent: 'start',

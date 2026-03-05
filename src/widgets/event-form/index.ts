@@ -1,5 +1,5 @@
+export { EventFormWidget } from './ui/widget-event-form';
 export { useEventForm } from '@features/event-form';
-export { EventFormWidget } from './ui';
 export {
   useCreateEventMutation,
   useUpdateEventMutation,

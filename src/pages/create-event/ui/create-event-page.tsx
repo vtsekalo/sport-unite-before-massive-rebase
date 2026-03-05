@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ModalWrapper } from '@entities/modal-wrapper';
 import { EventFormValues } from '@features/event-form';
 import { useUploadPhotoMutation } from '@features/event-photo-upload';
-import { ROUTES, dayjs } from '@shared/lib';
+import { ROUTES, buildEventDates } from '@shared/lib';
 import { EventFormWidget } from '@widgets/event-form';
 import { useCreateEventMutation } from '@widgets/event-form';
 
@@ -14,16 +14,7 @@ export const CreateEventPage = () => {
     useUploadPhotoMutation();
 
   const handleSubmit = async (values: EventFormValues) => {
-    const eventStartDate = dayjs(
-      `${values.eventStartDate} ${values.eventStartTime}`,
-    )
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
-    const eventEndDate = dayjs(
-      `${values.eventStartDate} ${values.eventEndTime}`,
-    )
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const { eventStartDate, eventEndDate } = buildEventDates(values);
 
     const eventData = {
       eventType: values.eventType,

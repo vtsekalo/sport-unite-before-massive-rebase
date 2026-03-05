@@ -16,7 +16,7 @@ export const useEventForm = (initialValues?: Partial<EventFormValues>) => {
       eventStartTime: '',
       eventEndTime: '',
       eventDescription: '',
-      countUsers: '' as unknown as number,
+      countUsers: undefined,
       coordinates: { latitude: 0, longitude: 0 },
       eventPhoto: null,
       ...initialValues,

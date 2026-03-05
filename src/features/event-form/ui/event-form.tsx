@@ -6,6 +6,7 @@ import {
   Box,
   CircularProgress,
   FormControl,
+  FormHelperText,
   MenuItem,
   Select,
   TextField,
@@ -103,6 +104,9 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
             </Select>
           )}
         />
+        <FormHelperText>
+          {errors.eventType?.message ?? 'Выберите тип события'}
+        </FormHelperText>
       </FormControl>
 
       <Controller
@@ -114,6 +118,7 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
             size='small'
             label='Название события'
             error={Boolean(errors.eventName)}
+            helperText={errors.eventName?.message ?? 'Укажите название события'}
           />
         )}
       />
@@ -155,6 +160,9 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
                   size: 'small',
                   fullWidth: true,
                   error: !!error,
+                  helperText:
+                    errors.eventStartDate?.message ??
+                    'Укажите дату начала события',
                 },
               }}
             />
@@ -190,6 +198,9 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
                   size: 'small',
                   fullWidth: true,
                   error: !!error,
+                  helperText:
+                    errors.eventStartTime?.message ??
+                    'Укажите время начала события',
                 },
               }}
             />
@@ -230,6 +241,9 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
                   size: 'small',
                   fullWidth: true,
                   error: !!error,
+                  helperText:
+                    errors.eventEndTime?.message ??
+                    'Укажите время окончания события',
                 },
               }}
             />
@@ -247,6 +261,10 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
             label='Количество участников'
             type='number'
             error={Boolean(errors.countUsers)}
+            helperText={
+              errors.countUsers?.message ??
+              'Укажите максимально число участников'
+            }
           />
         )}
       />
@@ -261,6 +279,9 @@ export const EventForm: FC<EventFormProps> = ({ form }) => {
             label='Описание'
             error={Boolean(errors.eventDescription)}
             multiline
+            helperText={
+              errors.eventName?.message ?? 'Опишите событие подробнее'
+            }
           />
         )}
       />

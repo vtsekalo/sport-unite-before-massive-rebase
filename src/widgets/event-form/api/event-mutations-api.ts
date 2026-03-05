@@ -1,25 +1,5 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import { IEvent } from '@shared/lib';
-
-export interface CreateEventRequest {
-  eventType: string;
-  eventName: string;
-  eventLocation: string;
-  eventStartDate: string;
-  eventEndDate: string;
-  eventDescription: string;
-  countUsers?: number;
-  eventPhoto: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
-
-export interface UpdateEventRequest {
-  id: string;
-  data: Partial<CreateEventRequest>;
-}
+import { CreateEventRequest, IEvent, UpdateEventRequest } from '@shared/lib';
 
 export const eventMutationsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

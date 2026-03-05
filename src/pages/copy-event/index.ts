@@ -1,1 +1,1 @@
-export { CopyEventPage } from './ui/page-copy-event';
+export { CopyEventPage } from './ui/copy-event-page';

@@ -117,7 +117,6 @@ export const LocationAutocomplete: FC<LocationAutocompleteProps> = ({
                 </>
               ),
             },
-            inputLabel: { shrink: true },
           }}
         />
       )}

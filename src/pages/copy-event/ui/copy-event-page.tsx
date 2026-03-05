@@ -6,7 +6,7 @@ import { ModalWrapper } from '@entities/modal-wrapper';
 import { EventFormValues } from '@features/event-form';
 import { useUploadPhotoMutation } from '@features/event-photo-upload';
 import { useGetEventByIdQuery } from '@shared/api';
-import { ROUTES, dayjs } from '@shared/lib';
+import { ROUTES, buildEventDates } from '@shared/lib';
 import { EventFormWidget } from '@widgets/event-form';
 import { useCreateEventMutation } from '@widgets/event-form';
 
@@ -35,27 +35,27 @@ export const CopyEventPage = () => {
     : undefined;
 
   const handleSubmit = async (values: EventFormValues) => {
-    const eventStartDate = dayjs(
-      `${values.eventStartDate} ${values.eventStartTime}`,
-    )
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
-    const eventEndDate = dayjs(
-      `${values.eventStartDate} ${values.eventEndTime}`,
-    )
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const { eventStartDate, eventEndDate } = buildEventDates(values);
+    const {
+      eventType,
+      eventName,
+      eventLocation,
+      eventDescription,
+      countUsers,
+      coordinates,
+      eventPhoto,
+    } = values;
 
     const eventData = {
-      eventType: values.eventType,
-      eventName: values.eventName,
-      eventLocation: values.eventLocation,
+      eventType,
+      eventName,
+      eventLocation,
       eventStartDate,
       eventEndDate,
-      eventDescription: values.eventDescription,
-      countUsers: values.countUsers,
+      eventDescription,
+      countUsers,
       eventPhoto: '',
-      coordinates: values.coordinates,
+      coordinates,
     };
 
     const result = await createEvent(eventData).unwrap();
@@ -63,11 +63,9 @@ export const CopyEventPage = () => {
     if (result.eventId) {
       let photoFile: File | null = null;
 
-      if (values.eventPhoto instanceof File) {
-        // Пользователь выбрал новое фото
-        photoFile = values.eventPhoto;
+      if (eventPhoto instanceof File) {
+        photoFile = eventPhoto;
       } else if (data?.eventPhoto) {
-        // Копируем фото оригинального события
         const response = await fetch(data.eventPhoto);
         const blob = await response.blob();
         photoFile = new File([blob], 'photo.jpg', { type: blob.type });
