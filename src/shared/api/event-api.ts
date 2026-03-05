@@ -1,12 +1,5 @@
 import { ApiEndpoints, baseApi } from '@shared/api';
-import {
-  CreateEventRequest,
-  EventSearchRequest,
-  IEvent,
-  IEventType,
-  UploadPhotoRequest,
-  UploadPhotoResponse,
-} from '@shared/lib';
+import { EventSearchRequest, IEvent, IEventType } from '@shared/lib';
 import { providesList } from '@shared/lib/utils/provides-list';
 
 export const eventApi = baseApi.injectEndpoints({
@@ -48,42 +41,23 @@ export const eventApi = baseApi.injectEndpoints({
       ],
     }),
 
-    createEvent: builder.mutation<IEvent, CreateEventRequest>({
-      query: (eventData) => ({
-        url: ApiEndpoints.CREATE_EVENT,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: eventData,
-      }),
-      invalidatesTags: ['Events'],
-    }),
-
-    uploadPhoto: builder.mutation<UploadPhotoResponse, UploadPhotoRequest>({
-      query: ({ id, photoType, file }) => {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        return {
-          url: `${ApiEndpoints.UPLOAD_PHOTO}/${id}?photoType=${photoType}`,
-          method: 'POST',
+    getCityByFilter: builder.query<{ city: string; country: string }[], string>(
+      {
+        query: (filter) => ({
+          url: ApiEndpoints.SEARCH_CITY,
+          method: 'GET',
           credentials: 'include',
-          body: formData,
-        };
+          params: { filter: filter },
+        }),
       },
-      invalidatesTags: ['UploadImage'],
-    }),
+    ),
   }),
 });
-
 export const {
   useGetFilteredEventsQuery,
   useGetTypeEventsQuery,
   useGetEventByIdQuery,
   useLazyGetFilteredEventsQuery,
   useGetUserEventsQuery,
-  useCreateEventMutation,
-  useUploadPhotoMutation,
+  useGetCityByFilterQuery,
 } = eventApi;

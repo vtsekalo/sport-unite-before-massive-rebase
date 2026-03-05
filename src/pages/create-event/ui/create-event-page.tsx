@@ -1,14 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 
-import { EventFormEntity } from '@entities/event-form';
 import { ModalWrapper } from '@entities/modal-wrapper';
-import { useCreateEventMutation, useUploadPhotoMutation } from '@shared/api';
-import {
-  CreateEventFormData,
-  EventFormInitialData,
-  ROUTES,
-  dayjs,
-} from '@shared/lib';
+import { EventFormValues } from '@features/event-form';
+import { useUploadPhotoMutation } from '@features/event-photo-upload';
+import { ROUTES, buildEventDates } from '@shared/lib';
+import { EventFormWidget } from '@widgets/event-form';
+import { useCreateEventMutation } from '@widgets/event-form';
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -16,79 +13,48 @@ export const CreateEventPage = () => {
   const [uploadPhoto, { isLoading: isUploadingPhoto }] =
     useUploadPhotoMutation();
 
-  const onSubmit = async (data: CreateEventFormData) => {
-    const eventStartDate = dayjs(
-      `${data.eventStartDate} ${data.eventStartTime}`,
-    )
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
-
-    const eventEndDate = dayjs(`${data.eventStartDate} ${data.eventEndTime}`)
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+  const handleSubmit = async (values: EventFormValues) => {
+    const { eventStartDate, eventEndDate } = buildEventDates(values);
 
     const eventData = {
-      eventType: data.eventType,
-      eventName: data.eventName,
-      eventLocation: data.eventLocation,
+      eventType: values.eventType,
+      eventName: values.eventName,
+      eventLocation: values.eventLocation,
       eventStartDate,
       eventEndDate,
-      eventDescription: data.eventDescription,
-      countUsers: data.countUsers,
+      eventDescription: values.eventDescription,
+      countUsers: values.countUsers,
       eventPhoto: '',
-      coordinates: {
-        latitude: data.coordinates.latitude,
-        longitude: data.coordinates.longitude,
-      },
+      coordinates: values.coordinates,
     };
 
-    const createdEvent = await createEvent(eventData).unwrap();
+    const result = await createEvent(eventData).unwrap();
 
-    if (data.eventPhoto instanceof File && createdEvent.eventId) {
-      await uploadPhoto({
-        id: createdEvent.eventId,
-        photoType: 'EVENT',
-        file: data.eventPhoto,
-      }).unwrap();
+    if (values.eventPhoto instanceof File && result.eventId) {
+      const formData = new FormData();
+      formData.append('file', values.eventPhoto);
+      await uploadPhoto({ id: result.eventId, file: formData }).unwrap();
     }
 
-    navigate(ROUTES.EVENT.DETAIL(createdEvent.eventId));
+    navigate(ROUTES.EVENT.DETAIL(result.eventId));
   };
 
   const handleCancel = () => {
     navigate(ROUTES.HOME);
   };
 
-  const defaultValues: EventFormInitialData = {
-    eventType: '',
-    eventName: '',
-    eventLocation: '',
-    eventStartDate: '',
-    eventStartTime: '',
-    eventEndTime: '',
-    countUsers: undefined,
-    eventDescription: '',
-    eventPhoto: null,
-    coordinates: {
-      latitude: 55.754167,
-      longitude: 37.620001,
-    },
-  };
-
   return (
     <ModalWrapper
-      maxWidth={{ xs: 361, md: 480 }}
+      maxWidth={{ xs: 377, md: 480 }}
       height='auto'
       maxHeight='100%'
     >
-      <EventFormEntity
+      <EventFormWidget
         title='Создание события'
-        defaultValues={defaultValues}
-        onSubmit={onSubmit}
-        onClose={handleCancel}
-        submitButtonText='СОЗДАТЬ СОБЫТИЕ'
-        isSubmitting={isCreating}
-        isUploadingPhoto={isUploadingPhoto}
+        submitLabel='СОЗДАТЬ СОБЫТИЕ'
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        isLoading={isCreating || isUploadingPhoto}
       />
     </ModalWrapper>
   );

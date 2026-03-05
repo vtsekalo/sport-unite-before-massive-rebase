@@ -1,10 +1,7 @@
 import { Box, styled } from '@mui/material';
 import Switch from '@mui/material/Switch';
 
-export const StyledNavBar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  height: '48px',
-  backgroundColor: theme.palette.background.paper,
+export const StyledNavBar = styled(Box)({
   '& .MuiSvgIcon-root': {
     maxWidth: '100%',
     maxHeight: '100%',
@@ -13,19 +10,19 @@ export const StyledNavBar = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
   },
-}));
+});
 
 export const StyledSwitch = styled(Switch)(({ theme }) => ({
-  width: 40,
-  height: 30,
+  width: 48,
+  height: 32,
   padding: 0,
   '& .MuiSwitch-switchBase': {
-    marginTop: 1,
     padding: 0,
+    top: 2,
     color: theme.palette.primary.main,
     transform: 'translateX(2px)',
     '&.Mui-checked': {
-      transform: 'translateX(11px)',
+      transform: 'translateX(18px)',
       '& + .MuiSwitch-track': {
         opacity: 1,
         backgroundColor: theme.palette.primary.main,
@@ -36,16 +33,6 @@ export const StyledSwitch = styled(Switch)(({ theme }) => ({
   '& .MuiSwitch-track': {
     opacity: 1,
     backgroundColor: theme.palette.primary.main,
-    borderRadius: 30,
+    borderRadius: 26,
   },
-}));
-
-export const StyledSwitchThumb = styled(Box)(({ theme }) => ({
-  borderRadius: 20,
-  backgroundColor: theme.palette.common.white,
-  width: 27,
-  height: 27,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
 }));

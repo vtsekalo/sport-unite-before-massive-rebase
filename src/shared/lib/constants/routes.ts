@@ -3,13 +3,12 @@ export const ROUTES = {
   AUTH: '/auth',
   REGISTRATION: '/registration',
   SEND_EMAIL: '/send-email',
-  TEST_PAGE: '/testPage',
 
   CHATS: {
     INDEX: '/chats',
     DETAIL: (id: string | number) => `/chats/${id}`,
   },
-
+  CREATE_EVENT: '/create-event',
   ADD_EVENT: '/addevent',
   COPY_EVENT: '/copy',
   NOTIFICATIONS: '/notifications',
@@ -25,6 +24,8 @@ export const ROUTES = {
 
   EVENT: {
     DETAIL: (id: string | number) => `/events/${id}`,
+    CREATE: '/events/create',
+    COPY: (id: string | number) => `/events/copy/${id}`,
   },
 
   NOT_FOUND: '*',

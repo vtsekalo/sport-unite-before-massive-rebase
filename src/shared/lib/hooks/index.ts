@@ -6,3 +6,4 @@ export * from './use-is-event-organizer';
 export * from './use-is-event-participant';
 export * from './use-geolocation';
 export * from './use-toggle-navigate';
+export * from './use-is-event-in-process.ts';

@@ -118,7 +118,7 @@ export const rtkQuerySnackbarMiddleware: Middleware =
 
     if (isFulfilled(action) && endPoint) {
       const defaultMessages: Record<string, string> = {
-        registration: 'Регистрация прошла успешно!',
+        registrationUser: 'Регистрация прошла успешно!',
         deleteMyProfile: 'Профиль успешно удален!',
         updateMyProfile: 'Профиль обновлен',
         createEvent: 'Событие успешно создано!',

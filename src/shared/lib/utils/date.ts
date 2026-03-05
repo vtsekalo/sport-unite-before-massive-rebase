@@ -19,3 +19,21 @@ export const formatToTime = (iso: string) => {
 
   return dayjs.utc(iso).local().format('HH:mm');
 };
+
+export const buildEventDates = (values: {
+  eventStartDate: string;
+  eventStartTime: string;
+  eventEndTime: string;
+}) => {
+  const eventStartDate = dayjs(
+    `${values.eventStartDate} ${values.eventStartTime}`,
+  )
+    .utc()
+    .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+  const eventEndDate = dayjs(`${values.eventStartDate} ${values.eventEndTime}`)
+    .utc()
+    .format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+  return { eventStartDate, eventEndDate };
+};

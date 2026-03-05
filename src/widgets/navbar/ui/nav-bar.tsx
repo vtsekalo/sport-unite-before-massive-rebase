@@ -15,11 +15,7 @@ import { Badge, Box, IconButton, Stack, alpha, useTheme } from '@mui/material';
 import { useGetCountNotificationsQuery } from '@shared/api';
 import { ROUTES, useProfile, useToggleNavigate } from '@shared/lib';
 
-import {
-  StyledNavBar,
-  StyledSwitch,
-  StyledSwitchThumb,
-} from './nav-bar.styled';
+import { StyledNavBar, StyledSwitch } from './nav-bar.styled';
 
 export const NavBar = () => {
   const { pathname } = useLocation();
@@ -69,6 +65,9 @@ export const NavBar = () => {
 
   return (
     <StyledNavBar
+      display='flex'
+      height='100%'
+      maxHeight='48px'
       alignItems='center'
       justifyContent='center'
       position='absolute'
@@ -144,7 +143,7 @@ export const NavBar = () => {
           <IconButton
             color='inherit'
             size='large'
-            onClick={() => toggleNavigate(ROUTES.ADD_EVENT)}
+            onClick={() => toggleNavigate(ROUTES.EVENT.CREATE)}
           >
             <AddOutlinedIcon fontSize='large' />
           </IconButton>
@@ -152,14 +151,30 @@ export const NavBar = () => {
 
         <StyledSwitch
           icon={
-            <StyledSwitchThumb>
-              <MapOutlinedIcon />
-            </StyledSwitchThumb>
+            <Box
+              display='flex'
+              alignItems='center'
+              justifyContent='center'
+              height={28}
+              width={28}
+              borderRadius={'50%'}
+              bgcolor={theme.palette.common.white}
+            >
+              <MapOutlinedIcon height={28} width={28} />
+            </Box>
           }
           checkedIcon={
-            <StyledSwitchThumb>
-              <FormatListBulletedOutlinedIcon />
-            </StyledSwitchThumb>
+            <Box
+              display='flex'
+              alignItems='center'
+              justifyContent='center'
+              height={28}
+              width={28}
+              borderRadius={'50%'}
+              bgcolor={theme.palette.common.white}
+            >
+              <FormatListBulletedOutlinedIcon fontSize='small' />
+            </Box>
           }
           checked={location.pathname === ROUTES.LIST}
           onChange={handleSwitchChange}

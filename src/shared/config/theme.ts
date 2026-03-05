@@ -1,17 +1,38 @@
 import { createTheme } from '@mui/material';
+import { ResponsiveStyleValue } from '@mui/system';
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     bodySmall: true;
   }
 }
+declare module '@mui/material/Avatar' {
+  interface AvatarOwnProps {
+    width?: ResponsiveStyleValue<number | string>;
+    height?: ResponsiveStyleValue<number | string>;
+  }
+}
+declare module '@mui/material/SvgIcon' {
+  interface SvgIconPropsColorOverrides {
+    [key: string]: true;
+  }
+  interface SvgIconOwnProps {
+    width?: ResponsiveStyleValue<number | string>;
+    height?: ResponsiveStyleValue<number | string>;
+  }
+}
 declare module '@mui/material/Button' {
+  interface ButtonOwnProps {
+    borderRadius?: ResponsiveStyleValue<number | string>;
+  }
   interface ButtonPropsSizeOverrides {
     mediumFixed: true;
     veryBig: true;
     adaptive: true;
     classicWidthAction: true;
     fullWidthAction: true;
+    littleSquare: true;
+    miniRadius: true;
   }
   interface ButtonPropsVariantOverrides {
     lightBlue: true;
@@ -32,6 +53,7 @@ export const theme = (isMobile: boolean) =>
         main: 'rgba(54, 119, 255, 1)',
         dark: '#0056b3',
       },
+
       info: {
         main: '#3677FF',
       },
@@ -59,6 +81,12 @@ export const theme = (isMobile: boolean) =>
 
     components: {
       MuiTypography: {
+        styleOverrides: {
+          root: {
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-word',
+          },
+        },
         variants: [
           {
             props: { variant: 'bodySmall' },
@@ -78,14 +106,53 @@ export const theme = (isMobile: boolean) =>
           },
         },
       },
-      MuiButton: {
+      MuiSvgIcon: {
         styleOverrides: {
-          root: {
-            borderRadius: 10,
-            lineHeight: 1.5,
+          root: ({ ownerState, theme }) => {
+            const resolvedColor = ownerState.color;
+
+            return theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+              fontSize: ownerState.width,
+              color: resolvedColor,
+            });
           },
         },
+      },
+      MuiAvatar: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+              fontSize: ownerState.width,
+            }),
+        },
+      },
+      MuiFormHelperText: {
+        styleOverrides: {
+          root: {
+            height: '20px',
+            lineHeight: '20px',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              borderRadius: ownerState.borderRadius ?? '10px',
+              lineHeight: 1.5,
+            }),
+        },
         variants: [
+          {
+            props: { size: 'miniRadius' },
+            style: {
+              borderRadius: 4,
+            },
+          },
           {
             props: { size: 'medium' },
             style: {
@@ -128,6 +195,15 @@ export const theme = (isMobile: boolean) =>
             }),
           },
           {
+            props: { size: 'littleSquare' },
+            style: ({ theme }) => ({
+              minWidth: theme.spacing(4),
+              minHeight: theme.spacing(4),
+              maxWidth: theme.spacing(4),
+              maxHeight: theme.spacing(4),
+            }),
+          },
+          {
             props: { size: 'fullWidthAction' },
             style: ({ theme }) => ({
               width: 'auto',
@@ -163,6 +239,13 @@ export const theme = (isMobile: boolean) =>
         },
       },
       MuiSkeleton: {
+        styleOverrides: {
+          root: ({ ownerState, theme }) =>
+            theme.unstable_sx({
+              width: ownerState.width,
+              height: ownerState.height,
+            }),
+        },
         variants: [
           {
             props: { variant: 'base' },

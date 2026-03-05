@@ -14,7 +14,6 @@ import { NotFoundPage } from '@pages/not-found-page';
 import { Notifications } from '@pages/notifications';
 import { ProfilePage } from '@pages/profile';
 import { RegistrationPage } from '@pages/registration';
-import { TestPage } from '@pages/test-page';
 import { DeletionGuard, ROUTES } from '@shared/lib';
 import { EventCard } from '@widgets/event-card';
 import { Profile } from '@widgets/profile';
@@ -36,7 +35,6 @@ export const Routers: FC = () => {
           <Route path={ROUTES.LIST} element={<CommonEventListPage />} />
           <Route path={ROUTES.CHATS.INDEX} element={<Chats />} />
           <Route path={ROUTES.CHATS.DETAIL(':id')} element={<Chat />} />
-          <Route path={ROUTES.ADD_EVENT} element={<CreateEventPage />} />
           <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
           <Route path={ROUTES.PROFILE.INDEX} element={<ProfilePage />}>
             <Route index element={<Profile />} />
@@ -53,7 +51,8 @@ export const Routers: FC = () => {
             />
           </Route>
           <Route path={ROUTES.PROFILE.MY_EVENTS} element={<MyEventsPage />} />
-          <Route path={ROUTES.COPY_EVENT} element={<CopyEventPage />} />
+          <Route path={ROUTES.EVENT.CREATE} element={<CreateEventPage />} />
+          <Route path={ROUTES.EVENT.COPY(':id')} element={<CopyEventPage />} />
           <Route
             path={ROUTES.EVENT.DETAIL(':eventId')}
             element={<EventCard />}
@@ -61,7 +60,6 @@ export const Routers: FC = () => {
         </Route>
       </Route>
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
-      <Route path={ROUTES.TEST_PAGE} element={<TestPage />} />
     </Routes>
   );
 };

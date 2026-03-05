@@ -14,6 +14,8 @@ export interface RouteConfig {
 }
 
 export const ROUTE_SETTINGS: Record<string, RouteConfig> = {
+  [ROUTES.EVENT.CREATE]: {},
+  [ROUTES.EVENT.COPY('')]: {},
   [ROUTES.EVENT.DETAIL('')]: {
     bgcolor: { xs: 'rgba(54, 119, 255, 0.6)', md: 'transparent' },
     justifyContent: 'start',
